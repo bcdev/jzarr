@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Layer: org/esa/snap/dataio/znap/layer.xml
+OpenIDE-Module-Java-Dependencies: Java > 1.8
+OpenIDE-Module-Display-Category: SNAP
+
