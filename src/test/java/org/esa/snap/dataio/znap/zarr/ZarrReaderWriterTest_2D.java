@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ZarrWriterTest_2D {
+public class ZarrReaderWriterTest_2D {
 
     private Path testPath;
 
@@ -48,7 +48,7 @@ public class ZarrWriterTest_2D {
         final ZarrDataType dataType = ZarrDataType.i1; // Byte
         final byte Fill = -5;
         final Compressor compressor = Compressor.Null;
-        final ZarrWriter zarrWriter = new ZarrWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final byte[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -59,7 +59,7 @@ public class ZarrWriterTest_2D {
         };
 
         //execution
-        zarrWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final byte[][] expected = {
@@ -113,7 +113,7 @@ public class ZarrWriterTest_2D {
         final ZarrDataType dataType = ZarrDataType.i2; // Short
         final short Fill = -5;
         final Compressor compressor = Compressor.Null;
-        final ZarrWriter zarrWriter = new ZarrWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final short[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -124,7 +124,7 @@ public class ZarrWriterTest_2D {
         };
 
         //execution
-        zarrWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final short[][] expected = {
@@ -178,7 +178,7 @@ public class ZarrWriterTest_2D {
         final ZarrDataType dataType = ZarrDataType.i4; // Integer
         final int Fill = -5;
         final Compressor compressor = Compressor.Null;
-        final ZarrWriter zarrWriter = new ZarrWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final int[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -189,7 +189,7 @@ public class ZarrWriterTest_2D {
         };
 
         //execution
-        zarrWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final int[][] expected = {
@@ -243,7 +243,7 @@ public class ZarrWriterTest_2D {
         final ZarrDataType dataType = ZarrDataType.f4; // Float
         final float Fill = -5;
         final Compressor compressor = Compressor.Null;
-        final ZarrWriter zarrWriter = new ZarrWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final float[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -254,7 +254,7 @@ public class ZarrWriterTest_2D {
         };
 
         //execution
-        zarrWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final float[][] expected = {
@@ -308,7 +308,7 @@ public class ZarrWriterTest_2D {
         final ZarrDataType dataType = ZarrDataType.f8; // Double
         final double Fill = -5;
         final Compressor compressor = Compressor.Null;
-        final ZarrWriter zarrWriter = new ZarrWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final double[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -319,7 +319,7 @@ public class ZarrWriterTest_2D {
         };
 
         //execution
-        zarrWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final double[][] expected = {

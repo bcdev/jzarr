@@ -3,28 +3,21 @@ package org.esa.snap.dataio.znap.snap;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import com.google.common.jimfs.Jimfs;
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.util.io.TreeDeleter;
 import org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils;
 import org.junit.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.util.TreeSet;
 
 public class ZarrProductReaderPlugInTest_getDecodeQualification {
 
     private ZarrProductReaderPlugIn plugIn;
     private Path productRoot;
-    private Path headerFile;
+    private Path zarrRootHeader;
     private Path aRasterDataDir;
     private Path zarrHeaderFile;
     private Path testPath;
@@ -36,7 +29,7 @@ public class ZarrProductReaderPlugInTest_getDecodeQualification {
         testPath = fsRoot.resolve("temporary-snap-development-test-path");
         Files.createDirectories(testPath);
         productRoot = testPath.resolve("snap_zarr_product_root_dir.znap");
-        headerFile = productRoot.resolve(ZnapConstantsAndUtils.SNAP_HEADER);
+        zarrRootHeader = productRoot.resolve(ZarrConstantsAndUtils.FILENAME_DOT_ZGROUP);
         aRasterDataDir = productRoot.resolve("a_raster_data_dir");
         zarrHeaderFile = aRasterDataDir.resolve(ZarrConstantsAndUtils.FILENAME_DOT_ZARRAY);
     }
@@ -51,7 +44,7 @@ public class ZarrProductReaderPlugInTest_getDecodeQualification {
     @Test
     public void decodeQualification_INTENDED_perfectMatch_inputIsPathObject() throws IOException {
         Files.createDirectories(aRasterDataDir);
-        Files.createFile(headerFile);
+        Files.createFile(zarrRootHeader);
         Files.createFile(zarrHeaderFile);
 
         final Object input = this.productRoot;
@@ -62,7 +55,7 @@ public class ZarrProductReaderPlugInTest_getDecodeQualification {
     @Test
     public void decodeQualification_INTENDED_perfectMatch_inputIsFileObject() throws IOException {
         Files.createDirectories(aRasterDataDir);
-        Files.createFile(headerFile);
+        Files.createFile(zarrRootHeader);
         Files.createFile(zarrHeaderFile);
 
         final Object input = this.productRoot.toFile();
@@ -73,7 +66,7 @@ public class ZarrProductReaderPlugInTest_getDecodeQualification {
     @Test
     public void decodeQualification_INTENDED_perfectMatch_inputStringObject() throws IOException {
         Files.createDirectories(aRasterDataDir);
-        Files.createFile(headerFile);
+        Files.createFile(zarrRootHeader);
         Files.createFile(zarrHeaderFile);
 
         final Object input = this.productRoot.toString();
@@ -84,7 +77,7 @@ public class ZarrProductReaderPlugInTest_getDecodeQualification {
     @Test
     public void decodeQualification_UNABLE_inputObjectIsNullOrCanNotBeConvertedToPath() throws IOException {
         Files.createDirectories(aRasterDataDir);
-        Files.createFile(headerFile);
+        Files.createFile(zarrRootHeader);
         Files.createFile(zarrHeaderFile);
 
 
@@ -129,7 +122,7 @@ public class ZarrProductReaderPlugInTest_getDecodeQualification {
     public void decodeQualification_UNABLE_SnapHeaderFileExistButIsADirectory() throws IOException {
         Files.createDirectories(productRoot);
 //        Files.createFile(headerFile);
-        Files.createDirectories(headerFile);
+        Files.createDirectories(zarrRootHeader);
         Files.createDirectories(aRasterDataDir);
         Files.createFile(zarrHeaderFile);
 
@@ -141,7 +134,7 @@ public class ZarrProductReaderPlugInTest_getDecodeQualification {
     @Test
     public void decodeQualification_UNABLE_NoZarrHeaderFile() throws IOException {
         Files.createDirectories(productRoot);
-        Files.createFile(headerFile);
+        Files.createFile(zarrRootHeader);
         Files.createDirectories(aRasterDataDir);
 //        Files.createFile(zarrHeaderFile);
 
@@ -153,7 +146,7 @@ public class ZarrProductReaderPlugInTest_getDecodeQualification {
     @Test
     public void decodeQualification_UNABLE_ZarrHeaderFileExistButIsADirectory() throws IOException {
         Files.createDirectories(productRoot);
-        Files.createFile(headerFile);
+        Files.createFile(zarrRootHeader);
         Files.createDirectories(aRasterDataDir);
 //        Files.createFile(zarrHeaderFile);
         Files.createDirectories(zarrHeaderFile);

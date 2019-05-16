@@ -17,7 +17,7 @@
 package org.esa.snap.dataio.znap.zarr.chunk;
 
 
-import static org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils.computeSize;
+import static org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils.computeSizeInteger;
 
 import org.esa.snap.dataio.znap.zarr.ZarrDataType;
 import org.esa.snap.dataio.znap.zarr.ucar.NetCDF_Util;
@@ -39,7 +39,7 @@ public abstract class ChunkReaderWriter {
         this.compressor = compressor;
         this.chunkShape = Arrays.copyOf(chunkShape, chunkShape.length);
         this.fill = fill;
-        this.size = computeSize(chunkShape);
+        this.size = computeSizeInteger(chunkShape);
     }
 
     public static ChunkReaderWriter create(Compressor compressor, ZarrDataType dataType, int[] chunkShape, Number fill) {
@@ -75,6 +75,6 @@ public abstract class ChunkReaderWriter {
     }
 
     protected int getSize() {
-        return size;
+        return this.size;
     }
 }

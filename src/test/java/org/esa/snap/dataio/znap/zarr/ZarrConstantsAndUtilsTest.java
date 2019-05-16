@@ -36,7 +36,7 @@ public class ZarrConstantsAndUtilsTest {
     @Test
     public void fromJson() {
         //execution
-        final ZarrHeader zarrHeader = ZarrConstantsAndUtils.fromJson(new StringReader(expectedJson()));
+        final ZarrHeader zarrHeader = ZarrConstantsAndUtils.fromJson(new StringReader(expectedJson()), ZarrHeader.class);
 
         //verification
         assertNotNull(zarrHeader);

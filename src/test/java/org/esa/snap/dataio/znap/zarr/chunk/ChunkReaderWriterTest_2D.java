@@ -1,6 +1,6 @@
 package org.esa.snap.dataio.znap.zarr.chunk;
 
-import static org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils.computeSize;
+import static org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils.computeSizeInteger;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -57,7 +57,7 @@ public class ChunkReaderWriterTest_2D {
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
-        final byte[] expectedValues = new byte[computeSize(shape)];
+        final byte[] expectedValues = new byte[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.byteValue());
         assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Byte.class))));
     }
@@ -73,7 +73,7 @@ public class ChunkReaderWriterTest_2D {
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
-        final short[] expectedValues = new short[computeSize(shape)];
+        final short[] expectedValues = new short[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.shortValue());
         assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Short.class))));
     }
@@ -89,7 +89,7 @@ public class ChunkReaderWriterTest_2D {
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
-        final int[] expectedValues = new int[computeSize(shape)];
+        final int[] expectedValues = new int[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.intValue());
         assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Integer.class))));
     }
@@ -105,7 +105,7 @@ public class ChunkReaderWriterTest_2D {
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
-        final float[] expectedValues = new float[computeSize(shape)];
+        final float[] expectedValues = new float[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.floatValue());
         assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Float.class))));
     }
@@ -121,7 +121,7 @@ public class ChunkReaderWriterTest_2D {
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
-        final double[] expectedValues = new double[computeSize(shape)];
+        final double[] expectedValues = new double[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.doubleValue());
         assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Double.class))));
     }

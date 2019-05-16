@@ -66,4 +66,12 @@ public enum Compressor {
             read = is.read(bytes);
         }
     }
+
+    public static Compressor getInstance(String id) {
+        final Compressor[] compressors = Compressor.values();
+        for (Compressor compressor : compressors) {
+            if(compressor.id.equals(id)) return compressor;
+        }
+        return Null;
+    }
 }

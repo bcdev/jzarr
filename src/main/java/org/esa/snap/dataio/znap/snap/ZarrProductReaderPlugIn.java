@@ -1,23 +1,7 @@
-/*
- * $Id$
- *
- * Copyright (C) 2010 by Brockmann Consult (info@brockmann-consult.de)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation. This program is distributed in the hope it will
- * be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.esa.snap.dataio.znap.snap;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
-import static org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils.FILENAME_DOT_ZARRAY;
+import static org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils.*;
 
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.dataio.ProductReader;
@@ -41,8 +25,8 @@ public class ZarrProductReaderPlugIn implements ProductReaderPlugIn {
         if (productRoot == null) {
             return DecodeQualification.UNABLE;
         }
-        final Path productHeader = productRoot.resolve(SNAP_HEADER);
-        final boolean isValidRootDirName = productRoot.getFileName().toString().toLowerCase().endsWith(SNAP_ZARR_HEADER_FILE_EXTENSION);
+        final Path productHeader = productRoot.resolve(FILENAME_DOT_ZGROUP);
+        final boolean isValidRootDirName = productRoot.getFileName().toString().toLowerCase().endsWith(SNAP_ZARR_CONTAINER_EXTENSION);
         final boolean productRootIsDirectory = Files.isDirectory(productRoot);
         final boolean productHeaderExist = Files.exists(productHeader);
         final boolean productHeaderIsFile = Files.isRegularFile(productHeader);
@@ -83,7 +67,7 @@ public class ZarrProductReaderPlugIn implements ProductReaderPlugIn {
 
     @Override
     public String[] getDefaultFileExtensions() {
-        return new String[]{SNAP_ZARR_HEADER_FILE_EXTENSION};
+        return new String[]{SNAP_ZARR_CONTAINER_EXTENSION};
     }
 
     @Override

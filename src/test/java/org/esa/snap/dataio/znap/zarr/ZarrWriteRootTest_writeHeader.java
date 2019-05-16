@@ -15,18 +15,18 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ZarrRootTest_writeHeader {
+public class ZarrWriteRootTest_writeHeader {
 
     private FileSystem fs;
     private Path zarr_product_root;
-    private ZarrRoot zarrRoot;
+    private ZarrWriteRoot zarrWriteRoot;
 
     @org.junit.Before
     public void setUp() throws Exception {
         fs = Jimfs.newFileSystem(Configuration.windows());
         final Iterable<Path> rootDirectories = fs.getRootDirectories();
         zarr_product_root = rootDirectories.iterator().next().resolve("zarr_product_root");
-        zarrRoot = new ZarrRoot(zarr_product_root);
+        zarrWriteRoot = new ZarrWriteRoot(zarr_product_root);
     }
 
     @org.junit.After
@@ -43,7 +43,7 @@ public class ZarrRootTest_writeHeader {
         final Number fillValue = 0;
 
         //execution
-        zarrRoot.create(rastername, ZarrDataType.i4, shape, chunks, fillValue, Compressor.Null);
+        zarrWriteRoot.create(rastername, ZarrDataType.i4, shape, chunks, fillValue, Compressor.Null, null);
 
         //verification
         final Path json_file = zarr_product_root.resolve(rastername).resolve(".zarray");

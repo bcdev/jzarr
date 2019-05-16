@@ -16,11 +16,24 @@
  */
 package org.esa.snap.dataio.znap.zarr;
 
-import ucar.ma2.InvalidRangeException;
+import ucar.nc2.constants.CDM;
+import ucar.nc2.constants.CF;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface ZarrWriter {
+public final class ConstantsAndUtilsCF implements CF, CDM {
 
-    void write(Object dataBuffer, int[] bufferShape, int[] to) throws IOException, InvalidRangeException;
+    private static final Map<String, String> unitMap = new HashMap<String, String>();
+
+    static {
+        unitMap.put("deg", "degree");
+    }
+
+    public static String tryFindUnitString(String unit) {
+        if (unitMap.containsKey(unit)) {
+            return unitMap.get(unit);
+        }
+        return unit;
+    }
 }

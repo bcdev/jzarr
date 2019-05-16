@@ -7,7 +7,7 @@ import org.junit.*;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 
-public class RawDataReaderTest {
+public class Partial2DDataCopierTest {
 
     private Array source;
     private Array chunk;
@@ -31,7 +31,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_inside_center() throws InvalidRangeException {
         final int[] from = {1, 1};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 6, 7, 8,
@@ -43,7 +43,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_inside_UpperLeft() throws InvalidRangeException {
         final int[] from = {0, 0};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 0, 1, 2,
@@ -55,7 +55,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_inside_UpperCenter() throws InvalidRangeException {
         final int[] from = {0, 1};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 1, 2, 3,
@@ -67,7 +67,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_inside_UpperRight() throws InvalidRangeException {
         final int[] from = {0, 2};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 2, 3, 4,
@@ -79,7 +79,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_inside_CenterRight() throws InvalidRangeException {
         final int[] from = {1, 2};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 7, 8, 9,
@@ -91,7 +91,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_inside_LowerRight() throws InvalidRangeException {
         final int[] from = {2, 2};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 12, 13, 14,
@@ -103,7 +103,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_inside_LowerCenter() throws InvalidRangeException {
         final int[] from = {2, 1};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 11, 12, 13,
@@ -115,7 +115,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_inside_LowerLeft() throws InvalidRangeException {
         final int[] from = {2, 0};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 10, 11, 12,
@@ -127,7 +127,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_inside_CenterLeft() throws InvalidRangeException {
         final int[] from = {1, 0};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 5, 6, 7,
@@ -139,7 +139,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_outside_UpperLeft() throws InvalidRangeException {
         final int[] from = {-1, -1};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 40, 40, 40,
@@ -151,7 +151,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_outside_UpperCenter() throws InvalidRangeException {
         final int[] from = {-1, 1};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 40, 40, 40,
@@ -163,7 +163,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_outside_UpperRight() throws InvalidRangeException {
         final int[] from = {-1, 3};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 40, 40, 40,
@@ -175,7 +175,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_outside_CenterRight() throws InvalidRangeException {
         final int[] from = {1, 3};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 8, 9, 40,
@@ -187,7 +187,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_outside_LowerRight() throws InvalidRangeException {
         final int[] from = {3, 3};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 18, 19, 40,
@@ -199,7 +199,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_outside_LowerCenter() throws InvalidRangeException {
         final int[] from = {3,1};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 16, 17, 18,
@@ -211,7 +211,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_outside_LowerLeft() throws InvalidRangeException {
         final int[] from = {3, -1};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 40, 15, 16,
@@ -223,7 +223,7 @@ public class RawDataReaderTest {
     public void read2DArraySection_case_outside_CenterLeft() throws InvalidRangeException {
         final int[] from = {1, -1};
 
-        final Array result = RawDataReader.read(chunk, from, source);
+        final Array result = Partial2dDataCopier.copy(from, source, chunk);
 
         assertThat((int[]) result.copyTo1DJavaArray(), equalTo(new int[]{
                 40, 5, 6,

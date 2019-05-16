@@ -45,7 +45,7 @@ public class ZarrProductWriterPlugIn implements ProductWriterPlugIn {
     }
 
     public String[] getDefaultFileExtensions() {
-        return new String[]{SNAP_ZARR_HEADER_FILE_EXTENSION};
+        return new String[]{SNAP_ZARR_CONTAINER_EXTENSION};
     }
 
     public String getDescription(Locale locale) {
@@ -53,11 +53,11 @@ public class ZarrProductWriterPlugIn implements ProductWriterPlugIn {
     }
 
     public SnapFileFilter getProductFileFilter() {
-        return new SnapFileFilter(getFormatNames()[0], getDefaultFileExtensions(), getDescription(null)) {
+        return new SnapFileFilter(getFormatNames()[0], getDefaultFileExtensions(), getDescription(null)) /*{
             @Override
             public FileSelectionMode getFileSelectionMode() {
                 return FileSelectionMode.FILES_AND_DIRECTORIES;
             }
-        };
+        }*/;
     }
 }

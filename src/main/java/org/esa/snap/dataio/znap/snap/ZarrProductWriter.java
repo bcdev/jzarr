@@ -1,22 +1,8 @@
-/*
- * $Id$
- *
- * Copyright (C) 2010 by Brockmann Consult (info@brockmann-consult.de)
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation. This program is distributed in the hope it will
- * be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 package org.esa.snap.dataio.znap.snap;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
+import static org.esa.snap.dataio.znap.zarr.ConstantsAndUtilsCF.tryFindUnitString;
+import static ucar.nc2.constants.CDM.*;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glevel.MultiLevelImage;
@@ -25,47 +11,53 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.dataio.znap.zarr.ZarrDataType;
-import org.esa.snap.dataio.znap.zarr.ZarrRoot;
+import org.esa.snap.dataio.znap.zarr.ZarrWriteRoot;
 import org.esa.snap.dataio.znap.zarr.ZarrWriter;
 import org.esa.snap.dataio.znap.zarr.chunk.Compressor;
 import ucar.ma2.InvalidRangeException;
 
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.image.Raster;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 public class ZarrProductWriter extends AbstractProductWriter {
 
     private final HashMap<String, ZarrWriter> zarrWriters = new HashMap<>();
     private Compressor _compressor;
+    private ZarrWriteRoot zarrWriteRoot;
+    private int[] preferredChunks;
 
     public ZarrProductWriter(final ZarrProductWriterPlugIn productWriterPlugIn) {
         super(productWriterPlugIn);
-//        _compressor=Compressor.Null;
+//        _compressor = Compressor.Null;
         _compressor = Compressor.Zip_L1;
     }
 
     @Override
     public void writeBandRasterData(Band sourceBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight, ProductData sourceBuffer, ProgressMonitor pm) throws IOException {
-        writeRasterData(sourceBand.getName(), sourceOffsetX, sourceOffsetY, sourceWidth, sourceHeight, sourceBuffer);
+        String name = sourceBand.getName();
+        final ZarrWriter zarrReaderWriter = zarrWriters.get(name);
+        final int[] to = {sourceOffsetY, sourceOffsetX}; // common data model manner { y, x }
+        final int[] shape = {sourceHeight, sourceWidth};  // common data model manner { y, x }
+        try {
+            zarrReaderWriter.write(sourceBuffer.getElems(), shape, to);
+        } catch (InvalidRangeException e) {
+            throw new IOException("Invalid range while writing raster '" + name + "'", e);
+        }
     }
 
     @Override
     public void flush() throws IOException {
-//        throw new RuntimeException("not implemented");
     }
 
     @Override
     public void close() throws IOException {
-//        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -80,76 +72,129 @@ public class ZarrProductWriter extends AbstractProductWriter {
     @Override
     protected void writeProductNodesImpl() throws IOException {
         final Path output = convertToPath(getOutput());
-        final ZarrRoot zarrRoot = new ZarrRoot(output);
-        final Product sourceProduct = getSourceProduct();
-        final Dimension preferredTileSize = ImageManager.getPreferredTileSize(sourceProduct);
-        final int[] preferredChunks = {preferredTileSize.height, preferredTileSize.width}; // common data model manner { y, x }
-        final List<RasterDataNode> rasterDataNodes = sourceProduct.getRasterDataNodes();
-        for (RasterDataNode n : rasterDataNodes) {
-            final int[] shape = {n.getRasterHeight(), n.getRasterWidth()}; // common data model manner { y, x }
-            final String name = n.getName();
-            int[] chunks;
-            if (n.isSourceImageSet()) {
-                final MultiLevelImage sourceImage = n.getSourceImage();
-                chunks = new int[]{sourceImage.getTileHeight(), sourceImage.getTileWidth()}; // common data model manner { y, x }
-            } else {
-                chunks = Arrays.copyOf(preferredChunks, preferredChunks.length);
-            }
-            final ZarrWriter zarrWriter = zarrRoot.create(name, getZarrDataType(n), shape, chunks, getZarrFillValue(n), _compressor);
-            zarrWriters.put(name, zarrWriter);
+        final Product product = getSourceProduct();
+        final Dimension preferredTileSize = ImageManager.getPreferredTileSize(product);
+
+        // common data model manner { y, x }
+        preferredChunks = new int[]{preferredTileSize.height, preferredTileSize.width};
+
+        final HashMap<String, Object> productAttributes = new HashMap<>();
+        productAttributes.put(PRODUCT_NAME, product.getName());
+        productAttributes.put(PRODUCT_TYPE, product.getProductType());
+        productAttributes.put(PRODUCT_DESC, product.getDescription());
+        productAttributes.put(TIME_START, ISO8601ConverterWithMlliseconds.format(product.getStartTime()));
+        productAttributes.put(TIME_END, ISO8601ConverterWithMlliseconds.format(product.getEndTime()));
+
+        productAttributes.put(PRODUCT_METADATA, product.getMetadataRoot().getElements());
+
+        zarrWriteRoot = new ZarrWriteRoot(output, productAttributes);
+        for (TiePointGrid tiePointGrid : product.getTiePointGrids()) {
+            writeTiePointGrid(tiePointGrid);
         }
-        writeAllRasterDataWhichAreNotInstanceOfBand(sourceProduct);
-    }
-
-    /**
-     * This implementation helper methods writes all raster data which are not of type {@link org.esa.snap.core.datamodel.Band Band}
-     * of the given product. If a raster data is entirely loaded its data is written out immediately, if not, a raster's data raster is written out
-     * line-by-line without producing any memory overhead.
-     */
-    private void writeAllRasterDataWhichAreNotInstanceOfBand(Product product) throws IOException {
-
-        // for correct progress indication we need to collect
-        // all bands which shall be written to the output
-
-        final List<RasterDataNode> rasterDataNodes = product.getRasterDataNodes();
-        for (RasterDataNode node : rasterDataNodes) {
-            if (node instanceof Band) {
-                continue;
-            }
-            if (shouldWrite(node)) {
-                final String name = node.getName();
-                if (node.hasRasterData()) {
-                    final ProductData rasterData = node.getRasterData();
-                    final int rasterWidth = node.getRasterWidth();
-                    final int rasterHeight = node.getRasterHeight();
-                    writeRasterData(name, 0, 0, rasterWidth, rasterHeight, rasterData);
-                } else {
-                    final MultiLevelImage sourceImage = node.getSourceImage();
-                    final Point[] tileIndices = sourceImage.getTileIndices(
-                            new Rectangle(0, 0, sourceImage.getWidth(), sourceImage.getHeight()));
-                    for (final Point tileIndex : tileIndices) {
-                        final Rectangle rect = sourceImage.getTileRect(tileIndex.x, tileIndex.y);
-                        if (!rect.isEmpty()) {
-                            final Raster data = sourceImage.getData(rect);
-                            final ProductData rasterData = node.createCompatibleRasterData(rect.width, rect.height);
-                            data.getDataElements(rect.x, rect.y, rect.width, rect.height, rasterData.getElems());
-                            writeRasterData(name, rect.x, rect.y, rect.width, rect.height, rasterData);
-                        }
-                    }
-                }
-            }
+        for (Band band : product.getBands()) {
+            initializeZarrBandWriter(band);
         }
     }
 
-    private void writeRasterData(String name, int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight, ProductData sourceBuffer) throws IOException {
-        final ZarrWriter zarrWriter = zarrWriters.get(name);
-        final int[] to = {sourceOffsetY, sourceOffsetX}; // common data model manner { y, x }
-        final int[] shape = {sourceHeight, sourceWidth};  // common data model manner { y, x }
+    private void writeTiePointGrid(TiePointGrid tiePointGrid) throws IOException {
+        final int[] shape = {tiePointGrid.getGridHeight(), tiePointGrid.getGridWidth()}; // common data model manner { y, x }
+        final String name = tiePointGrid.getName();
+        final ProductData gridData;
+        final boolean hasData = tiePointGrid.getData() != null;
+        if (hasData) {
+            gridData = tiePointGrid.getData();
+        } else {
+            gridData = readTiePointGridData(tiePointGrid);
+        }
+        int[] chunks = Arrays.copyOf(preferredChunks, preferredChunks.length);
+        final Map<String, Object> attributes = createCfConformRasterAttributes(tiePointGrid);
+        attributes.put(OFFSET_X, tiePointGrid.getOffsetX());
+        attributes.put(OFFSET_Y, tiePointGrid.getOffsetY());
+        attributes.put(SUBSAMPLING_X, tiePointGrid.getSubSamplingX());
+        attributes.put(SUBSAMPLING_Y, tiePointGrid.getSubSamplingY());
+        final ZarrWriter zarrReaderWriter = zarrWriteRoot.create(name, getZarrDataType(tiePointGrid), shape, chunks, getZarrFillValue(tiePointGrid), _compressor, attributes);
         try {
-            zarrWriter.write(sourceBuffer.getElems(), shape, to);
+            zarrReaderWriter.write(gridData.getElems(), shape, new int[]{0, 0});
         } catch (InvalidRangeException e) {
             throw new IOException("Invalid range while writing raster '" + name + "'", e);
         }
+    }
+
+    private void initializeZarrBandWriter(Band band) throws IOException {
+        final int[] shape = {band.getRasterHeight(), band.getRasterWidth()}; // common data model manner { y, x }
+        final String name = band.getName();
+        int[] chunks;
+        if (band.isSourceImageSet()) {
+            final MultiLevelImage sourceImage = band.getSourceImage();
+            chunks = new int[]{sourceImage.getTileHeight(), sourceImage.getTileWidth()}; // common data model manner { y, x }
+        } else {
+            chunks = Arrays.copyOf(preferredChunks, preferredChunks.length);
+        }
+        final Map<String, Object> attributes = createCfConformRasterAttributes(band);
+        final ZarrWriter zarrReaderWriter = zarrWriteRoot.create(name, getZarrDataType(band), shape, chunks, getZarrFillValue(band), _compressor, attributes);
+        zarrWriters.put(name, zarrReaderWriter);
+    }
+
+    private ProductData readTiePointGridData(TiePointGrid tiePointGrid) throws IOException {
+        final int gridWidth = tiePointGrid.getGridWidth();
+        final int gridHeight = tiePointGrid.getGridHeight();
+        ProductData productData = tiePointGrid.createCompatibleRasterData(gridWidth, gridHeight);
+        getSourceProduct().getProductReader().readTiePointGridRasterData(tiePointGrid, 0, 0, gridWidth, gridHeight, productData,
+                                                                         ProgressMonitor.NULL);
+        return productData;
+    }
+
+    private Map<String, Object> createCfConformRasterAttributes(RasterDataNode node) {
+        final HashMap<String, Object> attributes = new HashMap<>();
+
+        final String description = node.getDescription();
+        if (description != null) {
+            attributes.put(LONG_NAME, description);
+        }
+        String unit = node.getUnit();
+        if (unit != null) {
+            unit = tryFindUnitString(unit);
+            attributes.put(UNITS, unit);
+        }
+        final int nodeDataType = node.getDataType();
+
+        if (ProductData.isUIntType(nodeDataType)) {
+            attributes.put(UNSIGNED, String.valueOf(true));
+        }
+
+        Number noDataValue;
+        if (!node.isLog10Scaled()) {
+            final double scalingFactor = node.getScalingFactor();
+            if (scalingFactor != 1.0) {
+                attributes.put(SCALE_FACTOR, scalingFactor);
+            }
+            final double scalingOffset = node.getScalingOffset();
+            if (scalingOffset != 0.0) {
+                attributes.put(ADD_OFFSET, scalingOffset);
+            }
+            noDataValue = node.getNoDataValue();
+        } else {
+            // scaling information is not written anymore for log10 scaled bands
+            // instead we always write geophysical values
+            // we do this because log scaling is not supported by NetCDF-CF conventions
+            noDataValue = node.getGeophysicalNoDataValue();
+        }
+        if (node.isNoDataValueUsed()) {
+            if (ProductData.isIntType(nodeDataType)) {
+                final long longValue = noDataValue.longValue();
+                if (ProductData.isUIntType(nodeDataType)) {
+                    attributes.put(FILL_VALUE, longValue & 0xffffffffL);
+                } else {
+                    attributes.put(FILL_VALUE, longValue);
+                }
+            } else if (ProductData.TYPE_FLOAT64 == nodeDataType) {
+                attributes.put(FILL_VALUE, noDataValue.doubleValue());
+            } else {
+                attributes.put(FILL_VALUE, noDataValue.floatValue());
+            }
+        }
+//        attributes.put("coordinates", "lat lon");
+        return attributes;
     }
 
     private Number getZarrFillValue(RasterDataNode node) {

@@ -29,9 +29,6 @@ public class ZarrHeader {
     private int[] shape;
     private final int zarr_format = 2;
 
-    public ZarrHeader() {
-    }
-
     public ZarrHeader(int[] shape, int[] chunks, String dtype, Number fill_value, Compressor compressor) {
         this.chunks = chunks;
         if (Compressor.Null.equals(compressor)) {
@@ -64,13 +61,21 @@ public class ZarrHeader {
         return shape;
     }
 
-    private class CompressorBean{
+    public class CompressorBean{
         private final String id;
         private final int level;
 
         public CompressorBean(String id, int level) {
             this.id = id;
             this.level = level;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public int getLevel() {
+            return level;
         }
 
         @Override

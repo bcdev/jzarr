@@ -20,6 +20,8 @@ import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.IndexIterator;
 
+import java.util.Arrays;
+
 public class NetCDF_Util {
 
     public static int[] netCDFOrder(int[] ints) {
@@ -29,6 +31,14 @@ public class NetCDF_Util {
             netCDF[i] = ints[length - 1 - i];
         }
         return netCDF;
+    }
+
+    public static Array createArrayWithGivenStorage(Object storage, int[] shape ) {
+        final Class<?> aClass = storage.getClass();
+        if (aClass.isArray()){
+                return Array.factory(storage.getClass().getComponentType(), shape, storage);
+        }
+        return null;
     }
 
     public static Array createFilledArray(DataType dataType, int[] shape, Number fill) {

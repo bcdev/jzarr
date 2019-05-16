@@ -25,14 +25,21 @@ import java.util.Arrays;
 
 public final class ZarrConstantsAndUtils {
 
+    // File name Constants
     public static final String FILENAME_DOT_ZARRAY = ".zarray";
+    public static final String FILENAME_DOT_ZATTRS = ".zattrs";
+    public static final String FILENAME_DOT_ZGROUP = ".zgroup";
+
+    // Zarr format key
+    public static final String ZARR_FORMAT = "zarr_format";
+
     private static Gson gson;
 
-    static String toJson(ZarrHeader header) {
+    static String toJson(Object header) {
         return getGson().toJson(header);
     }
 
-    static void toJson(ZarrHeader header, Appendable writer) throws IOException {
+    static void toJson(Object header, Appendable writer) throws IOException {
         writer.append(toJson(header));
     }
 
@@ -102,12 +109,20 @@ public final class ZarrConstantsAndUtils {
         return sb.toString();
     }
 
-    static ZarrHeader fromJson(Reader reader) {
+    public static <T> T  fromJson(Reader reader, final Class<T> classOfType) {
         final Gson gson = new GsonBuilder().create();
-        return gson.fromJson(reader, ZarrHeader.class);
+        return gson.fromJson(reader, classOfType);
     }
 
-    public static int computeSize(int[] ints) {
+    public static long computeSizeLong(int[] ints) {
+        long count = 1;
+        for (int i : ints) {
+            count *= i;
+        }
+        return count;
+    }
+
+    public static int computeSizeInteger(int[] ints) {
         int count = 1;
         for (int i : ints) {
             count *= i;
