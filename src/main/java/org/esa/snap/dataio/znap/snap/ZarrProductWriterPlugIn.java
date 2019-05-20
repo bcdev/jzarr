@@ -53,11 +53,6 @@ public class ZarrProductWriterPlugIn implements ProductWriterPlugIn {
     }
 
     public SnapFileFilter getProductFileFilter() {
-        return new SnapFileFilter(getFormatNames()[0], getDefaultFileExtensions(), getDescription(null)) /*{
-            @Override
-            public FileSelectionMode getFileSelectionMode() {
-                return FileSelectionMode.FILES_AND_DIRECTORIES;
-            }
-        }*/;
+        return new SnapFileFilter(getFormatNames()[0], getDefaultFileExtensions(), getDescription(null));
     }
 }

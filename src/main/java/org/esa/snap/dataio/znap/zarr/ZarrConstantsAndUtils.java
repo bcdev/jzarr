@@ -67,7 +67,7 @@ public final class ZarrConstantsAndUtils {
         }
     }
 
-    static int[][] computeChunkIndices(int[] shape, int[] chunks, int[] bufferShape, int[] to) {
+    public static int[][] computeChunkIndices(int[] shape, int[] chunks, int[] bufferShape, int[] to) {
         final int depth = shape.length;
         int[] start = new int[depth];
         int[] end = new int[depth];
@@ -99,7 +99,7 @@ public final class ZarrConstantsAndUtils {
         return chunkIndices;
     }
 
-    static String createChunkFilename(int[] currentIdx) {
+    public static String createChunkFilename(int[] currentIdx) {
         StringBuilder sb = new StringBuilder();
         for (int aCurrentIdx : currentIdx) {
             sb.append(aCurrentIdx);

@@ -15,8 +15,7 @@ import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.TiePointGrid;
-import org.esa.snap.core.image.ImageManager;
-import org.esa.snap.core.util.Guardian;
+import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.dataio.znap.zarr.ZarrDataType;
 import org.esa.snap.dataio.znap.zarr.ZarrHeader;
 import org.esa.snap.dataio.znap.zarr.ZarrReadRoot;
@@ -31,7 +30,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -39,32 +37,8 @@ import java.util.stream.Collectors;
 
 public class ZarrProductReader extends AbstractProductReader {
 
-
-    private final Map<String, ZarrReader> zarrReaders = new HashMap<>();
-
     protected ZarrProductReader(ProductReaderPlugIn readerPlugIn) {
         super(readerPlugIn);
-    }
-
-    @Override
-    public void readBandRasterData(Band destBand, int destOffsetX, int destOffsetY, int destWidth, int destHeight, ProductData destBuffer, ProgressMonitor pm) throws IOException {
-        Guardian.assertNotNull("destBand", destBand);
-        Guardian.assertNotNull("destBuffer", destBuffer);
-
-        if (destBuffer.getNumElems() < destWidth * destHeight) {
-            throw new IllegalArgumentException("destination buffer too small");
-        }
-        if (destBuffer.getNumElems() > destWidth * destHeight) {
-            throw new IllegalArgumentException("destination buffer too big");
-        }
-        final ZarrReader zarrReaderWriter = zarrReaders.get(destBand.getName());
-        final Object bufferElems = destBuffer.getElems();
-
-        try {
-            zarrReaderWriter.read(bufferElems, new int[]{destHeight, destWidth}, new int[]{destOffsetY, destOffsetX});
-        } catch (InvalidRangeException e) {
-            throw new IOException("InvalidRangeException while reading raster data for band '" + destBand.getName() + "'", e);
-        }
     }
 
     @Override
@@ -115,18 +89,27 @@ public class ZarrProductReader extends AbstractProductReader {
 
         for (Map.Entry<String, ZarrHeader> zarrHeaderEntry : headerMap.entrySet()) {
             final String rasterName = zarrHeaderEntry.getKey();
-            final ZarrHeader headerBean = zarrHeaderEntry.getValue();
-            final Map<String, Object> attributes = attributesMap.get(rasterName);
-            final int[] shape = headerBean.getShape();
-            final String dtype = headerBean.getDtype();
+            final ZarrHeader zarrHeader = zarrHeaderEntry.getValue();
+
+            final int[] shape = zarrHeader.getShape();
+            final String dtype = zarrHeader.getDtype();
+            final int[] chunks = zarrHeader.getChunks();
+            final Number fill_value = zarrHeader.getFill_value();
+            final ZarrHeader.CompressorBean compressorBean = zarrHeader.getCompressor();
+
             final ZarrDataType zarrDataType = ZarrDataType.valueOf(removeLeadingChar(dtype));
             final SnapDataType snapDataType = getSnapDataType(zarrDataType);
-            final ZarrHeader.CompressorBean compressor = headerBean.getCompressor();
-            final String compressorId = compressor != null ? compressor.getId() : null;
-            final int[] chunks = headerBean.getChunks();
-            final ZarrReader zarrReader = zarrReadRoot.create(rasterName, zarrDataType, shape, chunks, headerBean.getFill_value(), Compressor.getInstance(compressorId), null);
+
+            final String compressorId = compressorBean != null ? compressorBean.getId() : null;
+            final Compressor compressor = Compressor.getInstance(compressorId);
+
+            final ZarrReader zarrReader = zarrReadRoot.create(rasterName, zarrDataType, shape, chunks, fill_value, compressor, null);
+
             final int width = shape[1];
             final int height = shape[0];
+
+            final Map<String, Object> attributes = attributesMap.get(rasterName);
+
             if (attributes != null && attributes.containsKey(OFFSET_X)) {
                 final double offsetX = (double) attributes.get(OFFSET_X);
                 final double offsetY = (double) attributes.get(OFFSET_Y);
@@ -141,10 +124,10 @@ public class ZarrProductReader extends AbstractProductReader {
                 final TiePointGrid tiePointGrid = new TiePointGrid(rasterName, width, height, offsetX, offsetY, subSamplingX, subSamplingY, dataBuffer);
                 product.addTiePointGrid(tiePointGrid);
             } else {
-                zarrReaders.put(rasterName, zarrReader);
                 final Band band = new Band(rasterName, snapDataType.getValue(), width, height);
-                band.setSourceImage(ImageManager.getInstance().getSourceImage(band, 0));
                 product.addBand(band);
+                final ZarrOpImage zarrOpImage = new ZarrOpImage(band, shape, chunks, zarrReader, ResolutionLevel.MAXRES);
+                band.setSourceImage(zarrOpImage);
             }
         }
         product.setFileLocation(rootPath.toFile());
@@ -155,11 +138,16 @@ public class ZarrProductReader extends AbstractProductReader {
     }
 
     @Override
+    public void readBandRasterData(Band destBand, int destOffsetX, int destOffsetY, int destWidth, int destHeight, ProductData destBuffer, ProgressMonitor pm) throws IOException {
+        throw new IllegalStateException("Data is provided by images");
+    }
+
+    @Override
     protected void readBandRasterDataImpl(
             int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight, int sourceStepX, int sourceStepY,
             Band destBand, int destOffsetX, int destOffsetY, int destWidth, int destHeight,
             ProductData destBuffer, ProgressMonitor pm) throws IOException {
-        throw new IOException("readBandRasterDataImpl is not implemented now");
+        throw new IllegalStateException("Data is provided by images");
     }
 
     private static ArrayList<MetadataElement> toMetadataElements(List<Map<String, Object>> product_metadata) {
