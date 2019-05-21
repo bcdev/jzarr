@@ -122,6 +122,9 @@ public class ZarrProductReader extends AbstractProductReader {
                     throw new IOException("InvalidRangeException while reading tie point raster '" + rasterName + "'", e);
                 }
                 final TiePointGrid tiePointGrid = new TiePointGrid(rasterName, width, height, offsetX, offsetY, subSamplingX, subSamplingY, dataBuffer);
+                if (attributes.containsKey(DISCONTINUITY)){
+                    tiePointGrid.setDiscontinuity(((Number) attributes.get(DISCONTINUITY)).intValue());
+                }
                 product.addTiePointGrid(tiePointGrid);
             } else {
                 final Band band = new Band(rasterName, snapDataType.getValue(), width, height);

@@ -32,7 +32,7 @@ public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = ZarrConstantsAndUtils.createChunkFilename(chunkIndex);
             final Path chunkFilePath = _dataPath.resolve(chunkFilename);
-            final int[] fromBufferPos = computeFrom(chunkIndex, to);
+            final int[] fromBufferPos = computeFrom(chunkIndex, to, false);
             final Array targetChunk = _chunkReaderWriter.read(chunkFilePath);
             final Array read = Partial2dDataCopier.copy(fromBufferPos, source, targetChunk);
             _chunkReaderWriter.write(chunkFilePath, read);
@@ -47,19 +47,24 @@ public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = ZarrConstantsAndUtils.createChunkFilename(chunkIndex);
             final Path chunkFilePath = _dataPath.resolve(chunkFilename);
-            final int[] fromChunkPos = computeFrom(chunkIndex, from);
+            final int[] fromChunkPos = computeFrom(chunkIndex, from, true);
             final Array sourceChunk = _chunkReaderWriter.read(chunkFilePath);
             Partial2dDataCopier.copy(fromChunkPos, sourceChunk, target);
         }
 
     }
 
-    private int[] computeFrom(int[] chunkIndex, int[] to) {
+    private int[] computeFrom(int[] chunkIndex, int[] to, boolean read) {
         int[] from = {0, 0};
         for (int i = 0; i < chunkIndex.length; i++) {
             int index = chunkIndex[i];
             from[i] = index * _chunks[i];
             from[i] -= to[i];
+        }
+        if (read){
+            for (int i1 = 0; i1 < from.length; i1++) {
+                from[i1] *= -1;
+            }
         }
         return from;
     }

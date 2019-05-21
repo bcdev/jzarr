@@ -34,6 +34,7 @@ final class ZnapConstantsAndUtils {
     static final String OFFSET_Y = "offset_y";
     static final String SUBSAMPLING_X = "subsampling_x";
     static final String SUBSAMPLING_Y = "subsampling_y";
+    static final String DISCONTINUITY = "discontinuity";
 
     // Product header keys
     public static final String PRODUCT_NAME = "product_name";

@@ -112,11 +112,24 @@ public class ZarrProductWriter extends AbstractProductWriter {
         attributes.put(OFFSET_Y, tiePointGrid.getOffsetY());
         attributes.put(SUBSAMPLING_X, tiePointGrid.getSubSamplingX());
         attributes.put(SUBSAMPLING_Y, tiePointGrid.getSubSamplingY());
+        final int discontinuity = tiePointGrid.getDiscontinuity();
+        if (discontinuity != TiePointGrid.DISCONT_NONE) {
+            attributes.put(DISCONTINUITY, discontinuity);
+        }
+        trimChunks(chunks, shape);
         final ZarrWriter zarrReaderWriter = zarrWriteRoot.create(name, getZarrDataType(tiePointGrid), shape, chunks, getZarrFillValue(tiePointGrid), _compressor, attributes);
         try {
             zarrReaderWriter.write(gridData.getElems(), shape, new int[]{0, 0});
         } catch (InvalidRangeException e) {
             throw new IOException("Invalid range while writing raster '" + name + "'", e);
+        }
+    }
+
+    private void trimChunks(int[] chunks, int[] shape) {
+        for (int i = 0; i < shape.length; i++) {
+            int shape_i = shape[i];
+            final int chunk_i = chunks[i];
+            if (shape_i < chunk_i) chunks[i] = shape_i;
         }
     }
 
@@ -131,6 +144,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
             chunks = Arrays.copyOf(preferredChunks, preferredChunks.length);
         }
         final Map<String, Object> attributes = createCfConformRasterAttributes(band);
+        trimChunks(chunks, shape);
         final ZarrWriter zarrReaderWriter = zarrWriteRoot.create(name, getZarrDataType(band), shape, chunks, getZarrFillValue(band), _compressor, attributes);
         zarrWriters.put(name, zarrReaderWriter);
     }
