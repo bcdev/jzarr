@@ -43,30 +43,6 @@ public final class ZarrConstantsAndUtils {
         writer.append(toJson(header));
     }
 
-    static Number getFillValue(ZarrHeader header) {
-        final String dtype = header.getDtype();
-        switch (dtype) {
-            case ">f8":
-                return header.getFill_value().doubleValue();
-            case ">f4":
-                return header.getFill_value().floatValue();
-            case ">i4":
-                return header.getFill_value().intValue();
-            case ">u4":
-                return header.getFill_value().longValue();
-            case ">i2":
-                return header.getFill_value().shortValue();
-            case ">u2":
-                return header.getFill_value().intValue();
-            case ">i1":
-                return header.getFill_value().byteValue();
-            case ">u1":
-                return header.getFill_value().shortValue();
-            default:
-                throw new IllegalStateException();
-        }
-    }
-
     public static int[][] computeChunkIndices(int[] shape, int[] chunks, int[] bufferShape, int[] to) {
         final int depth = shape.length;
         int[] start = new int[depth];

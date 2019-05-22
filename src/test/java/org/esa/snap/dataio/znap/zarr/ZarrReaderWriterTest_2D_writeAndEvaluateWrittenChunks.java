@@ -23,7 +23,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ZarrReaderWriterTest_2D {
+public class ZarrReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
 
     private Path testPath;
 

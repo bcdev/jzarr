@@ -21,7 +21,7 @@ public class ZarrConstantsAndUtilsTest {
         final Compressor compressor = Compressor.Zip_L1;
         final String dtype = "i4";
         final int[] shape = {10, 15};
-        _zarrHeader = new ZarrHeader(shape, chunks, dtype, 0, compressor);
+        _zarrHeader = new ZarrHeader(shape, chunks, dtype, 3.6d, compressor);
 
     }
 
@@ -43,7 +43,7 @@ public class ZarrConstantsAndUtilsTest {
         assertThat(zarrHeader.getChunks(), is(equalTo(_zarrHeader.getChunks())));
         assertThat(zarrHeader.getDtype(), is(equalTo(_zarrHeader.getDtype())));
         assertThat(zarrHeader.getCompressor(), is(equalTo(_zarrHeader.getCompressor())));
-        assertThat(ZarrConstantsAndUtils.getFillValue(zarrHeader), is(equalTo(ZarrConstantsAndUtils.getFillValue(_zarrHeader))));
+        assertThat(zarrHeader.getFill_value().doubleValue(), is(equalTo(_zarrHeader.getFill_value().doubleValue())));
         assertThat(zarrHeader.getShape(), is(equalTo(_zarrHeader.getShape())));
     }
 
@@ -120,7 +120,7 @@ public class ZarrConstantsAndUtilsTest {
         pw.println("        \"level\": 1");
         pw.println("    },");
         pw.println("    \"dtype\": \">i4\",");
-        pw.println("    \"fill_value\": 0,");
+        pw.println("    \"fill_value\": 3.6,");
         pw.println("    \"filters\": null,");
         pw.println("    \"order\": \"C\",");
         pw.println("    \"shape\": [");
@@ -131,5 +131,13 @@ public class ZarrConstantsAndUtilsTest {
         pw.println("}");
 
         return sw.toString();
+    }
+
+    @Test
+    public void computeSize() {
+        final int intSize = ZarrConstantsAndUtils.computeSizeInteger(new int[]{2, 3, 4});
+        final long longSize = ZarrConstantsAndUtils.computeSizeLong(new int[]{2, 3, 4});
+        assertEquals(24, intSize);
+        assertEquals((long)intSize, longSize);
     }
 }

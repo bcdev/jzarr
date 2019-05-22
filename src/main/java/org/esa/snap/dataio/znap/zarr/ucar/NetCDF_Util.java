@@ -20,8 +20,6 @@ import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.IndexIterator;
 
-import java.util.Arrays;
-
 public class NetCDF_Util {
 
     public static int[] netCDFOrder(int[] ints) {

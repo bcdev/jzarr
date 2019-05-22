@@ -20,13 +20,13 @@ import org.esa.snap.dataio.znap.zarr.chunk.Compressor;
 
 public class ZarrHeader {
 
-    private int[] chunks;
-    private CompressorBean compressor;
-    private String dtype;
-    private Number fill_value;
+    private final int[] chunks;
+    private final CompressorBean compressor;
+    private final String dtype;
+    private final Number fill_value;
     private final String filters = null;
     private final String order = "C";
-    private int[] shape;
+    private final int[] shape;
     private final int zarr_format = 2;
 
     public ZarrHeader(int[] shape, int[] chunks, String dtype, Number fill_value, Compressor compressor) {
@@ -61,7 +61,8 @@ public class ZarrHeader {
         return shape;
     }
 
-    public class CompressorBean{
+    public static class CompressorBean {
+
         private final String id;
         private final int level;
 
@@ -93,13 +94,6 @@ public class ZarrHeader {
                 return false;
             }
             return id.equals(that.id);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = id.hashCode();
-            result = 31 * result + level;
-            return result;
         }
     }
 }

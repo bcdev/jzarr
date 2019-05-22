@@ -103,7 +103,7 @@ public class ZarrProductReader extends AbstractProductReader {
             final String compressorId = compressorBean != null ? compressorBean.getId() : null;
             final Compressor compressor = Compressor.getInstance(compressorId);
 
-            final ZarrReader zarrReader = zarrReadRoot.create(rasterName, zarrDataType, shape, chunks, fill_value, compressor, null);
+            final ZarrReader zarrReader = zarrReadRoot.create(rasterName, zarrDataType, shape, chunks, fill_value, compressor);
 
             final int width = shape[1];
             final int height = shape[0];

@@ -29,10 +29,6 @@ public class Partial2dDataCopier {
         final int sourceHeight = sourceShape[0];
         final int sourceWidth = sourceShape[1];
 
-//        boolean windowInside = isWindowInside(offsetX, offsetY, targetWidth, targetHeight, sourceWidth, sourceHeight);
-//        if (windowInside) {
-//            return source.section(from, targetShape);
-//        } else {
         final ValueSetter valueSetter = createValueSetter(source, target);
 
         for (int sourceY = 0; sourceY < sourceHeight; sourceY++) {
@@ -49,12 +45,6 @@ public class Partial2dDataCopier {
             }
         }
         return target;
-//        }
-    }
-
-    private static boolean isWindowInside(int offsetX, int offsetY, int targetWidth, int targetHeight, int sourceWidth, int sourceHeight) {
-        final Rectangle sourceRectangle = new Rectangle(0, 0, sourceWidth, sourceHeight);
-        return sourceRectangle.contains(offsetX, offsetY, targetWidth, targetHeight);
     }
 
     private static ValueSetter createValueSetter(Array source, Array target) {
