@@ -29,12 +29,11 @@ final class ZnapConstantsAndUtils {
     static final String FORMAT_NAME = "SNAP-Zarr";
     static final String SNAP_ZARR_CONTAINER_EXTENSION = ".znap";
 
-    //Tie point grid attributes
-    static final String OFFSET_X = "offset_x";
-    static final String OFFSET_Y = "offset_y";
-    static final String SUBSAMPLING_X = "subsampling_x";
-    static final String SUBSAMPLING_Y = "subsampling_y";
-    static final String DISCONTINUITY = "discontinuity";
+    // Tie point grid attributes
+    public static final String DISCONTINUITY = "discontinuity";
+
+    // Sample coding attributes
+    public static final String FLAG_DESCRIPTIONS = "flag_descriptions";
 
     // Product header keys
     public static final String PRODUCT_NAME = "product_name";

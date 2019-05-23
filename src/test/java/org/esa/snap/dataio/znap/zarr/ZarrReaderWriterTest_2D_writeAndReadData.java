@@ -1,27 +1,19 @@
 package org.esa.snap.dataio.znap.zarr;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
-import org.esa.snap.dataio.znap.zarr.chunk.ChunkReaderWriter;
-import org.esa.snap.dataio.znap.zarr.chunk.ChunkReaderWriterImpl_Byte;
-import org.esa.snap.dataio.znap.zarr.chunk.ChunkReaderWriterImpl_Double;
-import org.esa.snap.dataio.znap.zarr.chunk.ChunkReaderWriterImpl_Float;
-import org.esa.snap.dataio.znap.zarr.chunk.ChunkReaderWriterImpl_Integer;
-import org.esa.snap.dataio.znap.zarr.chunk.ChunkReaderWriterImpl_Short;
 import org.esa.snap.dataio.znap.zarr.chunk.Compressor;
-import org.junit.*;
-import ucar.ma2.Array;
+import org.junit.Before;
+import org.junit.Test;
 import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 public class ZarrReaderWriterTest_2D_writeAndReadData {
 

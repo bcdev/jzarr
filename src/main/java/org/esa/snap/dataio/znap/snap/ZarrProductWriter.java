@@ -1,16 +1,14 @@
 package org.esa.snap.dataio.znap.snap;
 
-import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
-import static org.esa.snap.dataio.znap.zarr.ConstantsAndUtilsCF.tryFindUnitString;
-import static ucar.nc2.constants.CDM.*;
-
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glevel.MultiLevelImage;
 import org.esa.snap.core.dataio.AbstractProductWriter;
 import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.RasterDataNode;
+import org.esa.snap.core.datamodel.SampleCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.dataio.znap.zarr.ZarrDataType;
@@ -25,6 +23,10 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+
+import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
+import static org.esa.snap.dataio.znap.zarr.ConstantsAndUtilsCF.*;
 
 public class ZarrProductWriter extends AbstractProductWriter {
 
@@ -96,6 +98,75 @@ public class ZarrProductWriter extends AbstractProductWriter {
         }
     }
 
+    static Map<? extends String, ?> createCfConformSampleCodingAttributes(Band band) {
+        final HashMap<String, Object> attributes = new HashMap<>();
+        final SampleCoding sampleCoding = band.getSampleCoding();
+        if (sampleCoding == null) {
+            return attributes;
+        }
+
+        final boolean indexBand = band.isIndexBand();
+        final boolean flagBand = band.isFlagBand();
+        if (!(indexBand || flagBand)) {
+            Logger.getGlobal().warning("Band references a SampleCoding but this is neither an IndexCoding nor an FlagCoding.");
+            return attributes;
+        }
+
+
+        final int numCodings = sampleCoding.getNumAttributes();
+        final String[] names = new String[numCodings];
+        final String[] descriptions = new String[numCodings];
+        final int[] masks = new int[numCodings];
+        final int[] values = new int[numCodings];
+        final MetadataAttribute[] codingAtts = sampleCoding.getAttributes();
+        boolean alsoFlagValues = false;
+        for (int i = 0; i < codingAtts.length; i++) {
+            MetadataAttribute attribute = codingAtts[i];
+            names[i] = attribute.getName();
+            descriptions[i] = attribute.getDescription();
+            final ProductData data = attribute.getData();
+            if (indexBand) {
+                values[i] = data.getElemInt();
+            } else {
+                masks[i] = data.getElemInt();
+                final boolean twoElements = data.getNumElems() == 2;
+                values[i] = twoElements ? data.getElemIntAt(1) : data.getElemInt();
+                alsoFlagValues = alsoFlagValues || twoElements;
+            }
+        }
+        if (indexBand) {
+            attributes.put(FLAG_MEANINGS, names);
+            attributes.put(FLAG_VALUES, values);
+        } else {
+            attributes.put(FLAG_MEANINGS, names);
+            attributes.put(FLAG_MASKS, masks);
+            if (alsoFlagValues) {
+                attributes.put(FLAG_VALUES, values);
+            }
+        }
+        if (containsNotEmptyStrings(descriptions, true)) {
+            attributes.put(FLAG_DESCRIPTIONS, descriptions);
+        }
+        return attributes;
+    }
+
+    private static boolean containsNotEmptyStrings(final String[] strings, final boolean trim) {
+        if (strings != null || strings.length > 0) {
+            if (trim) {
+                for (int i = 0; i < strings.length; i++) {
+                    final String string = strings[i];
+                    strings[i] = string != null ? string.trim() : string;
+                }
+            }
+            for (final String string : strings) {
+                if (string != null && !string.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void writeTiePointGrid(TiePointGrid tiePointGrid) throws IOException {
         final int[] shape = {tiePointGrid.getGridHeight(), tiePointGrid.getGridWidth()}; // common data model manner { y, x }
         final String name = tiePointGrid.getName();
@@ -129,7 +200,9 @@ public class ZarrProductWriter extends AbstractProductWriter {
         for (int i = 0; i < shape.length; i++) {
             int shape_i = shape[i];
             final int chunk_i = chunks[i];
-            if (shape_i < chunk_i) chunks[i] = shape_i;
+            if (shape_i < chunk_i) {
+                chunks[i] = shape_i;
+            }
         }
     }
 
@@ -144,6 +217,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
             chunks = Arrays.copyOf(preferredChunks, preferredChunks.length);
         }
         final Map<String, Object> attributes = createCfConformRasterAttributes(band);
+        attributes.putAll(createCfConformSampleCodingAttributes(band));
         trimChunks(chunks, shape);
         final ZarrWriter zarrReaderWriter = zarrWriteRoot.create(name, getZarrDataType(band), shape, chunks, getZarrFillValue(band), _compressor, attributes);
         zarrWriters.put(name, zarrReaderWriter);
@@ -207,7 +281,8 @@ public class ZarrProductWriter extends AbstractProductWriter {
                 attributes.put(FILL_VALUE, noDataValue.floatValue());
             }
         }
-//        attributes.put("coordinates", "lat lon");
+
+
         return attributes;
     }
 
