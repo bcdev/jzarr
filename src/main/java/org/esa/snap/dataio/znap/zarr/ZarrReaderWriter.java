@@ -9,6 +9,9 @@ import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
 
@@ -16,12 +19,14 @@ public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
     private final int[] _chunks;
     private final Path _dataPath;
     private final ChunkReaderWriter _chunkReaderWriter;
+    private final Map<Object, Object> _locks;
 
     public ZarrReaderWriter(Path dataPath, int[] shape, int[] chunkShape, ZarrDataType dataType, Number fillValue, Compressor compressor) {
         _dataPath = dataPath;
         _shape = shape;
         _chunks = chunkShape;
         _chunkReaderWriter = ChunkReaderWriter.create(compressor, dataType, chunkShape, fillValue);
+        _locks = Collections.synchronizedMap(new TreeMap<>());
     }
 
     @Override
@@ -31,11 +36,18 @@ public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
 
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = ZarrConstantsAndUtils.createChunkFilename(chunkIndex);
+            synchronized (_locks) {
+                if (!_locks.containsKey(chunkFilename)) {
+                    _locks.put(chunkFilename, chunkFilename);
+                }
+            }
             final Path chunkFilePath = _dataPath.resolve(chunkFilename);
             final int[] fromBufferPos = computeFrom(chunkIndex, to, false);
-            final Array targetChunk = _chunkReaderWriter.read(chunkFilePath);
-            final Array read = Partial2dDataCopier.copy(fromBufferPos, source, targetChunk);
-            _chunkReaderWriter.write(chunkFilePath, read);
+            synchronized (_locks.get(chunkFilename)) {
+                final Array targetChunk = _chunkReaderWriter.read(chunkFilePath);
+                final Array read = Partial2dDataCopier.copy(fromBufferPos, source, targetChunk);
+                _chunkReaderWriter.write(chunkFilePath, read);
+            }
         }
     }
 
@@ -61,7 +73,7 @@ public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
             from[i] = index * _chunks[i];
             from[i] -= to[i];
         }
-        if (read){
+        if (read) {
             for (int i1 = 0; i1 < from.length; i1++) {
                 from[i1] *= -1;
             }
