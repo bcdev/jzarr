@@ -34,9 +34,9 @@ public class ZarrReaderWriterTest_saveMultithreading {
 //        final ZarrReaderWriter readerWriter = new ZarrReaderWriter(path, new int[]{30, 30}, new int[]{10, 10}, ZarrDataType.i4, 0, Compressor.Null);
 
         final List<Exception> exceptions = Collections.synchronizedList(new LinkedList<>());
-        final List<Thread> threads = Collections.synchronizedList(new LinkedList<>());
-
         final int[] bufferShape = {1, 5};
+
+        final List<Thread> threads = Collections.synchronizedList(new LinkedList<>());
         threads.add(createThread(new int[]{100, 101, 102, 103, 104}, bufferShape, new int[]{10, 10}, readerWriter, exceptions, threads));
         threads.add(createThread(new int[]{105, 106, 107, 108, 109}, bufferShape, new int[]{10, 15}, readerWriter, exceptions, threads));
         threads.add(createThread(new int[]{110, 111, 112, 113, 114}, bufferShape, new int[]{11, 10}, readerWriter, exceptions, threads));
@@ -70,6 +70,7 @@ public class ZarrReaderWriterTest_saveMultithreading {
                 e.printStackTrace();
             }
         }
+
         final int[] targetBuffer = new int[100];
 
         assertThat(threads.size(), is(0));

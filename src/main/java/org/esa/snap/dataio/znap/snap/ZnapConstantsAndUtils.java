@@ -41,6 +41,15 @@ final class ZnapConstantsAndUtils {
     public static final String PRODUCT_DESC = "product_description";
     public static final String PRODUCT_METADATA = "product_metadata";
 
+    // Tie point grid attribute names
+    public static final String OFFSET_X = "offset_x";
+    public static final String OFFSET_Y = "offset_y";
+    public static final String SUBSAMPLING_X = "subsampling_x";
+    public static final String SUBSAMPLING_Y = "subsampling_y";
+
+    // Sample Coding
+    public static final String NAME_SAMPLE_CODING = "name_sample_coding";
+
     static final Class[] IO_TYPES = new Class[]{
             Path.class,
             File.class,

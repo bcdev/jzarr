@@ -31,18 +31,22 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         final IndexCoding ic = new IndexCoding("IC");
         band.setSampleCoding(ic);
         ic.addIndex("i1", 1, "d1");
-        ic.addIndex("i2", 2, "d2   ");
-        ic.addIndex("i3", 3, "  d3");
-        ic.addIndex("i4", 4, "  d4  ");
+        ic.addIndex("i2", 2, "d2   "); // deskription shall be trimmed
+        ic.addIndex("i3", 3, "  d3"); // deskription shall be trimmed
+        ic.addIndex("i4", 4, "  d4  "); // deskription shall be trimmed
         ic.addIndex("i5", 5, "d5");
 
         final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.createCfConformSampleCodingAttributes(band);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
-        assertThat(cfConformSampleCodingAttributes.size(), is(3));
+        assertThat(cfConformSampleCodingAttributes.size(), is(4));
+
+        assertThat(cfConformSampleCodingAttributes.containsKey(NAME_SAMPLE_CODING), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MEANINGS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_DESCRIPTIONS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_VALUES), is(true));
+
+        assertThat(cfConformSampleCodingAttributes.get(NAME_SAMPLE_CODING), is("IC"));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_MEANINGS), is(new String[]{
                 "i1", "i2", "i3", "i4", "i5"}));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_DESCRIPTIONS), is(new String[]{
@@ -65,9 +69,13 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.createCfConformSampleCodingAttributes(band);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
-        assertThat(cfConformSampleCodingAttributes.size(), is(2));
+        assertThat(cfConformSampleCodingAttributes.size(), is(3));
+
+        assertThat(cfConformSampleCodingAttributes.containsKey(NAME_SAMPLE_CODING), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MEANINGS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_VALUES), is(true));
+
+        assertThat(cfConformSampleCodingAttributes.get(NAME_SAMPLE_CODING), is("IC"));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_MEANINGS), is(new String[]{
                 "i1", "i2", "i3", "i4", "i5"}));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_VALUES), is(new int[]{
@@ -77,7 +85,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
     @Test
     public void singleBitFlagCoding() {
         final Band band = new Band("band", ProductData.TYPE_INT32, 16, 4);
-        final FlagCoding fc = new FlagCoding("IC");
+        final FlagCoding fc = new FlagCoding("FC");
         band.setSampleCoding(fc);
         fc.addFlag("f1", 0b00000001, "d1");
         fc.addFlag("f2", 0b00000010, "d2");
@@ -88,10 +96,14 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.createCfConformSampleCodingAttributes(band);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
-        assertThat(cfConformSampleCodingAttributes.size(), is(3));
+        assertThat(cfConformSampleCodingAttributes.size(), is(4));
+
+        assertThat(cfConformSampleCodingAttributes.containsKey(NAME_SAMPLE_CODING), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MEANINGS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_DESCRIPTIONS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MASKS), is(true));
+
+        assertThat(cfConformSampleCodingAttributes.get(NAME_SAMPLE_CODING), is("FC"));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_MEANINGS), is(new String[]{
                 "f1", "f2", "f3", "f4", "f5"}));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_DESCRIPTIONS), is(new String[]{
@@ -104,7 +116,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
     @Test
     public void singleBitFlagCoding_noOrEmptyDescription() {
         final Band band = new Band("band", ProductData.TYPE_INT32, 16, 4);
-        final FlagCoding fc = new FlagCoding("IC");
+        final FlagCoding fc = new FlagCoding("FC");
         band.setSampleCoding(fc);
         fc.addFlag("f1", 0b00000001, null);
         fc.addFlag("f2", 0b00000010, "");
@@ -115,9 +127,13 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.createCfConformSampleCodingAttributes(band);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
-        assertThat(cfConformSampleCodingAttributes.size(), is(2));
+        assertThat(cfConformSampleCodingAttributes.size(), is(3));
+
+        assertThat(cfConformSampleCodingAttributes.containsKey(NAME_SAMPLE_CODING), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MEANINGS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MASKS), is(true));
+
+        assertThat(cfConformSampleCodingAttributes.get(NAME_SAMPLE_CODING), is("FC"));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_MEANINGS), is(new String[]{
                 "f1", "f2", "f3", "f4", "f5"}));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_MASKS), is(new int[]{
@@ -128,7 +144,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
     @Test
     public void mixedSingleBitAndBitFieldFlagCoding() {
         final Band band = new Band("band", ProductData.TYPE_INT32, 16, 4);
-        final FlagCoding fc = new FlagCoding("IC");
+        final FlagCoding fc = new FlagCoding("FC");
         band.setSampleCoding(fc);
         fc.addFlag("f1", 0b00000001, "d1");
         fc.addFlag("f2", 0b00000010, "d2");
@@ -141,11 +157,15 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.createCfConformSampleCodingAttributes(band);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
-        assertThat(cfConformSampleCodingAttributes.size(), is(4));
+        assertThat(cfConformSampleCodingAttributes.size(), is(5));
+
+        assertThat(cfConformSampleCodingAttributes.containsKey(NAME_SAMPLE_CODING), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MEANINGS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_DESCRIPTIONS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MASKS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_VALUES), is(true));
+
+        assertThat(cfConformSampleCodingAttributes.get(NAME_SAMPLE_CODING), is("FC"));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_MEANINGS), is(new String[]{
                 "f1", "f2", "fa", "fb", "fc", "fd", "f5"}));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_DESCRIPTIONS), is(new String[]{
@@ -159,7 +179,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
     @Test
     public void mixedSingleBitAndBitFieldFlagCoding_noOrEmptyDescription() {
         final Band band = new Band("band", ProductData.TYPE_INT32, 16, 4);
-        final FlagCoding fc = new FlagCoding("IC");
+        final FlagCoding fc = new FlagCoding("FC");
         band.setSampleCoding(fc);
         fc.addFlag("f1", 0b00000001, "");
         fc.addFlag("f2", 0b00000010, null);
@@ -172,10 +192,14 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.createCfConformSampleCodingAttributes(band);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
-        assertThat(cfConformSampleCodingAttributes.size(), is(3));
+        assertThat(cfConformSampleCodingAttributes.size(), is(4));
+
+        assertThat(cfConformSampleCodingAttributes.containsKey(NAME_SAMPLE_CODING), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MEANINGS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_MASKS), is(true));
         assertThat(cfConformSampleCodingAttributes.containsKey(FLAG_VALUES), is(true));
+
+        assertThat(cfConformSampleCodingAttributes.get(NAME_SAMPLE_CODING), is("FC"));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_MEANINGS), is(new String[]{
                 "f1", "f2", "fa", "fb", "fc", "fd", "f5"}));
         assertThat(cfConformSampleCodingAttributes.get(FLAG_MASKS), is(new int[]{

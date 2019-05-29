@@ -10,6 +10,8 @@ import com.google.gson.GsonBuilder;
 import org.esa.snap.core.dataio.AbstractProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
 import org.esa.snap.core.datamodel.Band;
+import org.esa.snap.core.datamodel.FlagCoding;
+import org.esa.snap.core.datamodel.IndexCoding;
 import org.esa.snap.core.datamodel.MetadataAttribute;
 import org.esa.snap.core.datamodel.MetadataElement;
 import org.esa.snap.core.datamodel.Product;
@@ -33,12 +35,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class ZarrProductReader extends AbstractProductReader {
 
     protected ZarrProductReader(ProductReaderPlugIn readerPlugIn) {
         super(readerPlugIn);
+    }
+
+    @Override
+    public void readBandRasterData(Band destBand, int destOffsetX, int destOffsetY, int destWidth, int destHeight, ProductData destBuffer, ProgressMonitor pm) throws IOException {
+        throw new IllegalStateException("Data is provided by images");
     }
 
     @Override
@@ -122,13 +130,14 @@ public class ZarrProductReader extends AbstractProductReader {
                     throw new IOException("InvalidRangeException while reading tie point raster '" + rasterName + "'", e);
                 }
                 final TiePointGrid tiePointGrid = new TiePointGrid(rasterName, width, height, offsetX, offsetY, subSamplingX, subSamplingY, dataBuffer);
-                if (attributes.containsKey(DISCONTINUITY)){
+                if (attributes.containsKey(DISCONTINUITY)) {
                     tiePointGrid.setDiscontinuity(((Number) attributes.get(DISCONTINUITY)).intValue());
                 }
                 product.addTiePointGrid(tiePointGrid);
             } else {
                 final Band band = new Band(rasterName, snapDataType.getValue(), width, height);
                 product.addBand(band);
+                apply(attributes, band);
                 final ZarrOpImage zarrOpImage = new ZarrOpImage(band, shape, chunks, zarrReader, ResolutionLevel.MAXRES);
                 band.setSourceImage(zarrOpImage);
             }
@@ -141,16 +150,73 @@ public class ZarrProductReader extends AbstractProductReader {
     }
 
     @Override
-    public void readBandRasterData(Band destBand, int destOffsetX, int destOffsetY, int destWidth, int destHeight, ProductData destBuffer, ProgressMonitor pm) throws IOException {
-        throw new IllegalStateException("Data is provided by images");
-    }
-
-    @Override
     protected void readBandRasterDataImpl(
             int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight, int sourceStepX, int sourceStepY,
             Band destBand, int destOffsetX, int destOffsetY, int destWidth, int destHeight,
             ProductData destBuffer, ProgressMonitor pm) throws IOException {
         throw new IllegalStateException("Data is provided by images");
+    }
+
+    static void apply(Map<String, Object> attributes, Band band) {
+        final String rasterName = band.getName();
+        final List<String> flagMeanings = (List<String>) attributes.get(FLAG_MEANINGS);
+        if (flagMeanings != null) {
+
+            final List<Double> flagMasks = (List<Double>) attributes.get(FLAG_MASKS);
+            final List<Double> flagValues = (List<Double>) attributes.get(FLAG_VALUES);
+
+            FlagCoding flagCoding = null;
+            IndexCoding indexCoding = null;
+            final Product product = band.getProduct();
+            if (flagMasks != null) {
+                flagCoding = new FlagCoding(getSampleCodingName(attributes, rasterName));
+                band.setSampleCoding(flagCoding);
+                product.getFlagCodingGroup().add(flagCoding);
+            } else if (flagValues != null) {
+                indexCoding = new IndexCoding(getSampleCodingName(attributes, rasterName));
+                band.setSampleCoding(indexCoding);
+                product.getIndexCodingGroup().add(indexCoding);
+            } else {
+                Logger.getGlobal().warning(
+                        "Raster attributes for '" + rasterName
+                                + "' contains the attribute '" + FLAG_MEANINGS
+                                + "' but neither an attribute '" + FLAG_MASKS
+                                + "' nor an attribute '" + FLAG_VALUES + "'."
+                );
+                return;
+            }
+            for (int i = 0; i < flagMeanings.size(); i++) {
+                final String meaningName = flagMeanings.get(i);
+                final String description = getFlagDescription(attributes, i);
+                if (flagMasks != null) {
+                    final int flagMask = flagMasks.get(i).intValue();
+                    if (flagValues != null) {
+                        flagCoding.addFlag(meaningName, flagMask, flagValues.get(i).intValue(), description);
+                    } else {
+                        flagCoding.addFlag(meaningName, flagMask , description);
+                    }
+                } else {
+                    indexCoding.addIndex(meaningName, flagValues.get(i).intValue(), description);
+                }
+            }
+        }
+    }
+
+    private static String getFlagDescription(Map<String, Object> attributes, int pos) {
+        if (attributes.containsKey(FLAG_DESCRIPTIONS)) {
+            return (String) ((List) attributes.get(FLAG_DESCRIPTIONS)).get(pos);
+        }
+        return null;
+    }
+
+    private static String getSampleCodingName(Map<String, Object> attributes, String rasterName) {
+        final String sampleCodingName;
+        if (attributes.containsKey(NAME_SAMPLE_CODING)) {
+            sampleCodingName = (String) attributes.get(NAME_SAMPLE_CODING);
+        } else {
+            sampleCodingName = rasterName;
+        }
+        return sampleCodingName;
     }
 
     private static ArrayList<MetadataElement> toMetadataElements(List<Map<String, Object>> product_metadata) {

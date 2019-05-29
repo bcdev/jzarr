@@ -105,6 +105,9 @@ public class ZarrProductWriter extends AbstractProductWriter {
             return attributes;
         }
 
+        attributes.put(ZnapConstantsAndUtils.NAME_SAMPLE_CODING, sampleCoding.getName());
+
+
         final boolean indexBand = band.isIndexBand();
         final boolean flagBand = band.isFlagBand();
         if (!(indexBand || flagBand)) {

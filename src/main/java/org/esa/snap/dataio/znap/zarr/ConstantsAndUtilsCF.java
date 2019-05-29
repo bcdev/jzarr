@@ -24,12 +24,6 @@ import java.util.Map;
 
 public final class ConstantsAndUtilsCF implements CF, CDM {
 
-    // CF Tie point grid attributes
-    public static final String OFFSET_X = "offset_x";
-    public static final String OFFSET_Y = "offset_y";
-    public static final String SUBSAMPLING_X = "subsampling_x";
-    public static final String SUBSAMPLING_Y = "subsampling_y";
-
     // CF sample coding attributes
     public static final String FLAG_VALUES = "flag_values";
     public static final String FLAG_MASKS = "flag_masks";
