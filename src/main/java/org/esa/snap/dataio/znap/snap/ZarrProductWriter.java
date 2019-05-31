@@ -98,7 +98,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
         }
     }
 
-    static Map<? extends String, ?> createCfConformSampleCodingAttributes(Band band) {
+    static Map<String, ?> createCfConformSampleCodingAttributes(Band band) {
         final HashMap<String, Object> attributes = new HashMap<>();
         final SampleCoding sampleCoding = band.getSampleCoding();
         if (sampleCoding == null) {
