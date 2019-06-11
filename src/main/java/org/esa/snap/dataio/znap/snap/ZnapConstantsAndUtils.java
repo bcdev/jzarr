@@ -16,9 +16,7 @@
  */
 package org.esa.snap.dataio.znap.snap;
 
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.dataio.znap.zarr.ZarrDataType;
+import com.bc.zarr.ZarrDataType;
 
 import java.io.File;
 import java.nio.file.Path;

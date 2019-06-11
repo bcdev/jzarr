@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.util.io.TreeDeleter;
-import org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils;
+import com.bc.zarr.ZarrConstantsAndUtils;
 import org.junit.*;
 
 import java.io.IOException;

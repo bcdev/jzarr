@@ -1,8 +1,8 @@
 package org.esa.snap.dataio.znap.snap;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
-import static org.esa.snap.dataio.znap.zarr.ConstantsAndUtilsCF.*;
-import static org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils.*;
+import static com.bc.zarr.ConstantsAndUtilsCF.*;
+import static com.bc.zarr.ZarrConstantsAndUtils.*;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.google.gson.Gson;
@@ -18,11 +18,11 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ResolutionLevel;
-import org.esa.snap.dataio.znap.zarr.ZarrDataType;
-import org.esa.snap.dataio.znap.zarr.ZarrHeader;
-import org.esa.snap.dataio.znap.zarr.ZarrReadRoot;
-import org.esa.snap.dataio.znap.zarr.ZarrReader;
-import org.esa.snap.dataio.znap.zarr.chunk.Compressor;
+import com.bc.zarr.ZarrDataType;
+import com.bc.zarr.ZarrHeader;
+import com.bc.zarr.ZarrReadRoot;
+import com.bc.zarr.ZarrReader;
+import com.bc.zarr.chunk.Compressor;
 import ucar.ma2.InvalidRangeException;
 
 import java.io.BufferedReader;

@@ -11,10 +11,10 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.SampleCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
-import org.esa.snap.dataio.znap.zarr.ZarrDataType;
-import org.esa.snap.dataio.znap.zarr.ZarrWriteRoot;
-import org.esa.snap.dataio.znap.zarr.ZarrWriter;
-import org.esa.snap.dataio.znap.zarr.chunk.Compressor;
+import com.bc.zarr.ZarrDataType;
+import com.bc.zarr.ZarrWriteRoot;
+import com.bc.zarr.ZarrWriter;
+import com.bc.zarr.chunk.Compressor;
 import ucar.ma2.InvalidRangeException;
 
 import java.awt.Dimension;
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
-import static org.esa.snap.dataio.znap.zarr.ConstantsAndUtilsCF.*;
+import static com.bc.zarr.ConstantsAndUtilsCF.*;
 
 public class ZarrProductWriter extends AbstractProductWriter {
 
@@ -38,7 +38,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
     public ZarrProductWriter(final ZarrProductWriterPlugIn productWriterPlugIn) {
         super(productWriterPlugIn);
 //        _compressor = Compressor.Null;
-        _compressor = Compressor.Zip_L1;
+        _compressor = Compressor.zlib_L1;
     }
 
     @Override

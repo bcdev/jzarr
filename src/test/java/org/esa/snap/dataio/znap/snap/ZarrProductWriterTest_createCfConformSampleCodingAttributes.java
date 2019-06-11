@@ -9,7 +9,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
-import static org.esa.snap.dataio.znap.zarr.ConstantsAndUtilsCF.*;
+import static com.bc.zarr.ConstantsAndUtilsCF.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 

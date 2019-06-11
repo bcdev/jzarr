@@ -1,7 +1,7 @@
 package org.esa.snap.dataio.znap.snap;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
-import static org.esa.snap.dataio.znap.zarr.ZarrConstantsAndUtils.*;
+import static com.bc.zarr.ZarrConstantsAndUtils.*;
 
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.dataio.ProductReader;

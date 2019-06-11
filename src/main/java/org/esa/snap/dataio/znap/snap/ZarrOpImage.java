@@ -23,7 +23,7 @@ import org.esa.snap.core.image.ImageManager;
 import org.esa.snap.core.image.ResolutionLevel;
 import org.esa.snap.core.image.SingleBandedOpImage;
 import org.esa.snap.core.util.ImageUtils;
-import org.esa.snap.dataio.znap.zarr.ZarrReader;
+import com.bc.zarr.ZarrReader;
 import ucar.ma2.InvalidRangeException;
 
 import javax.media.jai.PlanarImage;
