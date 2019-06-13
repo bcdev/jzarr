@@ -84,8 +84,8 @@ public class ZarrProductWriter extends AbstractProductWriter {
         productAttributes.put(PRODUCT_NAME, product.getName());
         productAttributes.put(PRODUCT_TYPE, product.getProductType());
         productAttributes.put(PRODUCT_DESC, product.getDescription());
-        productAttributes.put(TIME_START, ISO8601ConverterWithMlliseconds.format(product.getStartTime()));
-        productAttributes.put(TIME_END, ISO8601ConverterWithMlliseconds.format(product.getEndTime()));
+        productAttributes.put(TIME_START, ISO8601ConverterWithMlliseconds.format(product.getStartTime())); // "time_coverage_start"
+        productAttributes.put(TIME_END, ISO8601ConverterWithMlliseconds.format(product.getEndTime())); // "time_coverage_end"
 
         productAttributes.put(PRODUCT_METADATA, product.getMetadataRoot().getElements());
 

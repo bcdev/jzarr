@@ -4,12 +4,12 @@ package com.bc.zarr;
 import static com.bc.zarr.ZarrConstantsAndUtils.*;
 
 import com.bc.zarr.chunk.Compressor;
-import org.apache.commons.lang.ArrayUtils;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -25,7 +25,7 @@ public class ZarrWriteRoot {
         this.rootPath = rootPath;
         Files.createDirectories(rootPath);
 
-        writeJson(rootPath, FILENAME_DOT_ZGROUP, ArrayUtils.toMap(new Object[][]{{ZARR_FORMAT, 2}}));
+        writeJson(rootPath, FILENAME_DOT_ZGROUP, Collections.singletonMap(ZARR_FORMAT, 2));
         writeAttributes(rootPath, productAttributes);
     }
 
@@ -52,7 +52,7 @@ public class ZarrWriteRoot {
                 }
             });
         }
-        if (exceptions.size()>0) {
+        if (exceptions.size() > 0) {
             final IOException ioException = new IOException(String.format("Unable to initialize the storage for raster '%s'", rastername), exceptions.get(0));
             for (int i = 1; i < exceptions.size(); i++) {
                 IOException e = exceptions.get(i);

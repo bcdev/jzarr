@@ -83,8 +83,8 @@ public class ZarrProductReader extends AbstractProductReader {
         final String productName = (String) productAttributes.get(PRODUCT_NAME);
         final String productType = (String) productAttributes.get(PRODUCT_TYPE);
         final String productDesc = (String) productAttributes.get(PRODUCT_DESC);
-        final ProductData.UTC sensingStart = getTime(productAttributes, TIME_START, "sensing start", rootPath);
-        final ProductData.UTC sensingStop = getTime(productAttributes, TIME_END, "sinsing stop", rootPath);
+        final ProductData.UTC sensingStart = getTime(productAttributes, TIME_START, rootPath); // "time_coverage_start"
+        final ProductData.UTC sensingStop = getTime(productAttributes, TIME_END, rootPath); // "time_coverage_end"
         final List<Map<String, Object>> product_metadata = (List) productAttributes.get(PRODUCT_METADATA);
         final ArrayList<MetadataElement> metadataElements = toMetadataElements(product_metadata);
         final Product product = new Product(productName, productType, this);
@@ -289,11 +289,11 @@ public class ZarrProductReader extends AbstractProductReader {
         return gson.fromJson(reader, MetadataElementGson.class);
     }
 
-    private ProductData.UTC getTime(Map<String, Object> productAttributes, String attributeName, String fieldName, Path rootPath) throws IOException {
+    private ProductData.UTC getTime(Map<String, Object> productAttributes, String attributeName, Path rootPath) throws IOException {
         try {
             return ISO8601ConverterWithMlliseconds.parse((String) productAttributes.get(attributeName));
         } catch (ParseException e) {
-            throw new IOException("Unparseable " + fieldName + " while reading product '" + rootPath.toString() + "'", e);
+            throw new IOException("Unparseable " + attributeName + " while reading product '" + rootPath.toString() + "'", e);
         }
     }
 
