@@ -1,10 +1,12 @@
 package com.bc.zarr;
 
 
-import static com.bc.zarr.ZarrConstantsAndUtils.*;
+import static com.bc.zarr.ZarrUtils.*;
+import static com.bc.zarr.ZarrConstants.*;
 
 import com.bc.zarr.chunk.Compressor;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,23 +15,27 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class ZarrWriteRoot {
+public class ZarrGroup {
 
-    private final Path rootPath;
-
-    public ZarrWriteRoot(Path rootPath) throws IOException {
-        this(rootPath, null);
+    public static ZarrGroup create(Path path, final Map<String, Object> attributes) throws IOException {
+        Files.createDirectories(path);
+        ZarrGroup zarrGroup = new ZarrGroup(path);
+        zarrGroup.writeJson(path, FILENAME_DOT_ZGROUP, Collections.singletonMap(ZARR_FORMAT, 2));
+        zarrGroup.writeAttributes(path, attributes);
+        return zarrGroup;
     }
 
-    public ZarrWriteRoot(Path rootPath, final Map<String, Object> productAttributes) throws IOException {
-        this.rootPath = rootPath;
-        Files.createDirectories(rootPath);
-
-        writeJson(rootPath, FILENAME_DOT_ZGROUP, Collections.singletonMap(ZARR_FORMAT, 2));
-        writeAttributes(rootPath, productAttributes);
+    public static ZarrGroup open(Path rootPath) {
+        return new ZarrGroup(rootPath);
     }
 
-    public ZarrWriter create(String rastername, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor, final Map<String, Object> attributes) throws IOException {
+    private final Path path;
+
+    private ZarrGroup(Path path) {
+        this.path = path;
+    }
+
+    public ZarrWriter createWriter(String rastername, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor, final Map<String, Object> attributes) throws IOException {
         final Path dataPath = initialize(rastername);
 
         final ZarrHeader zarrHeader = new ZarrHeader(shape, chunks, dataType.toString(), fillValue, compressor);
@@ -39,8 +45,23 @@ public class ZarrWriteRoot {
         return new ZarrReaderWriter(dataPath, shape, chunks, dataType, fillValue, compressor);
     }
 
+    public ZarrReader createReader(String rastername) throws IOException {
+        final Path dataPath = path.resolve(rastername);
+        final Path zarrHeaderPath = dataPath.resolve(FILENAME_DOT_ZARRAY);
+        try (BufferedReader reader = Files.newBufferedReader(zarrHeaderPath)) {
+            final ZarrHeader header = fromJson(reader, ZarrHeader.class);
+            final int[] shape = header.getShape();
+            final int[] chunks = header.getChunks();
+            final ZarrDataType rawDataType = header.getRawDataType();
+            final Number fill_value = header.getFill_value();
+            final ZarrHeader.CompressorBean compressorBean = header.getCompressor();
+            final Compressor compressor = compressorBean != null ? Compressor.getInstance(compressorBean.getId()) : Compressor.Null;
+            return new ZarrReaderWriter(dataPath, shape, chunks, rawDataType, fill_value, compressor);
+        }
+    }
+
     private Path initialize(String rastername) throws IOException {
-        final Path dataPath = this.rootPath.resolve(rastername);
+        final Path dataPath = path.resolve(rastername);
 
         final LinkedList<IOException> exceptions = new LinkedList<>();
         if (Files.isDirectory(dataPath)) {

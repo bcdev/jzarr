@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
-import static com.bc.zarr.ConstantsAndUtilsCF.*;
+import static com.bc.zarr.CFConstantsAndUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 

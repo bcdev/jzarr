@@ -1,6 +1,6 @@
 package com.bc.zarr.chunk;
 
-import static com.bc.zarr.ZarrConstantsAndUtils.computeSizeInteger;
+import static com.bc.zarr.ZarrUtils.computeSizeInteger;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 

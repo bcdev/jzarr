@@ -3,9 +3,9 @@ package org.esa.snap.dataio.znap.snap;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import com.bc.zarr.ZarrConstants;
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.util.io.TreeDeleter;
-import com.bc.zarr.ZarrConstantsAndUtils;
 import org.junit.*;
 
 import java.io.IOException;
@@ -29,9 +29,9 @@ public class ZarrProductReaderPlugInTest_getDecodeQualification {
         testPath = fsRoot.resolve("temporary-snap-development-test-path");
         Files.createDirectories(testPath);
         productRoot = testPath.resolve("snap_zarr_product_root_dir.znap");
-        zarrRootHeader = productRoot.resolve(ZarrConstantsAndUtils.FILENAME_DOT_ZGROUP);
+        zarrRootHeader = productRoot.resolve(ZarrConstants.FILENAME_DOT_ZGROUP);
         aRasterDataDir = productRoot.resolve("a_raster_data_dir");
-        zarrHeaderFile = aRasterDataDir.resolve(ZarrConstantsAndUtils.FILENAME_DOT_ZARRAY);
+        zarrHeaderFile = aRasterDataDir.resolve(ZarrConstants.FILENAME_DOT_ZARRAY);
     }
 
     @After

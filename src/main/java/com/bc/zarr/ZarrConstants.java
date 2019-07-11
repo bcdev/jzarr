@@ -1,5 +1,5 @@
 /*
- * $
+ * $Id$
  *
  * Copyright (C) 2010 by Brockmann Consult (info@brockmann-consult.de)
  *
@@ -16,17 +16,20 @@
  */
 package com.bc.zarr;
 
-import ucar.ma2.InvalidRangeException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.util.Arrays;
 
-public interface ZarrReader {
+public final class ZarrConstants {
 
-    void read(Object targetBuffer, int[] bufferShape, int[] from) throws IOException, InvalidRangeException;
+    // File name Constants
+    public static final String FILENAME_DOT_ZARRAY = ".zarray";
+    public static final String FILENAME_DOT_ZATTRS = ".zattrs";
+    public static final String FILENAME_DOT_ZGROUP = ".zgroup";
 
-    ZarrDataType getDataType();
-
-    int[] getShape();
-
-    int[] getChunks();
+    // Zarr format key
+    public static final String ZARR_FORMAT = "zarr_format";
 }

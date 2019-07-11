@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.esa.snap</groupId>
-    <artifactId>zarr-read-write</artifactId>
+    <artifactId>snap-zarr</artifactId>
     <version>0.2-SNAPSHOT</version>
 
     <properties>
         <!--<brandingToken>snap-zarr</brandingToken>-->
         <snap.version>7.0.0-SNAPSHOT</snap.version>
 
-        <nd4j.version>1.0.0-beta4</nd4j.version>
-        <nd4j.backend>nd4j-native-platform</nd4j.backend>
+<!--        <nd4j.version>1.0.0-beta4</nd4j.version>-->
+<!--        <nd4j.backend>nd4j-native-platform</nd4j.backend>-->
     </properties>
 
     <packaging>nbm</packaging>

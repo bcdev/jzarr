@@ -22,7 +22,7 @@ import ucar.nc2.constants.CF;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ConstantsAndUtilsCF implements CF, CDM {
+public final class CFConstantsAndUtils implements CF, CDM {
 
     // CF sample coding attributes
     public static final String FLAG_VALUES = "flag_values";

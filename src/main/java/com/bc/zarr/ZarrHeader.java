@@ -16,7 +16,10 @@
  */
 package com.bc.zarr;
 
+import com.bc.ceres.binio.DataFormat;
 import com.bc.zarr.chunk.Compressor;
+
+import java.nio.ByteOrder;
 
 public class ZarrHeader {
 
@@ -51,6 +54,25 @@ public class ZarrHeader {
 
     public String getDtype() {
         return dtype;
+    }
+
+    public ZarrDataType getRawDataType() {
+        String str = dtype;
+        str = str.replace(">", "");
+        str = str.replace("<", "");
+        str = str.replace("|", "");
+        return ZarrDataType.valueOf(str);
+    }
+
+    public ByteOrder getByteOrder() {
+        if(dtype.startsWith(">")) {
+            return ByteOrder.BIG_ENDIAN;
+        } else if(dtype.startsWith("<")){
+            return ByteOrder.LITTLE_ENDIAN;
+        } else if(dtype.startsWith("|")) {
+            return ByteOrder.nativeOrder();
+        }
+        return ByteOrder.BIG_ENDIAN;
     }
 
     public Number getFill_value() {

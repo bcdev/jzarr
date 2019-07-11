@@ -12,7 +12,7 @@ import org.esa.snap.core.datamodel.SampleCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
 import com.bc.zarr.ZarrDataType;
-import com.bc.zarr.ZarrWriteRoot;
+import com.bc.zarr.ZarrGroup;
 import com.bc.zarr.ZarrWriter;
 import com.bc.zarr.chunk.Compressor;
 import ucar.ma2.InvalidRangeException;
@@ -26,13 +26,13 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
-import static com.bc.zarr.ConstantsAndUtilsCF.*;
+import static com.bc.zarr.CFConstantsAndUtils.*;
 
 public class ZarrProductWriter extends AbstractProductWriter {
 
     private final HashMap<String, ZarrWriter> zarrWriters = new HashMap<>();
     private Compressor _compressor;
-    private ZarrWriteRoot zarrWriteRoot;
+    private ZarrGroup zarrGroup;
     private int[] preferredChunks;
 
     public ZarrProductWriter(final ZarrProductWriterPlugIn productWriterPlugIn) {
@@ -89,7 +89,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
 
         productAttributes.put(PRODUCT_METADATA, product.getMetadataRoot().getElements());
 
-        zarrWriteRoot = new ZarrWriteRoot(output, productAttributes);
+        zarrGroup = ZarrGroup.create(output, productAttributes);
         for (TiePointGrid tiePointGrid : product.getTiePointGrids()) {
             writeTiePointGrid(tiePointGrid);
         }
@@ -191,9 +191,9 @@ public class ZarrProductWriter extends AbstractProductWriter {
             attributes.put(DISCONTINUITY, discontinuity);
         }
         trimChunks(chunks, shape);
-        final ZarrWriter zarrReaderWriter = zarrWriteRoot.create(name, getZarrDataType(tiePointGrid), shape, chunks, getZarrFillValue(tiePointGrid), _compressor, attributes);
+        final ZarrWriter zarrWriter = zarrGroup.createWriter(name, getZarrDataType(tiePointGrid), shape, chunks, getZarrFillValue(tiePointGrid), _compressor, attributes);
         try {
-            zarrReaderWriter.write(gridData.getElems(), shape, new int[]{0, 0});
+            zarrWriter.write(gridData.getElems(), shape, new int[]{0, 0});
         } catch (InvalidRangeException e) {
             throw new IOException("Invalid range while writing raster '" + name + "'", e);
         }
@@ -222,8 +222,8 @@ public class ZarrProductWriter extends AbstractProductWriter {
         final Map<String, Object> attributes = createCfConformRasterAttributes(band);
         attributes.putAll(createCfConformSampleCodingAttributes(band));
         trimChunks(chunks, shape);
-        final ZarrWriter zarrReaderWriter = zarrWriteRoot.create(name, getZarrDataType(band), shape, chunks, getZarrFillValue(band), _compressor, attributes);
-        zarrWriters.put(name, zarrReaderWriter);
+        final ZarrWriter zarrWriter = zarrGroup.createWriter(name, getZarrDataType(band), shape, chunks, getZarrFillValue(band), _compressor, attributes);
+        zarrWriters.put(name, zarrWriter);
     }
 
     private ProductData readTiePointGridData(TiePointGrid tiePointGrid) throws IOException {

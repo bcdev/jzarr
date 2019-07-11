@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-public class ZarrConstantsAndUtilsTest {
+public class ZarrUtilsTest {
 
     private ZarrHeader _zarrHeader;
 
@@ -28,7 +28,7 @@ public class ZarrConstantsAndUtilsTest {
     @Test
     public void toJson() throws IOException {
         final StringWriter writer = new StringWriter();
-        ZarrConstantsAndUtils.toJson(_zarrHeader, writer);
+        ZarrUtils.toJson(_zarrHeader, writer);
 
         assertThat(writer.toString(), is(equalToIgnoringWhiteSpace(expectedJson())));
     }
@@ -36,7 +36,7 @@ public class ZarrConstantsAndUtilsTest {
     @Test
     public void fromJson() {
         //execution
-        final ZarrHeader zarrHeader = ZarrConstantsAndUtils.fromJson(new StringReader(expectedJson()), ZarrHeader.class);
+        final ZarrHeader zarrHeader = ZarrUtils.fromJson(new StringReader(expectedJson()), ZarrHeader.class);
 
         //verification
         assertNotNull(zarrHeader);
@@ -56,7 +56,7 @@ public class ZarrConstantsAndUtilsTest {
         final int[] offset = {512, 512};
 
         //execution
-        final int[][] chunkIndices = ZarrConstantsAndUtils.computeChunkIndices(shape, chunks, bufferShape, offset);
+        final int[][] chunkIndices = ZarrUtils.computeChunkIndices(shape, chunks, bufferShape, offset);
 
         //verification
         assertNotNull(chunkIndices);
@@ -73,7 +73,7 @@ public class ZarrConstantsAndUtilsTest {
         final int[] offset = {512, 600};
 
         //execution
-        final int[][] chunkIndices = ZarrConstantsAndUtils.computeChunkIndices(shape, chunks, bufferShape, offset);
+        final int[][] chunkIndices = ZarrUtils.computeChunkIndices(shape, chunks, bufferShape, offset);
 
         //verification
         assertNotNull(chunkIndices);
@@ -91,7 +91,7 @@ public class ZarrConstantsAndUtilsTest {
         final int[] offset = {600, 600};
 
         //execution
-        final int[][] chunkIndices = ZarrConstantsAndUtils.computeChunkIndices(shape, chunks, bufferShape, offset);
+        final int[][] chunkIndices = ZarrUtils.computeChunkIndices(shape, chunks, bufferShape, offset);
 
         //verification
         assertNotNull(chunkIndices);
@@ -104,7 +104,7 @@ public class ZarrConstantsAndUtilsTest {
 
     @Test
     public void computeChunkFilename() {
-        assertEquals("1.2.3.42", ZarrConstantsAndUtils.createChunkFilename(new int[]{1, 2, 3, 42}));
+        assertEquals("1.2.3.42", ZarrUtils.createChunkFilename(new int[]{1, 2, 3, 42}));
     }
 
     private String expectedJson() {
@@ -135,8 +135,8 @@ public class ZarrConstantsAndUtilsTest {
 
     @Test
     public void computeSize() {
-        final int intSize = ZarrConstantsAndUtils.computeSizeInteger(new int[]{2, 3, 4});
-        final long longSize = ZarrConstantsAndUtils.computeSizeLong(new int[]{2, 3, 4});
+        final int intSize = ZarrUtils.computeSizeInteger(new int[]{2, 3, 4});
+        final long longSize = ZarrUtils.computeSizeLong(new int[]{2, 3, 4});
         assertEquals(24, intSize);
         assertEquals((long)intSize, longSize);
     }

@@ -1,10 +1,12 @@
 package org.esa.snap.dataio.znap.snap;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
-import static com.bc.zarr.ConstantsAndUtilsCF.*;
-import static com.bc.zarr.ZarrConstantsAndUtils.*;
+import static com.bc.zarr.CFConstantsAndUtils.*;
+import static com.bc.zarr.ZarrUtils.*;
+import static com.bc.zarr.ZarrConstants.*;
 
 import com.bc.ceres.core.ProgressMonitor;
+import com.bc.zarr.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.esa.snap.core.dataio.AbstractProductReader;
@@ -18,11 +20,6 @@ import org.esa.snap.core.datamodel.Product;
 import org.esa.snap.core.datamodel.ProductData;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ResolutionLevel;
-import com.bc.zarr.ZarrDataType;
-import com.bc.zarr.ZarrHeader;
-import com.bc.zarr.ZarrReadRoot;
-import com.bc.zarr.ZarrReader;
-import com.bc.zarr.chunk.Compressor;
 import ucar.ma2.InvalidRangeException;
 
 import java.io.BufferedReader;
@@ -52,19 +49,17 @@ public class ZarrProductReader extends AbstractProductReader {
     @Override
     protected Product readProductNodesImpl() throws IOException {
         final Path rootPath = convertToPath(getInput());
+        final ZarrGroup rootGroup = ZarrGroup.open(rootPath);
         final List<Path> headerPaths = Files.find(rootPath, 10, (path, basicFileAttributes) ->
                 path.getFileName().toString().equals(FILENAME_DOT_ZARRAY)
         ).collect(Collectors.toList());
 
-        final Map<String, ZarrHeader> headerMap = new TreeMap<>();
+        final List<String> rasterNames = new ArrayList<>();
         final Map<String, Map<String, Object>> attributesMap = new TreeMap<>();
         for (Path zarrHeaderPath : headerPaths) {
             final Path rasterDir = zarrHeaderPath.getParent();
             final String rasterName = rasterDir.getFileName().toString();
-            try (BufferedReader reader = Files.newBufferedReader(zarrHeaderPath)) {
-                final ZarrHeader zarrHeader = fromJson(reader, ZarrHeader.class);
-                headerMap.put(rasterName, zarrHeader);
-            }
+            rasterNames.add(rasterName);
             final Path zarrAttribsPath = rasterDir.resolve(FILENAME_DOT_ZATTRS);
             if (Files.isReadable(zarrAttribsPath)) {
                 try (BufferedReader reader = Files.newBufferedReader(zarrAttribsPath)) {
@@ -73,8 +68,6 @@ public class ZarrProductReader extends AbstractProductReader {
                 }
             }
         }
-
-        final ZarrReadRoot zarrReadRoot = new ZarrReadRoot(rootPath);
 
         final Map<String, Object> productAttributes;
         try (BufferedReader reader = Files.newBufferedReader(rootPath.resolve(FILENAME_DOT_ZATTRS))) {
@@ -95,24 +88,14 @@ public class ZarrProductReader extends AbstractProductReader {
             product.getMetadataRoot().addElement(metadataElement);
         }
 
-        for (Map.Entry<String, ZarrHeader> zarrHeaderEntry : headerMap.entrySet()) {
-            final String rasterName = zarrHeaderEntry.getKey();
-            final ZarrHeader zarrHeader = zarrHeaderEntry.getValue();
+        for (String rasterName : rasterNames) {
+            final ZarrReader zarrReader = rootGroup.createReader(rasterName);
 
-            final int[] shape = zarrHeader.getShape();
-            final String dtype = zarrHeader.getDtype();
-            final int[] chunks = zarrHeader.getChunks();
-            final Number fill_value = zarrHeader.getFill_value();
-            final ZarrHeader.CompressorBean compressorBean = zarrHeader.getCompressor();
+            final int[] shape = zarrReader.getShape();
+            final int[] chunks = zarrReader.getChunks();
+            final ZarrDataType zarrDataType = zarrReader.getDataType();
 
-            final ZarrDataType zarrDataType = ZarrDataType.valueOf(removeLeadingChar(dtype));
             final SnapDataType snapDataType = getSnapDataType(zarrDataType);
-
-            final String compressorId = compressorBean != null ? compressorBean.getId() : null;
-            final Compressor compressor = Compressor.getInstance(compressorId);
-
-            final ZarrReader zarrReader = zarrReadRoot.create(rasterName, zarrDataType, shape, chunks, fill_value, compressor);
-
             final int width = shape[1];
             final int height = shape[0];
 
@@ -295,13 +278,6 @@ public class ZarrProductReader extends AbstractProductReader {
         } catch (ParseException e) {
             throw new IOException("Unparseable " + attributeName + " while reading product '" + rootPath.toString() + "'", e);
         }
-    }
-
-    private String removeLeadingChar(String dtype) {
-        dtype = dtype.replace(">", "");
-        dtype = dtype.replace("<", "");
-        dtype = dtype.replace("!", "");
-        return dtype;
     }
 
     private static class ProductDataGson {

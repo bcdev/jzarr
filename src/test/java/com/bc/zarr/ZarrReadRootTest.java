@@ -1,20 +1,35 @@
 package com.bc.zarr;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import com.bc.zarr.chunk.Compressor;
-import org.junit.*;
+import com.google.common.jimfs.Jimfs;
+import org.esa.snap.core.util.io.TreeDeleter;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class ZarrReadRootTest {
 
+    private Path rootPath;
+
+    @Before
+    public void setUp() throws Exception {
+        rootPath = Jimfs.newFileSystem().getPath("lsmf");
+    }
+
     @Test
-    public void create() throws NoSuchFieldException, IllegalAccessException {
-        final ZarrReadRoot readRoot = new ZarrReadRoot(Paths.get("lsmf"));
-        final ZarrReader reader = readRoot.create("rastername", ZarrDataType.f4, new int[]{101, 102}, new int[]{11, 12}, 4.2, Compressor.zlib_L1);
+    public void create() throws NoSuchFieldException, IllegalAccessException, IOException {
+        final ZarrGroup readRoot = ZarrGroup.open(rootPath);
+        final ZarrWriter reader = readRoot.createWriter("rastername", ZarrDataType.f4, new int[]{101, 102}, new int[]{11, 12}, 4.2, Compressor.zlib_L1, null);
 
         assertThat(reader, is(instanceOf(ZarrReaderWriter.class)));
 

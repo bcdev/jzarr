@@ -23,15 +23,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
 
-public final class ZarrConstantsAndUtils {
-
-    // File name Constants
-    public static final String FILENAME_DOT_ZARRAY = ".zarray";
-    public static final String FILENAME_DOT_ZATTRS = ".zattrs";
-    public static final String FILENAME_DOT_ZGROUP = ".zgroup";
-
-    // Zarr format key
-    public static final String ZARR_FORMAT = "zarr_format";
+public final class ZarrUtils {
 
     private static Gson gson;
 

@@ -1,6 +1,7 @@
 package com.bc.zarr;
 
-import static com.bc.zarr.ZarrConstantsAndUtils.*;
+import static com.bc.zarr.ZarrUtils.*;
+import static com.bc.zarr.ZarrConstants.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
@@ -20,16 +21,15 @@ import java.util.stream.Collectors;
 
 public class ZarrWriteRootTest_writeHeader {
 
-    private FileSystem fs;
     private Path zarr_product_root;
-    private ZarrWriteRoot zarrWriteRoot;
+    private ZarrGroup zarrGroup;
 
     @org.junit.Before
     public void setUp() throws Exception {
-        fs = Jimfs.newFileSystem(Configuration.windows());
+        final FileSystem fs = Jimfs.newFileSystem(Configuration.windows());
         final Iterable<Path> rootDirectories = fs.getRootDirectories();
         zarr_product_root = rootDirectories.iterator().next().resolve("zarr_product_root");
-        zarrWriteRoot = new ZarrWriteRoot(zarr_product_root);
+        zarrGroup = ZarrGroup.create(zarr_product_root, null);
     }
 
     @org.junit.After
@@ -46,12 +46,12 @@ public class ZarrWriteRootTest_writeHeader {
         final Number fillValue = 0;
 
         //execution
-        zarrWriteRoot.create(rastername, ZarrDataType.i4, shape, chunks, fillValue, Compressor.Null, null);
+        zarrGroup.createWriter(rastername, ZarrDataType.i4, shape, chunks, fillValue, Compressor.Null, null);
 
         //verification
         final Path json_file = zarr_product_root.resolve(rastername).resolve(".zarray");
         assertThat(Files.isRegularFile(json_file), is(true));
-        final String expectedJson = ZarrConstantsAndUtils.toJson(new ZarrHeader(shape, chunks, dataType, fillValue, Compressor.Null));
+        final String expectedJson = ZarrUtils.toJson(new ZarrHeader(shape, chunks, dataType, fillValue, Compressor.Null));
         final String fromFile = new String(Files.readAllBytes(json_file));
         assertThat(fromFile, is(equalToIgnoringWhiteSpace(expectedJson)));
 
@@ -75,7 +75,7 @@ public class ZarrWriteRootTest_writeHeader {
         attributes.put("of", 3.0);
 
         //execution
-        zarrWriteRoot.create(rastername, ZarrDataType.i4, shape, chunks, fillValue, Compressor.Null, attributes);
+        zarrGroup.createWriter(rastername, ZarrDataType.i4, shape, chunks, fillValue, Compressor.Null, attributes);
 
         //verification
         final Path zarray_file = zarr_product_root.resolve(rastername).resolve(FILENAME_DOT_ZARRAY);
@@ -83,7 +83,7 @@ public class ZarrWriteRootTest_writeHeader {
         assertThat(Files.isRegularFile(zarray_file), is(true));
         assertThat(Files.isRegularFile(zattrs_file), is(true));
 
-        final String expectedJson = ZarrConstantsAndUtils.toJson(new ZarrHeader(shape, chunks, dataType, fillValue, Compressor.Null));
+        final String expectedJson = ZarrUtils.toJson(new ZarrHeader(shape, chunks, dataType, fillValue, Compressor.Null));
         final String fromFile = new String(Files.readAllBytes(zarray_file));
         assertThat(fromFile, is(equalToIgnoringWhiteSpace(expectedJson)));
 
