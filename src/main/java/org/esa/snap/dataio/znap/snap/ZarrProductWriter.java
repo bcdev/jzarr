@@ -23,6 +23,9 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
@@ -34,11 +37,13 @@ public class ZarrProductWriter extends AbstractProductWriter {
     private Compressor _compressor;
     private ZarrGroup zarrGroup;
     private int[] preferredChunks;
+    private final ExecutorService executorService;
 
     public ZarrProductWriter(final ZarrProductWriterPlugIn productWriterPlugIn) {
         super(productWriterPlugIn);
 //        _compressor = Compressor.Null;
         _compressor = Compressor.zlib_L1;
+        executorService = Executors.newFixedThreadPool(4);
     }
 
     @Override
@@ -47,11 +52,15 @@ public class ZarrProductWriter extends AbstractProductWriter {
         final ZarrWriter zarrReaderWriter = zarrWriters.get(name);
         final int[] to = {sourceOffsetY, sourceOffsetX}; // common data model manner { y, x }
         final int[] shape = {sourceHeight, sourceWidth};  // common data model manner { y, x }
-        try {
-            zarrReaderWriter.write(sourceBuffer.getElems(), shape, to);
-        } catch (InvalidRangeException e) {
-            throw new IOException("Invalid range while writing raster '" + name + "'", e);
-        }
+        Callable<Object> callable = () -> {
+            try {
+                zarrReaderWriter.write(sourceBuffer.getElems(), shape, to);
+                return null;
+            } catch (InvalidRangeException e) {
+                throw new IOException("Invalid range while writing raster '" + name + "'", e);
+            }
+        };
+        executorService.submit(callable);
     }
 
     @Override
