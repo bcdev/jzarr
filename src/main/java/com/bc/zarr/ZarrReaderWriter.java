@@ -54,17 +54,21 @@ public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
 
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
-            synchronized (_locks) {
-                if (!_locks.containsKey(chunkFilename)) {
-                    _locks.put(chunkFilename, chunkFilename);
-                }
-            }
             final Path chunkFilePath = _dataPath.resolve(chunkFilename);
             final int[] fromBufferPos = computeFrom(chunkIndex, to, false);
-            synchronized (_locks.get(chunkFilename)) {
-                final Array targetChunk = _chunkReaderWriter.read(chunkFilePath);
-                final Array read = Partial2dDataCopier.copy(fromBufferPos, source, targetChunk);
-                _chunkReaderWriter.write(chunkFilePath, read);
+            if (partialCopyingIsNotNeeded(bufferShape, fromBufferPos)) {
+                _chunkReaderWriter.write(chunkFilePath, source);
+            } else {
+                synchronized (_locks) {
+                    if (!_locks.containsKey(chunkFilename)) {
+                        _locks.put(chunkFilename, chunkFilename);
+                    }
+                }
+                synchronized (_locks.get(chunkFilename)) {
+                    final Array targetChunk = _chunkReaderWriter.read(chunkFilePath);
+                    final Array read = Partial2dDataCopier.copy(fromBufferPos, source, targetChunk);
+                    _chunkReaderWriter.write(chunkFilePath, read);
+                }
             }
         }
     }
@@ -72,16 +76,31 @@ public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
     @Override
     public void read(Object targetBuffer, int[] bufferShape, int[] from) throws IOException, InvalidRangeException {
         final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, bufferShape, from);
-        final Array target = NetCDF_Util.createArrayWithGivenStorage(targetBuffer, bufferShape);
 
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
             final Path chunkFilePath = _dataPath.resolve(chunkFilename);
             final int[] fromChunkPos = computeFrom(chunkIndex, from, true);
             final Array sourceChunk = _chunkReaderWriter.read(chunkFilePath);
-            Partial2dDataCopier.copy(fromChunkPos, sourceChunk, target);
+            if (partialCopyingIsNotNeeded(bufferShape, fromChunkPos)) {
+                System.arraycopy(sourceChunk.getStorage(), 0, targetBuffer, 0, (int) sourceChunk.getSize());
+            } else {
+                final Array target = NetCDF_Util.createArrayWithGivenStorage(targetBuffer, bufferShape);
+                Partial2dDataCopier.copy(fromChunkPos, sourceChunk, target);
+            }
         }
+    }
 
+    public boolean partialCopyingIsNotNeeded(int[] bufferShape, int[] position) {
+        return isZeroOffset(position) && isBufferShapeEqualChunkShape(bufferShape);
+    }
+
+    public boolean isBufferShapeEqualChunkShape(int[] bufferShape) {
+        return Arrays.equals(bufferShape, _chunks);
+    }
+
+    public boolean isZeroOffset(int[] position) {
+        return Arrays.equals(position, new int[position.length]);
     }
 
     private int[] computeFrom(int[] chunkIndex, int[] to, boolean read) {
