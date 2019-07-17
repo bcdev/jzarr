@@ -104,6 +104,7 @@ public final class ZarrUtils {
                     .serializeNulls()
                     .setPrettyPrinting()
                     .disableHtmlEscaping()
+                    .serializeSpecialFloatingPointValues()
                     .create();
         }
         return gson;
