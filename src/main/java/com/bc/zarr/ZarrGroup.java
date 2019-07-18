@@ -1,11 +1,5 @@
 package com.bc.zarr;
 
-
-import static com.bc.zarr.ZarrUtils.*;
-import static com.bc.zarr.ZarrConstants.*;
-
-import com.bc.zarr.chunk.Compressor;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,6 +8,12 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Map;
+
+import static com.bc.zarr.ZarrConstants.*;
+import static com.bc.zarr.ZarrUtils.fromJson;
+import static com.bc.zarr.ZarrUtils.toJson;
+
+import static com.bc.zarr.CompressorFactory.nullCompressor;
 
 public class ZarrGroup {
 
@@ -55,7 +55,9 @@ public class ZarrGroup {
             final ZarrDataType rawDataType = header.getRawDataType();
             final Number fill_value = header.getFill_value();
             final ZarrHeader.CompressorBean compressorBean = header.getCompressor();
-            final Compressor compressor = compressorBean != null ? Compressor.getInstance(compressorBean.getId()) : Compressor.Null;
+            final String compId = compressorBean.getId();
+            final int compLevel = compressorBean.getLevel();
+            final Compressor compressor = compressorBean != null ? CompressorFactory.create(compId, compLevel) : nullCompressor;
             return new ZarrReaderWriter(dataPath, shape, chunks, rawDataType, fill_value, compressor);
         }
     }

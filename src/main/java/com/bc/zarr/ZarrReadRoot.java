@@ -1,7 +1,5 @@
 package com.bc.zarr;
 
-import com.bc.zarr.chunk.Compressor;
-
 import java.nio.file.Path;
 
 public class ZarrReadRoot {

@@ -3,7 +3,6 @@ package com.bc.zarr;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import com.bc.zarr.chunk.Compressor;
 import org.junit.*;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ public class ZarrUtilsTest {
     @Before
     public void setUp() throws Exception {
         final int[] chunks = {5, 6};
-        final Compressor compressor = Compressor.zlib_L1;
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
         final String dtype = "i4";
         final int[] shape = {10, 15};
         _zarrHeader = new ZarrHeader(shape, chunks, dtype, 3.6d, compressor);
@@ -138,6 +137,6 @@ public class ZarrUtilsTest {
         final int intSize = ZarrUtils.computeSizeInteger(new int[]{2, 3, 4});
         final long longSize = ZarrUtils.computeSizeLong(new int[]{2, 3, 4});
         assertEquals(24, intSize);
-        assertEquals((long)intSize, longSize);
+        assertEquals((long) intSize, longSize);
     }
 }

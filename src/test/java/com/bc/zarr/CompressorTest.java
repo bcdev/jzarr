@@ -1,4 +1,4 @@
-package com.bc.zarr.chunk;
+package com.bc.zarr;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -14,7 +14,7 @@ public class CompressorTest {
 
     @Test
     public void writeRead_NullCompressor() throws IOException {
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final byte[] input = {
                 100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,
                 100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,
@@ -42,7 +42,7 @@ public class CompressorTest {
 
     @Test
     public void writeRead_ZipCompressor() throws IOException {
-        final Compressor compressor = Compressor.zlib_L1;
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
         final byte[] input = {
                 100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,
                 100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,

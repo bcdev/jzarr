@@ -3,13 +3,7 @@ package com.bc.zarr;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import com.bc.zarr.chunk.ChunkReaderWriter;
-import com.bc.zarr.chunk.ChunkReaderWriterImpl_Byte;
-import com.bc.zarr.chunk.ChunkReaderWriterImpl_Double;
-import com.bc.zarr.chunk.ChunkReaderWriterImpl_Float;
-import com.bc.zarr.chunk.ChunkReaderWriterImpl_Integer;
-import com.bc.zarr.chunk.ChunkReaderWriterImpl_Short;
-import com.bc.zarr.chunk.Compressor;
+import com.bc.zarr.chunk.*;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.*;
@@ -47,7 +41,7 @@ public class ZarrReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
         final ZarrDataType dataType = ZarrDataType.i1; // Byte
         final byte Fill = -5;
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final byte[] sourceBuffer = {
@@ -112,7 +106,7 @@ public class ZarrReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
         final ZarrDataType dataType = ZarrDataType.i2; // Short
         final short Fill = -5;
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final short[] sourceBuffer = {
@@ -177,7 +171,7 @@ public class ZarrReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
         final ZarrDataType dataType = ZarrDataType.i4; // Integer
         final int Fill = -5;
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final int[] sourceBuffer = {
@@ -242,7 +236,7 @@ public class ZarrReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
         final ZarrDataType dataType = ZarrDataType.f4; // Float
         final float Fill = -5;
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final float[] sourceBuffer = {
@@ -307,7 +301,7 @@ public class ZarrReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
         final ZarrDataType dataType = ZarrDataType.f8; // Double
         final double Fill = -5;
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final ZarrReaderWriter zarrReaderWriter = new ZarrReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
 
         final double[] sourceBuffer = {

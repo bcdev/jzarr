@@ -1,7 +1,6 @@
 package com.bc.zarr;
 
 import com.google.common.jimfs.Jimfs;
-import com.bc.zarr.chunk.Compressor;
 import org.junit.Before;
 import org.junit.Test;
 import ucar.ma2.InvalidRangeException;
@@ -30,7 +29,8 @@ public class ZarrReaderWriterTest_saveMultithreading {
 
     @Test
     public void parallelWriting_toTheSameChunk_withCompression() throws IOException, InvalidRangeException {
-        final ZarrReaderWriter readerWriter = new ZarrReaderWriter(path, new int[]{30, 30}, new int[]{10, 10}, ZarrDataType.i4, 0, Compressor.zlib_L1);
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final ZarrReaderWriter readerWriter = new ZarrReaderWriter(path, new int[]{30, 30}, new int[]{10, 10}, ZarrDataType.i4, 0, compressor);
 //        final ZarrReaderWriter readerWriter = new ZarrReaderWriter(path, new int[]{30, 30}, new int[]{10, 10}, ZarrDataType.i4, 0, Compressor.Null);
 
         final List<Exception> exceptions = Collections.synchronizedList(new LinkedList<>());

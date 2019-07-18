@@ -4,6 +4,8 @@ import static com.bc.zarr.ZarrUtils.computeSizeInteger;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import com.bc.zarr.Compressor;
+import com.bc.zarr.CompressorFactory;
 import com.bc.zarr.ZarrDataType;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
@@ -34,7 +36,7 @@ public class ChunkReaderWriterTest_2D {
     public void read_Bytes_NullCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 6;
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(Compressor.Null, ZarrDataType.i1, shape, fill);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(CompressorFactory.nullCompressor, ZarrDataType.i1, shape, fill);
 
         //execution
         final Array array = readerWriter.read(chunkPath);
@@ -50,7 +52,8 @@ public class ChunkReaderWriterTest_2D {
     public void read_Bytes_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 7;
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(Compressor.zlib_L1, ZarrDataType.i1, shape, fill);
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, fill);
 
         //execution
         final Array array = readerWriter.read(chunkPath);
@@ -66,7 +69,8 @@ public class ChunkReaderWriterTest_2D {
     public void read_Short_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 8;
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(Compressor.zlib_L1, ZarrDataType.i2, shape, fill);
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, shape, fill);
 
         //execution
         final Array array = readerWriter.read(chunkPath);
@@ -82,7 +86,8 @@ public class ChunkReaderWriterTest_2D {
     public void read_Integer_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 8;
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(Compressor.zlib_L1, ZarrDataType.i4, shape, fill);
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, shape, fill);
 
         //execution
         final Array array = readerWriter.read(chunkPath);
@@ -98,7 +103,8 @@ public class ChunkReaderWriterTest_2D {
     public void read_Float_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 8;
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(Compressor.zlib_L1, ZarrDataType.f4, shape, fill);
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, shape, fill);
 
         //execution
         final Array array = readerWriter.read(chunkPath);
@@ -114,7 +120,8 @@ public class ChunkReaderWriterTest_2D {
     public void read_Double_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 8;
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(Compressor.zlib_L1, ZarrDataType.f8, shape, fill);
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, shape, fill);
 
         //execution
         final Array array = readerWriter.read(chunkPath);
@@ -128,7 +135,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void read_Bytes_NullCompressor_ChunkFileExist() throws IOException {
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
 
         final OutputStream outputStream = Files.newOutputStream(chunkPath);
@@ -148,7 +155,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void write_Bytes_NullCompressor_ChunkFileExist() throws IOException {
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -167,7 +174,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void read_Bytes_ZipCompressor_ChunkFileExist() throws IOException {
-        final Compressor compressor = Compressor.zlib_L1;
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -192,7 +199,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Bytes_NullCompressor() throws IOException {
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -215,7 +222,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Bytes_ZipCompressor() throws IOException {
-        final Compressor compressor = Compressor.zlib_L1;
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -238,7 +245,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Short_NullCompressor() throws IOException {
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final short[] input = {
                 1, 2, 3,
                 -1, -2, -3
@@ -264,7 +271,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Short_ZipCompressor() throws IOException {
-        final Compressor compressor = Compressor.zlib_L1;
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
         final short[] shorts = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -287,7 +294,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Integer_NullCompressor() throws IOException {
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final int[] input = {
                 1, 2, 3,
                 -1, -2, -3
@@ -313,7 +320,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Integer_ZipCompressor() throws IOException {
-        final Compressor compressor = Compressor.zlib_L1;
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
         final int[] ints = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -336,7 +343,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Float_NullCompressor() throws IOException {
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final float[] input = {
                 1, 2, 3,
                 -1, -2, -3
@@ -362,7 +369,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Float_ZipCompressor() throws IOException {
-        final Compressor compressor = Compressor.zlib_L1;
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
         final float[] floats = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -385,7 +392,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Double_NullCompressor() throws IOException {
-        final Compressor compressor = Compressor.Null;
+        final Compressor compressor = CompressorFactory.nullCompressor;
         final double[] input = {
                 1, 2, 3,
                 -1, -2, -3
@@ -411,7 +418,7 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void writeRead_Double_ZipCompressor() throws IOException {
-        final Compressor compressor = Compressor.zlib_L1;
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
         final double[] doubles = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 

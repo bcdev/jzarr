@@ -3,7 +3,6 @@ package com.bc.zarr;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
-import com.bc.zarr.chunk.Compressor;
 import org.junit.*;
 
 public class ZarrHeaderTest_CompressorBean {
@@ -33,7 +32,8 @@ public class ZarrHeaderTest_CompressorBean {
     @Test
     public void createdCompressorBean() {
         //execution
-        final ZarrHeader zarrHeader = new ZarrHeader(new int[]{1001, 1002}, new int[]{101, 102}, ZarrDataType.f4.name(), 4.2, Compressor.zlib_L1);
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final ZarrHeader zarrHeader = new ZarrHeader(new int[]{1001, 1002}, new int[]{101, 102}, ZarrDataType.f4.name(), 4.2, compressor);
 
         //verification
         assertThat(zarrHeader.getCompressor(), is(equalTo(compressorBean)));

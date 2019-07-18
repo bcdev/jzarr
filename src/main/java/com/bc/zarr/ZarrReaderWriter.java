@@ -1,7 +1,6 @@
 package com.bc.zarr;
 
 import com.bc.zarr.chunk.ChunkReaderWriter;
-import com.bc.zarr.chunk.Compressor;
 import com.bc.zarr.ucar.NetCDF_Util;
 import com.bc.zarr.ucar.Partial2dDataCopier;
 import ucar.ma2.Array;

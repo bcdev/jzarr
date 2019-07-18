@@ -1,17 +1,12 @@
 package com.bc.zarr;
 
-import com.bc.zarr.chunk.Compressor;
 import com.google.common.jimfs.Jimfs;
-import org.esa.snap.core.util.io.TreeDeleter;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -29,7 +24,8 @@ public class ZarrReadRootTest {
     @Test
     public void create() throws NoSuchFieldException, IllegalAccessException, IOException {
         final ZarrGroup readRoot = ZarrGroup.open(rootPath);
-        final ZarrWriter reader = readRoot.createWriter("rastername", ZarrDataType.f4, new int[]{101, 102}, new int[]{11, 12}, 4.2, Compressor.zlib_L1, null);
+        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final ZarrWriter reader = readRoot.createWriter("rastername", ZarrDataType.f4, new int[]{101, 102}, new int[]{11, 12}, 4.2, compressor, null);
 
         assertThat(reader, is(instanceOf(ZarrReaderWriter.class)));
 

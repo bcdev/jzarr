@@ -16,6 +16,7 @@
  */
 package com.bc.zarr.chunk;
 
+import com.bc.zarr.Compressor;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 

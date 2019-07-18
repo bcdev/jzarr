@@ -19,6 +19,7 @@ package com.bc.zarr.chunk;
 
 import static com.bc.zarr.ZarrUtils.computeSizeInteger;
 
+import com.bc.zarr.Compressor;
 import com.bc.zarr.ZarrDataType;
 import com.bc.zarr.ucar.NetCDF_Util;
 import ucar.ma2.Array;

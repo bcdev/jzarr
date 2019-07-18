@@ -16,9 +16,6 @@
  */
 package com.bc.zarr;
 
-import com.bc.ceres.binio.DataFormat;
-import com.bc.zarr.chunk.Compressor;
-
 import java.nio.ByteOrder;
 
 public class ZarrHeader {
@@ -34,7 +31,7 @@ public class ZarrHeader {
 
     public ZarrHeader(int[] shape, int[] chunks, String dtype, Number fill_value, Compressor compressor) {
         this.chunks = chunks;
-        if (Compressor.Null.equals(compressor)) {
+        if (CompressorFactory.nullCompressor.equals(compressor)) {
             this.compressor = null;
         } else {
             this.compressor = new CompressorBean(compressor.getId(), compressor.getLevel());

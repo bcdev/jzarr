@@ -2,6 +2,7 @@ package org.esa.snap.dataio.znap.snap;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glevel.MultiLevelImage;
+import com.bc.zarr.*;
 import org.esa.snap.core.dataio.AbstractProductWriter;
 import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.MetadataAttribute;
@@ -11,10 +12,6 @@ import org.esa.snap.core.datamodel.RasterDataNode;
 import org.esa.snap.core.datamodel.SampleCoding;
 import org.esa.snap.core.datamodel.TiePointGrid;
 import org.esa.snap.core.image.ImageManager;
-import com.bc.zarr.ZarrDataType;
-import com.bc.zarr.ZarrGroup;
-import com.bc.zarr.ZarrWriter;
-import com.bc.zarr.chunk.Compressor;
 import ucar.ma2.InvalidRangeException;
 
 import java.awt.Dimension;
@@ -42,19 +39,19 @@ public class ZarrProductWriter extends AbstractProductWriter {
     public ZarrProductWriter(final ZarrProductWriterPlugIn productWriterPlugIn) {
         super(productWriterPlugIn);
 //        _compressor = Compressor.Null;
-        _compressor = Compressor.zlib_L1;
+        _compressor = CompressorFactory.create("zlib", 3);
         executorService = Executors.newFixedThreadPool(4);
     }
 
     @Override
     public void writeBandRasterData(Band sourceBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight, ProductData sourceBuffer, ProgressMonitor pm) throws IOException {
         String name = sourceBand.getName();
-        final ZarrWriter zarrReaderWriter = zarrWriters.get(name);
+        final ZarrWriter zarrWriter = zarrWriters.get(name);
         final int[] to = {sourceOffsetY, sourceOffsetX}; // common data model manner { y, x }
         final int[] shape = {sourceHeight, sourceWidth};  // common data model manner { y, x }
         Callable<Object> callable = () -> {
             try {
-                zarrReaderWriter.write(sourceBuffer.getElems(), shape, to);
+                zarrWriter.write(sourceBuffer.getElems(), shape, to);
                 return null;
             } catch (InvalidRangeException e) {
                 throw new IOException("Invalid range while writing raster '" + name + "'", e);
