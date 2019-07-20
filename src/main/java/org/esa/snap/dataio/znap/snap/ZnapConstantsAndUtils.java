@@ -27,6 +27,20 @@ final class ZnapConstantsAndUtils {
     static final String FORMAT_NAME = "SNAP-Zarr";
     static final String SNAP_ZARR_CONTAINER_EXTENSION = ".znap";
 
+    public static final String BANDWIDTH = "bandwidth";
+    public static final String WAVELENGTH = "wavelength";
+    public static final String VALID_PIXEL_EXPRESSION = "valid_pixel_expression";
+    public static final String QUICKLOOK_BAND_NAME = "quicklook_band_name";
+    public static final String SOLAR_FLUX = "solar_flux";
+    public static final String SPECTRAL_BAND_INDEX = "spectral_band_index";
+
+    public static final String GEOCODING = "geocoding";
+    public static final int LON_INDEX = 0;
+    public static final int LAT_INDEX = 1;
+
+    // Product attributes
+    public static final String DATASET_AUTO_GROUPING = "dataset_auto_grouping";
+
     // Tie point grid attributes
     public static final String DISCONTINUITY = "discontinuity";
 

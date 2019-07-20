@@ -55,9 +55,14 @@ public class ZarrGroup {
             final ZarrDataType rawDataType = header.getRawDataType();
             final Number fill_value = header.getFill_value();
             final ZarrHeader.CompressorBean compressorBean = header.getCompressor();
-            final String compId = compressorBean.getId();
-            final int compLevel = compressorBean.getLevel();
-            final Compressor compressor = compressorBean != null ? CompressorFactory.create(compId, compLevel) : nullCompressor;
+            final Compressor compressor;
+            if (compressorBean != null) {
+                final String compId = compressorBean.getId();
+                final int compLevel = compressorBean.getLevel();
+                compressor = compressorBean != null ? CompressorFactory.create(compId, compLevel) : nullCompressor;
+            } else {
+                compressor = nullCompressor;
+            }
             return new ZarrReaderWriter(dataPath, shape, chunks, rawDataType, fill_value, compressor);
         }
     }

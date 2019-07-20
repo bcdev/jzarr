@@ -4,17 +4,15 @@ import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.zarr.*;
 import org.esa.snap.core.dataio.AbstractProductWriter;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.SampleCoding;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
+import org.esa.snap.core.util.StringUtils;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
 import ucar.ma2.InvalidRangeException;
 
 import java.awt.Dimension;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -25,6 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import static org.esa.snap.core.util.StringUtils.isNotNullAndNotEmpty;
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
 import static com.bc.zarr.CFConstantsAndUtils.*;
 
@@ -38,7 +37,6 @@ public class ZarrProductWriter extends AbstractProductWriter {
 
     public ZarrProductWriter(final ZarrProductWriterPlugIn productWriterPlugIn) {
         super(productWriterPlugIn);
-//        _compressor = Compressor.Null;
         _compressor = CompressorFactory.create("zlib", 3);
         executorService = Executors.newFixedThreadPool(4);
     }
@@ -51,7 +49,13 @@ public class ZarrProductWriter extends AbstractProductWriter {
         final int[] shape = {sourceHeight, sourceWidth};  // common data model manner { y, x }
         Callable<Object> callable = () -> {
             try {
-                zarrWriter.write(sourceBuffer.getElems(), shape, to);
+                final ProductData scaledBuffer;
+                if (sourceBand.isLog10Scaled()) {
+                    scaledBuffer = toScaledFloats(sourceBand, sourceBuffer);
+                } else {
+                    scaledBuffer = sourceBuffer;
+                }
+                zarrWriter.write(scaledBuffer.getElems(), shape, to);
                 return null;
             } catch (InvalidRangeException e) {
                 throw new IOException("Invalid range while writing raster '" + name + "'", e);
@@ -95,6 +99,13 @@ public class ZarrProductWriter extends AbstractProductWriter {
 
         productAttributes.put(PRODUCT_METADATA, product.getMetadataRoot().getElements());
 
+        if (product.getAutoGrouping() != null) {
+            productAttributes.put(DATASET_AUTO_GROUPING, product.getAutoGrouping().toString());
+        }
+        if (isNotNullAndNotEmpty(product.getQuicklookBandName())) {
+            productAttributes.put(QUICKLOOK_BAND_NAME, product.getQuicklookBandName());
+        }
+
         zarrGroup = ZarrGroup.create(output, productAttributes);
         for (TiePointGrid tiePointGrid : product.getTiePointGrids()) {
             writeTiePointGrid(tiePointGrid);
@@ -104,23 +115,39 @@ public class ZarrProductWriter extends AbstractProductWriter {
         }
     }
 
-    static Map<String, ?> createCfConformSampleCodingAttributes(Band band) {
-        final HashMap<String, Object> attributes = new HashMap<>();
+    static void collectBandAttributes(Band band, Map<String, Object> attributes) {
+        // todo se -- units for bandwidth and wavelength
+
+        if (band.getSpectralBandwidth() > 0) {
+            attributes.put(BANDWIDTH, band.getSpectralBandwidth());
+        }
+        if (band.getSpectralWavelength() > 0) {
+            attributes.put(WAVELENGTH, band.getSpectralWavelength());
+        }
+        if (band.getSolarFlux() > 0) {
+            attributes.put(SOLAR_FLUX, band.getSolarFlux());
+        }
+        if ((float) band.getSpectralBandIndex() >= 0) {
+            attributes.put(SPECTRAL_BAND_INDEX, (float) band.getSpectralBandIndex());
+        }
+
+        collectSampleCodingAttributes(band, attributes);
+    }
+
+    private static void collectSampleCodingAttributes(Band band, Map<String, Object> attributes) {
         final SampleCoding sampleCoding = band.getSampleCoding();
         if (sampleCoding == null) {
-            return attributes;
+            return;
         }
 
         attributes.put(ZnapConstantsAndUtils.NAME_SAMPLE_CODING, sampleCoding.getName());
-
 
         final boolean indexBand = band.isIndexBand();
         final boolean flagBand = band.isFlagBand();
         if (!(indexBand || flagBand)) {
             Logger.getGlobal().warning("Band references a SampleCoding but this is neither an IndexCoding nor an FlagCoding.");
-            return attributes;
+            return;
         }
-
 
         final int numCodings = sampleCoding.getNumAttributes();
         final String[] names = new String[numCodings];
@@ -156,7 +183,16 @@ public class ZarrProductWriter extends AbstractProductWriter {
         if (containsNotEmptyStrings(descriptions, true)) {
             attributes.put(FLAG_DESCRIPTIONS, descriptions);
         }
-        return attributes;
+    }
+
+    static ProductData toScaledFloats(Band sourceBand, ProductData sourceBuffer) {
+        ProductData scaledBuffer;
+        scaledBuffer = ProductData.createInstance(ProductData.TYPE_FLOAT32, sourceBuffer.getNumElems());
+        for (int i = 0; i < sourceBuffer.getNumElems(); i++) {
+            double rawDouble = sourceBuffer.getElemDoubleAt(i);
+            scaledBuffer.setElemDoubleAt(i, sourceBand.scale(rawDouble));
+        }
+        return scaledBuffer;
     }
 
     private static boolean containsNotEmptyStrings(final String[] strings, final boolean trim) {
@@ -187,7 +223,8 @@ public class ZarrProductWriter extends AbstractProductWriter {
             gridData = readTiePointGridData(tiePointGrid);
         }
         int[] chunks = Arrays.copyOf(preferredChunks, preferredChunks.length);
-        final Map<String, Object> attributes = createCfConformRasterAttributes(tiePointGrid);
+        final Map<String, Object> attributes = new HashMap<>();
+        collectRasterAttributes(tiePointGrid, attributes);
         attributes.put(OFFSET_X, tiePointGrid.getOffsetX());
         attributes.put(OFFSET_Y, tiePointGrid.getOffsetY());
         attributes.put(SUBSAMPLING_X, tiePointGrid.getSubSamplingX());
@@ -225,10 +262,11 @@ public class ZarrProductWriter extends AbstractProductWriter {
         } else {
             chunks = Arrays.copyOf(preferredChunks, preferredChunks.length);
         }
-        final Map<String, Object> attributes = createCfConformRasterAttributes(band);
-        attributes.putAll(createCfConformSampleCodingAttributes(band));
+        final Map<String, Object> bandAttributes = new HashMap<>();
+        collectRasterAttributes(band, bandAttributes);
+        collectBandAttributes(band, bandAttributes);
         trimChunks(chunks, shape);
-        final ZarrWriter zarrWriter = zarrGroup.createWriter(name, getZarrDataType(band), shape, chunks, getZarrFillValue(band), _compressor, attributes);
+        final ZarrWriter zarrWriter = zarrGroup.createWriter(name, getZarrDataType(band), shape, chunks, getZarrFillValue(band), _compressor, bandAttributes);
         zarrWriters.put(name, zarrWriter);
     }
 
@@ -237,46 +275,41 @@ public class ZarrProductWriter extends AbstractProductWriter {
         final int gridHeight = tiePointGrid.getGridHeight();
         ProductData productData = tiePointGrid.createCompatibleRasterData(gridWidth, gridHeight);
         getSourceProduct().getProductReader().readTiePointGridRasterData(tiePointGrid, 0, 0, gridWidth, gridHeight, productData,
-                                                                         ProgressMonitor.NULL);
+                ProgressMonitor.NULL);
         return productData;
     }
 
-    private Map<String, Object> createCfConformRasterAttributes(RasterDataNode node) {
-        final HashMap<String, Object> attributes = new HashMap<>();
+    private void collectRasterAttributes(RasterDataNode rdNode, Map<String, Object> attributes) {
 
-        final String description = node.getDescription();
-        if (description != null) {
-            attributes.put(LONG_NAME, description);
-        }
-        String unit = node.getUnit();
-        if (unit != null) {
-            unit = tryFindUnitString(unit);
-            attributes.put(UNITS, unit);
-        }
-        final int nodeDataType = node.getDataType();
+        final int nodeDataType = rdNode.getDataType();
 
+        if (rdNode.getDescription() != null) {
+            attributes.put(LONG_NAME, rdNode.getDescription());
+        }
+        if (rdNode.getUnit() != null) {
+            attributes.put(UNITS, tryFindUnitString(rdNode.getUnit()));
+        }
         if (ProductData.isUIntType(nodeDataType)) {
             attributes.put(UNSIGNED, String.valueOf(true));
         }
 
         Number noDataValue;
-        if (!node.isLog10Scaled()) {
-            final double scalingFactor = node.getScalingFactor();
-            if (scalingFactor != 1.0) {
-                attributes.put(SCALE_FACTOR, scalingFactor);
+        if (!rdNode.isLog10Scaled()) {
+
+            if (rdNode.getScalingFactor() != 1.0) {
+                attributes.put(SCALE_FACTOR, rdNode.getScalingFactor());
             }
-            final double scalingOffset = node.getScalingOffset();
-            if (scalingOffset != 0.0) {
-                attributes.put(ADD_OFFSET, scalingOffset);
+            if (rdNode.getScalingOffset() != 0.0) {
+                attributes.put(ADD_OFFSET, rdNode.getScalingOffset());
             }
-            noDataValue = node.getNoDataValue();
+            noDataValue = rdNode.getNoDataValue();
         } else {
             // scaling information is not written anymore for log10 scaled bands
             // instead we always write geophysical values
             // we do this because log scaling is not supported by NetCDF-CF conventions
-            noDataValue = node.getGeophysicalNoDataValue();
+            noDataValue = rdNode.getGeophysicalNoDataValue();
         }
-        if (node.isNoDataValueUsed()) {
+        if (rdNode.isNoDataValueUsed()) {
             if (ProductData.isIntType(nodeDataType)) {
                 final long longValue = noDataValue.longValue();
                 if (ProductData.isUIntType(nodeDataType)) {
@@ -291,11 +324,40 @@ public class ZarrProductWriter extends AbstractProductWriter {
             }
         }
 
-
-        return attributes;
+        if (isNotNullAndNotEmpty( rdNode.getValidPixelExpression())) {
+            attributes.put(VALID_PIXEL_EXPRESSION, rdNode.getValidPixelExpression());
+        }
     }
 
-    private Number getZarrFillValue(RasterDataNode node) {
+    private void encodeGeoCoding(NFileWriteable ncFile, Band band, Product product, NVariable variable) throws IOException {
+        final GeoCoding geoCoding = band.getGeoCoding();
+        if (!geoCoding.equals(product.getSceneGeoCoding())) {
+            if (geoCoding instanceof TiePointGeoCoding) {
+                final TiePointGeoCoding tpGC = (TiePointGeoCoding) geoCoding;
+                final String[] names = new String[2];
+                names[LON_INDEX] = tpGC.getLonGrid().getName();
+                names[LAT_INDEX] = tpGC.getLatGrid().getName();
+                final String value = StringUtils.arrayToString(names, " ");
+                variable.addAttribute(GEOCODING, value);
+            } else {
+                if (geoCoding instanceof CrsGeoCoding) {
+                    final CoordinateReferenceSystem crs = geoCoding.getMapCRS();
+                    final double[] matrix = new double[6];
+                    final MathTransform transform = geoCoding.getImageToMapTransform();
+                    if (transform instanceof AffineTransform) {
+                        ((AffineTransform) transform).getMatrix(matrix);
+                    }
+                    final String crsName = "crs_" + band.getName();
+                    final NVariable crsVariable = ncFile.addScalarVariable(crsName, DataType.INT);
+                    crsVariable.addAttribute("wkt", crs.toWKT());
+                    crsVariable.addAttribute("i2m", StringUtils.arrayToCsv(matrix));
+                    variable.addAttribute(GEOCODING, crsName);
+                }
+            }
+        }
+    }
+
+    private static Number getZarrFillValue(RasterDataNode node) {
         final Double geophysicalNoDataValue = node.getGeophysicalNoDataValue();
         final ZarrDataType zarrDataType = getZarrDataType(node);
         if (zarrDataType == ZarrDataType.f8) {
@@ -316,10 +378,13 @@ public class ZarrProductWriter extends AbstractProductWriter {
         }
     }
 
-    private ZarrDataType getZarrDataType(RasterDataNode node) {
-        final int geophysicalDataType = node.getDataType();
-//        final int geophysicalDataType = node.getGeophysicalDataType();
-        switch (geophysicalDataType) {
+    private static ZarrDataType getZarrDataType(RasterDataNode node) {
+        if (node.isLog10Scaled()) {
+            return ZarrDataType.f4;
+        }
+        final int dataType = node.getDataType();
+//        final int dataType = node.getGeophysicalDataType();
+        switch (dataType) {
             case ProductData.TYPE_FLOAT64:
                 return ZarrDataType.f8;
             case ProductData.TYPE_FLOAT32:

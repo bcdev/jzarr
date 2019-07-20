@@ -84,6 +84,12 @@ public class ZarrProductReader extends AbstractProductReader {
         product.setDescription(productDesc);
         product.setStartTime(sensingStart);
         product.setEndTime(sensingStop);
+        if (productAttributes.get(DATASET_AUTO_GROUPING) != null) {
+            product.setAutoGrouping((String) productAttributes.get(DATASET_AUTO_GROUPING));
+        }
+        if (productAttributes.get(QUICKLOOK_BAND_NAME) != null) {
+            product.setQuicklookBandName(((String) productAttributes.get(QUICKLOOK_BAND_NAME)).trim());
+        }
         for (MetadataElement metadataElement : metadataElements) {
             product.getMetadataRoot().addElement(metadataElement);
         }
@@ -141,8 +147,30 @@ public class ZarrProductReader extends AbstractProductReader {
     }
 
     static void apply(Map<String, Object> attributes, Band band) {
+        applyCodings(attributes, band);
+        if (attributes.get(LONG_NAME) != null) {
+            band.setDescription((String) attributes.get(LONG_NAME));
+        }
+        if (attributes.get(UNITS) != null) {
+            band.setUnit((String) attributes.get(UNITS));
+        }
+        if (attributes.get(SCALE_FACTOR) != null) {
+            band.setScalingFactor(((Number) attributes.get(SCALE_FACTOR)).doubleValue());
+        }
+        if (attributes.get(ADD_OFFSET) != null) {
+            band.setScalingOffset(((Number) attributes.get(ADD_OFFSET)).doubleValue());
+        }
+        final Number noDataValue = getNoDataValue(attributes);
+        if (noDataValue != null) {
+            band.setNoDataValue(noDataValue.doubleValue());
+            band.setNoDataValueUsed(true);
+        }
+
+    }
+
+    private static void applyCodings(Map<String, Object> attributes, Band band) {
         final String rasterName = band.getName();
-        final List<String> flagMeanings = (List<String>) attributes.get(FLAG_MEANINGS);
+        final List<String> flagMeanings = (List) attributes.get(FLAG_MEANINGS);
         if (flagMeanings != null) {
 
             final List<Double> flagMasks = (List<Double>) attributes.get(FLAG_MASKS);
@@ -176,7 +204,7 @@ public class ZarrProductReader extends AbstractProductReader {
                     if (flagValues != null) {
                         flagCoding.addFlag(meaningName, flagMask, flagValues.get(i).intValue(), description);
                     } else {
-                        flagCoding.addFlag(meaningName, flagMask , description);
+                        flagCoding.addFlag(meaningName, flagMask, description);
                     }
                 } else {
                     indexCoding.addIndex(meaningName, flagValues.get(i).intValue(), description);
@@ -320,4 +348,14 @@ public class ZarrProductReader extends AbstractProductReader {
         protected ProductNodeGroupGson<MetadataAttributeGson> attributes;
     }
 
+    private static Number getNoDataValue(Map<String, Object> attributes) {
+        Object attribute = attributes.get(FILL_VALUE);
+        if (attribute == null) {
+            attribute = attributes.get(MISSING_VALUE);
+        }
+        if (attribute != null) {
+            return (Number) attribute;
+        }
+        return null;
+    }
 }
