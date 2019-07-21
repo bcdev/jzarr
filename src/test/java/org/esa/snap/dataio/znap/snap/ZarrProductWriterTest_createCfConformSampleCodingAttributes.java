@@ -4,8 +4,10 @@ import org.esa.snap.core.datamodel.Band;
 import org.esa.snap.core.datamodel.FlagCoding;
 import org.esa.snap.core.datamodel.IndexCoding;
 import org.esa.snap.core.datamodel.ProductData;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
@@ -15,11 +17,18 @@ import static org.junit.Assert.*;
 
 public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
 
+    private Map<String, Object> cfConformSampleCodingAttributes;
+
+    @Before
+    public void setUp() throws Exception {
+        cfConformSampleCodingAttributes = new HashMap<>();
+    }
+
     @Test
     public void noSampleCoding() {
         final Band band = new Band("band", ProductData.TYPE_INT32, 16, 4);
 
-        final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.collectBandAttributes(band, bandAttributes);
+        ZarrProductWriter.collectBandAttributes(band, cfConformSampleCodingAttributes);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
         assertThat(cfConformSampleCodingAttributes.isEmpty(), is(true));
@@ -36,7 +45,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         ic.addIndex("i4", 4, "  d4  "); // deskription shall be trimmed
         ic.addIndex("i5", 5, "d5");
 
-        final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.collectBandAttributes(band, bandAttributes);
+        ZarrProductWriter.collectBandAttributes(band, cfConformSampleCodingAttributes);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
         assertThat(cfConformSampleCodingAttributes.size(), is(4));
@@ -66,7 +75,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         ic.addIndex("i4", 4, "  ");
         ic.addIndex("i5", 5, "   ");
 
-        final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.collectBandAttributes(band, bandAttributes);
+        ZarrProductWriter.collectBandAttributes(band, this.cfConformSampleCodingAttributes);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
         assertThat(cfConformSampleCodingAttributes.size(), is(3));
@@ -93,7 +102,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         fc.addFlag("f4", 0b00001000, "d4");
         fc.addFlag("f5", 0b00010000, "d5");
 
-        final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.collectBandAttributes(band, bandAttributes);
+        ZarrProductWriter.collectBandAttributes(band, this.cfConformSampleCodingAttributes);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
         assertThat(cfConformSampleCodingAttributes.size(), is(4));
@@ -124,7 +133,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         fc.addFlag("f4", 0b00001000, "  ");
         fc.addFlag("f5", 0b00010000, null);
 
-        final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.collectBandAttributes(band, bandAttributes);
+        ZarrProductWriter.collectBandAttributes(band, this.cfConformSampleCodingAttributes);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
         assertThat(cfConformSampleCodingAttributes.size(), is(3));
@@ -154,7 +163,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         fc.addFlag("fd", 0b00001100, 0b1100, "dd");
         fc.addFlag("f5", 0b00010000, "d5");
 
-        final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.collectBandAttributes(band, bandAttributes);
+        ZarrProductWriter.collectBandAttributes(band, this.cfConformSampleCodingAttributes);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
         assertThat(cfConformSampleCodingAttributes.size(), is(5));
@@ -189,7 +198,7 @@ public class ZarrProductWriterTest_createCfConformSampleCodingAttributes {
         fc.addFlag("fd", 0b00001100, 0b1100, "  ");
         fc.addFlag("f5", 0b00010000, "");
 
-        final Map<? extends String, ?> cfConformSampleCodingAttributes = ZarrProductWriter.collectBandAttributes(band, bandAttributes);
+        ZarrProductWriter.collectBandAttributes(band, this.cfConformSampleCodingAttributes);
 
         assertThat(cfConformSampleCodingAttributes, is(notNullValue()));
         assertThat(cfConformSampleCodingAttributes.size(), is(4));
