@@ -125,7 +125,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
     }
 
     static void collectBandAttributes(Band band, Map<String, Object> attributes) {
-        // TODO: 21.07.2019 SE -- units for bandwidth and wavelength
+        // TODO: 21.07.2019 SE -- units for bandwidth, wavelength, solarFlux
         if (band.getSpectralBandwidth() > 0) {
             attributes.put(BANDWIDTH, band.getSpectralBandwidth());
         }
@@ -163,7 +163,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
         final boolean indexBand = band.isIndexBand();
         final boolean flagBand = band.isFlagBand();
         if (!(indexBand || flagBand)) {
-            Logger.getGlobal().warning("Band references a SampleCoding but this is neither an IndexCoding nor an FlagCoding.");
+            Logger.getGlobal().warning("Band references a SampleCoding but this is neither an IndexCoding nor a FlagCoding.");
             return;
         }
 

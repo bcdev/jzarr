@@ -165,7 +165,22 @@ public class ZarrProductReader extends AbstractProductReader {
             band.setNoDataValue(noDataValue.doubleValue());
             band.setNoDataValueUsed(true);
         }
-
+        if (attributes.get(VALID_PIXEL_EXPRESSION) != null) {
+            band.setValidPixelExpression((String) attributes.get(VALID_PIXEL_EXPRESSION));
+        }
+        // TODO: 21.07.2019 SE -- units for bandwidth, wavelength, solarFlux
+        if (attributes.get(BANDWIDTH) != null) {
+            band.setSpectralBandwidth(((Number)attributes.get(BANDWIDTH)).floatValue());
+        }
+        if (attributes.get(WAVELENGTH)!= null) {
+             band.setSpectralWavelength(((Number) attributes.get(WAVELENGTH)).floatValue());
+        }
+        if (attributes.get(SOLAR_FLUX) != null) {
+            band.setSolarFlux(((Number) attributes.get(SOLAR_FLUX)).floatValue());
+        }
+        if (attributes.get(SPECTRAL_BAND_INDEX) != null) {
+            band.setSpectralBandIndex(((Number) attributes.get(SPECTRAL_BAND_INDEX)).intValue());
+        }
     }
 
     private static void applyCodings(Map<String, Object> attributes, Band band) {
