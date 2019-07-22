@@ -147,7 +147,7 @@ public class ZarrProductReader extends AbstractProductReader {
     }
 
     static void apply(Map<String, Object> attributes, Band band) {
-        applyCodings(attributes, band);
+        applySampleCodings(attributes, band);
         if (attributes.get(LONG_NAME) != null) {
             band.setDescription((String) attributes.get(LONG_NAME));
         }
@@ -160,10 +160,11 @@ public class ZarrProductReader extends AbstractProductReader {
         if (attributes.get(ADD_OFFSET) != null) {
             band.setScalingOffset(((Number) attributes.get(ADD_OFFSET)).doubleValue());
         }
-        final Number noDataValue = getNoDataValue(attributes);
-        if (noDataValue != null) {
-            band.setNoDataValue(noDataValue.doubleValue());
-            band.setNoDataValueUsed(true);
+        if (getNoDataValue(attributes) != null) {
+            band.setNoDataValue(getNoDataValue(attributes).doubleValue());
+        }
+        if (attributes.get(NO_DATA_VALUE_USED) != null) {
+            band.setNoDataValueUsed((Boolean) attributes.get(NO_DATA_VALUE_USED));
         }
         if (attributes.get(VALID_PIXEL_EXPRESSION) != null) {
             band.setValidPixelExpression((String) attributes.get(VALID_PIXEL_EXPRESSION));
@@ -183,7 +184,7 @@ public class ZarrProductReader extends AbstractProductReader {
         }
     }
 
-    private static void applyCodings(Map<String, Object> attributes, Band band) {
+    private static void applySampleCodings(Map<String, Object> attributes, Band band) {
         final String rasterName = band.getName();
         final List<String> flagMeanings = (List) attributes.get(FLAG_MEANINGS);
         if (flagMeanings != null) {

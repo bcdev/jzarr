@@ -2,23 +2,13 @@ package org.esa.snap.dataio.znap.snap;
 
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glevel.MultiLevelImage;
-import com.bc.zarr.Compressor;
-import com.bc.zarr.CompressorFactory;
-import com.bc.zarr.ZarrDataType;
-import com.bc.zarr.ZarrGroup;
-import com.bc.zarr.ZarrWriter;
+import com.bc.zarr.*;
 import org.esa.snap.core.dataio.AbstractProductWriter;
-import org.esa.snap.core.datamodel.Band;
-import org.esa.snap.core.datamodel.MetadataAttribute;
-import org.esa.snap.core.datamodel.Product;
-import org.esa.snap.core.datamodel.ProductData;
-import org.esa.snap.core.datamodel.RasterDataNode;
-import org.esa.snap.core.datamodel.SampleCoding;
-import org.esa.snap.core.datamodel.TiePointGrid;
+import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
 import ucar.ma2.InvalidRangeException;
 
-import java.awt.Dimension;
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -30,7 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import static com.bc.zarr.CFConstantsAndUtils.*;
-import static org.esa.snap.core.util.StringUtils.*;
+import static org.esa.snap.core.util.StringUtils.isNotNullAndNotEmpty;
 import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
 
 public class ZarrProductWriter extends AbstractProductWriter {
@@ -136,7 +126,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
             attributes.put(SOLAR_FLUX, band.getSolarFlux());
         }
         if ((float) band.getSpectralBandIndex() >= 0) {
-            attributes.put(SPECTRAL_BAND_INDEX, (float) band.getSpectralBandIndex());
+            attributes.put(SPECTRAL_BAND_INDEX, band.getSpectralBandIndex());
         }
 
         collectSampleCodingAttributes(band, attributes);
@@ -227,17 +217,17 @@ public class ZarrProductWriter extends AbstractProductWriter {
             return geophysicalNoDataValue;
         }
         switch (zarrDataType) {
-        case f4:
-            return geophysicalNoDataValue.floatValue();
-        case i1:
-        case u1:
-        case i2:
-        case u2:
-        case i4:
-        case u4:
-            return geophysicalNoDataValue.longValue();
-        default:
-            throw new IllegalStateException();
+            case f4:
+                return geophysicalNoDataValue.floatValue();
+            case i1:
+            case u1:
+            case i2:
+            case u2:
+            case i4:
+            case u4:
+                return geophysicalNoDataValue.longValue();
+            default:
+                throw new IllegalStateException();
         }
     }
 
@@ -248,24 +238,24 @@ public class ZarrProductWriter extends AbstractProductWriter {
         final int dataType = node.getDataType();
 //        final int dataType = node.getGeophysicalDataType();
         switch (dataType) {
-        case ProductData.TYPE_FLOAT64:
-            return ZarrDataType.f8;
-        case ProductData.TYPE_FLOAT32:
-            return ZarrDataType.f4;
-        case ProductData.TYPE_INT8:
-            return ZarrDataType.i1;
-        case ProductData.TYPE_INT16:
-            return ZarrDataType.i2;
-        case ProductData.TYPE_INT32:
-            return ZarrDataType.i4;
-        case ProductData.TYPE_UINT8:
-            return ZarrDataType.u1;
-        case ProductData.TYPE_UINT16:
-            return ZarrDataType.u2;
-        case ProductData.TYPE_UINT32:
-            return ZarrDataType.u4;
-        default:
-            throw new IllegalStateException();
+            case ProductData.TYPE_FLOAT64:
+                return ZarrDataType.f8;
+            case ProductData.TYPE_FLOAT32:
+                return ZarrDataType.f4;
+            case ProductData.TYPE_INT8:
+                return ZarrDataType.i1;
+            case ProductData.TYPE_INT16:
+                return ZarrDataType.i2;
+            case ProductData.TYPE_INT32:
+                return ZarrDataType.i4;
+            case ProductData.TYPE_UINT8:
+                return ZarrDataType.u1;
+            case ProductData.TYPE_UINT16:
+                return ZarrDataType.u2;
+            case ProductData.TYPE_UINT32:
+                return ZarrDataType.u4;
+            default:
+                throw new IllegalStateException();
         }
     }
 
@@ -334,7 +324,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
         final int gridHeight = tiePointGrid.getGridHeight();
         ProductData productData = tiePointGrid.createCompatibleRasterData(gridWidth, gridHeight);
         getSourceProduct().getProductReader().readTiePointGridRasterData(tiePointGrid, 0, 0, gridWidth, gridHeight, productData,
-                                                                         ProgressMonitor.NULL);
+                ProgressMonitor.NULL);
         return productData;
     }
 
@@ -351,8 +341,17 @@ public class ZarrProductWriter extends AbstractProductWriter {
         if (ProductData.isUIntType(nodeDataType)) {
             attributes.put(UNSIGNED, String.valueOf(true));
         }
+        collectNoDataValue(rdNode, attributes);
 
-        Number noDataValue;
+        if (isNotNullAndNotEmpty(rdNode.getValidPixelExpression())) {
+            attributes.put(VALID_PIXEL_EXPRESSION, rdNode.getValidPixelExpression());
+        }
+    }
+
+    private static void collectNoDataValue(RasterDataNode rdNode, Map<String, Object> attributes) {
+        int nodeDataType = rdNode.getDataType();
+        // TODO: 22.07.2019 SE -- shall log10 scaled really be prohibited
+        final Number noDataValue;
         if (!rdNode.isLog10Scaled()) {
 
             if (rdNode.getScalingFactor() != 1.0) {
@@ -368,7 +367,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
             // we do this because log scaling is not supported by NetCDF-CF conventions
             noDataValue = rdNode.getGeophysicalNoDataValue();
         }
-        if (rdNode.isNoDataValueUsed()) {
+        if (noDataValue.doubleValue() != 0.0) {
             if (ProductData.isIntType(nodeDataType)) {
                 final long longValue = noDataValue.longValue();
                 if (ProductData.isUIntType(nodeDataType)) {
@@ -382,9 +381,8 @@ public class ZarrProductWriter extends AbstractProductWriter {
                 attributes.put(FILL_VALUE, noDataValue.floatValue());
             }
         }
-
-        if (isNotNullAndNotEmpty(rdNode.getValidPixelExpression())) {
-            attributes.put(VALID_PIXEL_EXPRESSION, rdNode.getValidPixelExpression());
+        if (rdNode.isNoDataValueUsed()) {
+            attributes.put(NO_DATA_VALUE_USED, rdNode.isNoDataValueUsed());
         }
     }
 

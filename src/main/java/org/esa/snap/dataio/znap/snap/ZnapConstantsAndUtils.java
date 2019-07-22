@@ -34,6 +34,8 @@ final class ZnapConstantsAndUtils {
     public static final String SOLAR_FLUX = "solar_flux";
     public static final String SPECTRAL_BAND_INDEX = "spectral_band_index";
 
+    public static final String NO_DATA_VALUE_USED = "no_data_value_used";
+
     public static final String GEOCODING = "geocoding";
     public static final int LON_INDEX = 0;
     public static final int LAT_INDEX = 1;

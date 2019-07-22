@@ -15,7 +15,7 @@ import static com.bc.zarr.CFConstantsAndUtils.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-public class ZarrProductReaderTest_applyAttributes {
+public class ZarrProductReaderTest_applyCfConformSampleCodingAttributes {
 
     private Band band;
 
