@@ -16,23 +16,35 @@
  */
 package com.bc.zarr;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
+import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 public final class ZarrUtils {
 
     private static Gson gson;
 
-    static String toJson(Object header) {
-        return getGson().toJson(header);
+    static String toJson(Object src) {
+        return toJson(src, false);
     }
 
-    static void toJson(Object header, Appendable writer) throws IOException {
-        writer.append(toJson(header));
+    static String toJson(Object src, boolean prettyPrinting) {
+        return getGson(prettyPrinting).toJson(src);
+    }
+
+    static void toJson(Object o, Appendable writer) throws IOException {
+        toJson(o, writer, false);
+    }
+
+    static void toJson(Object o, Appendable writer, boolean prettyPrinting) throws IOException {
+        getGson(prettyPrinting).toJson(o, writer);
     }
 
     public static int[][] computeChunkIndices(int[] shape, int[] chunks, int[] bufferShape, int[] to) {
@@ -77,8 +89,8 @@ public final class ZarrUtils {
         return sb.toString();
     }
 
-    public static <T> T  fromJson(Reader reader, final Class<T> classOfType) {
-        final Gson gson = new GsonBuilder().create();
+    public static <T> T fromJson(Reader reader, final Class<T> classOfType) {
+        final Gson gson = getGson();
         return gson.fromJson(reader, classOfType);
     }
 
@@ -98,15 +110,45 @@ public final class ZarrUtils {
         return count;
     }
 
-    private static Gson getGson() {
+    private static Writer getWriter(JsonWriter jsonWriter) {
+        try {
+            final Field outField = jsonWriter.getClass().getDeclaredField("out");
+            outField.setAccessible(true);
+            return (Writer) outField.get(jsonWriter);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static Gson getGson(boolean prettyPrinting) {
+        Gson gson = getGson();
+        if (prettyPrinting) {
+            gson = gson.newBuilder().setPrettyPrinting().create();
+        }
+        return gson;
+    }
+
+    private static synchronized Gson getGson() {
         if (gson == null) {
             gson = new GsonBuilder()
                     .serializeNulls()
-                    .setPrettyPrinting()
                     .disableHtmlEscaping()
                     .serializeSpecialFloatingPointValues()
                     .create();
         }
         return gson;
+    }
+
+    public static void ensureFileExistAndIsReadable(Path dotZGroupPath) throws IOException {
+        if (!Files.exists(dotZGroupPath) || Files.isDirectory(dotZGroupPath) || !Files.isReadable(dotZGroupPath)) {
+            throw new IOException("File '" + dotZGroupPath.getFileName() + "' is not readable or missing in directory " + dotZGroupPath.getParent() + " .");
+        }
+    }
+
+    public static void ensureDirectory(Path groupPath) throws IOException {
+        if (groupPath == null || !Files.isDirectory(groupPath)) {
+            throw new IOException("Path '" + groupPath + "' is not a valid path or not a directory.");
+        }
     }
 }

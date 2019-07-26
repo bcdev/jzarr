@@ -10,8 +10,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import static com.bc.zarr.ZarrConstants.*;
-import static com.bc.zarr.ZarrUtils.fromJson;
-import static com.bc.zarr.ZarrUtils.toJson;
 
 import static com.bc.zarr.CompressorFactory.nullCompressor;
 
@@ -25,8 +23,25 @@ public class ZarrGroup {
         return zarrGroup;
     }
 
-    public static ZarrGroup open(Path rootPath) {
-        return new ZarrGroup(rootPath);
+    public static ZarrGroup open(Path groupPath) throws IOException {
+        ZarrUtils.ensureDirectory(groupPath);
+        final Path dotZGroupPath = groupPath.resolve(FILENAME_DOT_ZGROUP);
+        ZarrUtils.ensureFileExistAndIsReadable(dotZGroupPath);
+        ensureZarrFormat2(dotZGroupPath);
+        return new ZarrGroup(groupPath);
+    }
+
+    private static void ensureZarrFormat2(Path jsonPath) throws IOException {
+        try (BufferedReader reader = Files.newBufferedReader(jsonPath)) {
+            final ZarrFormat fromJson = ZarrUtils.fromJson(reader, ZarrFormat.class);
+            if (fromJson.zarr_format != 2) {
+                throw new IOException("Zarr format 2 expected but is '" + fromJson.zarr_format + "'");
+            }
+        }
+    }
+
+    private final class ZarrFormat {
+        double zarr_format;
     }
 
     private final Path path;
@@ -35,21 +50,21 @@ public class ZarrGroup {
         this.path = path;
     }
 
-    public ZarrWriter createWriter(String rastername, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor, final Map<String, Object> attributes) throws IOException {
-        final Path dataPath = initialize(rastername);
+    public ArrayDataWriter createWriter(String name, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor, final Map<String, Object> attributes) throws IOException {
+        final Path dataPath = initialize(name);
 
         final ZarrHeader zarrHeader = new ZarrHeader(shape, chunks, dataType.toString(), fillValue, compressor);
         writeJson(dataPath, FILENAME_DOT_ZARRAY, zarrHeader);
         writeAttributes(dataPath, attributes);
 
-        return new ZarrReaderWriter(dataPath, shape, chunks, dataType, fillValue, compressor);
+        return new ArrayDataReaderWriter(dataPath, shape, chunks, dataType, fillValue, compressor);
     }
 
-    public ZarrReader createReader(String rastername) throws IOException {
-        final Path dataPath = path.resolve(rastername);
+    public ArrayDataReader createReader(String name) throws IOException {
+        final Path dataPath = path.resolve(name);
         final Path zarrHeaderPath = dataPath.resolve(FILENAME_DOT_ZARRAY);
         try (BufferedReader reader = Files.newBufferedReader(zarrHeaderPath)) {
-            final ZarrHeader header = fromJson(reader, ZarrHeader.class);
+            final ZarrHeader header = ZarrUtils.fromJson(reader, ZarrHeader.class);
             final int[] shape = header.getShape();
             final int[] chunks = header.getChunks();
             final ZarrDataType rawDataType = header.getRawDataType();
@@ -63,12 +78,12 @@ public class ZarrGroup {
             } else {
                 compressor = nullCompressor;
             }
-            return new ZarrReaderWriter(dataPath, shape, chunks, rawDataType, fill_value, compressor);
+            return new ArrayDataReaderWriter(dataPath, shape, chunks, rawDataType, fill_value, compressor);
         }
     }
 
-    private Path initialize(String rastername) throws IOException {
-        final Path dataPath = path.resolve(rastername);
+    private Path initialize(String name) throws IOException {
+        final Path dataPath = path.resolve(name);
 
         final LinkedList<IOException> exceptions = new LinkedList<>();
         if (Files.isDirectory(dataPath)) {
@@ -81,7 +96,7 @@ public class ZarrGroup {
             });
         }
         if (exceptions.size() > 0) {
-            final IOException ioException = new IOException(String.format("Unable to initialize the storage for raster '%s'", rastername), exceptions.get(0));
+            final IOException ioException = new IOException(String.format("Unable to initialize the storage for array data '%s'", name), exceptions.get(0));
             for (int i = 1; i < exceptions.size(); i++) {
                 IOException e = exceptions.get(i);
                 ioException.addSuppressed(e);
@@ -103,7 +118,7 @@ public class ZarrGroup {
         if (object != null) {
             final Path attrsPath = dataPath.resolve(filename);
             try (final BufferedWriter writer = Files.newBufferedWriter(attrsPath)) {
-                toJson(object, writer);
+                ZarrUtils.toJson(object, writer);
             }
         }
     }

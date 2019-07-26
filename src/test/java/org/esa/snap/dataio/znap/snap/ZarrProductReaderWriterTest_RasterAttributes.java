@@ -105,7 +105,16 @@ public class ZarrProductReaderWriterTest_RasterAttributes {
 
     @Test
     public void noDataValueIfLog10ScaledIsSet() {
-        fail("implement the Test");
+        //preparation
+        source.setLog10Scaled(true);
+        source.setNoDataValue(5.0);
+        assertThat(target.getNoDataValue(), is(0.0));
+        //execution
+        transferToTarget();
+        //verification
+        assertThat(attributes.size(), is(1));
+        assertThat(attributes.keySet().iterator().next(), is("_FillValue"));
+        assertThat(target.getNoDataValue(), is(1.0E5));
     }
 
     @Test
@@ -132,7 +141,7 @@ public class ZarrProductReaderWriterTest_RasterAttributes {
         target = new Band("u int", ProductData.TYPE_INT8, 10,10);
 
         //preparation
-        source.setNoDataValue(-24);  // biger than Byte.MAX_VALUE (127) but not in case of unsigned Byte
+        source.setNoDataValue(-24);
         assertThat(target.getNoDataValue(), is(0.0));
         //execution
         transferToTarget();
@@ -149,14 +158,15 @@ public class ZarrProductReaderWriterTest_RasterAttributes {
         target = new Band("u int", ProductData.TYPE_FLOAT32, 10,10);
 
         //preparation
-        source.setNoDataValue(1256.5);  // biger than Byte.MAX_VALUE (127) but not in case of unsigned Byte
+        source.setNoDataValue(1256.523);
         assertThat(target.getNoDataValue(), is(0.0));
         //execution
         transferToTarget();
         //verification
         assertThat(attributes.size(), is(1));
         assertThat(attributes.keySet().iterator().next(), is("_FillValue"));
-        assertThat(target.getNoDataValue(), is(1256.5));
+        assertThat(attributes.get("_FillValue"), is(1256.523F));
+        assertThat(((Double)target.getNoDataValue()).floatValue(), is(1256.523F));
     }
 
     //

@@ -10,8 +10,8 @@ public class ZarrReadRoot {
         _rootPath = rootPath;
     }
 
-    public ZarrReader create(String rastername, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor) {
-        final Path dataPath = _rootPath.resolve(rastername);
-        return new ZarrReaderWriter(dataPath, shape, chunks, dataType, fillValue, compressor);
+    public ArrayDataReader create(String name, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor) {
+        final Path dataPath = _rootPath.resolve(name);
+        return new ArrayDataReaderWriter(dataPath, shape, chunks, dataType, fillValue, compressor);
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-public class ZarrReaderWriterTest_saveMultithreading {
+public class ArrayDataReaderWriterTest_saveMultithreading {
 
     private Path path;
 
@@ -30,8 +30,8 @@ public class ZarrReaderWriterTest_saveMultithreading {
     @Test
     public void parallelWriting_toTheSameChunk_withCompression() throws IOException, InvalidRangeException {
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ZarrReaderWriter readerWriter = new ZarrReaderWriter(path, new int[]{30, 30}, new int[]{10, 10}, ZarrDataType.i4, 0, compressor);
-//        final ZarrReaderWriter readerWriter = new ZarrReaderWriter(path, new int[]{30, 30}, new int[]{10, 10}, ZarrDataType.i4, 0, Compressor.Null);
+        final ArrayDataReaderWriter readerWriter = new ArrayDataReaderWriter(path, new int[]{30, 30}, new int[]{10, 10}, ZarrDataType.i4, 0, compressor);
+//        final ArrayDataReaderWriter readerWriter = new ArrayDataReaderWriter(path, new int[]{30, 30}, new int[]{10, 10}, ZarrDataType.i4, 0, Compressor.Null);
 
         final List<Exception> exceptions = Collections.synchronizedList(new LinkedList<>());
         final int[] bufferShape = {1, 5};
@@ -94,7 +94,7 @@ public class ZarrReaderWriterTest_saveMultithreading {
         })));
     }
 
-    private Thread createThread(int[] dataBuffer, int[] bufferShape, int[] to, ZarrReaderWriter writer, List<Exception> exceptions, List<Thread> threads) {
+    private Thread createThread(int[] dataBuffer, int[] bufferShape, int[] to, ArrayDataReaderWriter writer, List<Exception> exceptions, List<Thread> threads) {
         return new Thread(() -> {
             try {
                 writer.write(dataBuffer, bufferShape, to);

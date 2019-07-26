@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
+public class ArrayDataReaderWriter implements ArrayDataWriter, ArrayDataReader {
 
     private final int[] _shape;
     private final int[] _chunks;
@@ -22,7 +22,7 @@ public class ZarrReaderWriter implements ZarrWriter, ZarrReader {
     private final Map<Object, Object> _locks;
     private final ZarrDataType _dataType;
 
-    public ZarrReaderWriter(Path dataPath, int[] shape, int[] chunkShape, ZarrDataType dataType, Number fillValue, Compressor compressor) {
+    public ArrayDataReaderWriter(Path dataPath, int[] shape, int[] chunkShape, ZarrDataType dataType, Number fillValue, Compressor compressor) {
         _dataPath = dataPath;
         _shape = shape;
         _chunks = chunkShape;

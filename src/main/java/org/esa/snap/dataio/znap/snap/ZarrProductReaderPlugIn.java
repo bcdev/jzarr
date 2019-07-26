@@ -30,6 +30,7 @@ public class ZarrProductReaderPlugIn implements ProductReaderPlugIn {
         final boolean productRootIsDirectory = Files.isDirectory(productRoot);
         final boolean productHeaderExist = Files.exists(productHeader);
         final boolean productHeaderIsFile = Files.isRegularFile(productHeader);
+
         if (isValidRootDirName
             && productRootIsDirectory
             && productHeaderExist
@@ -41,6 +42,7 @@ public class ZarrProductReaderPlugIn implements ProductReaderPlugIn {
                                                        FileVisitOption.FOLLOW_LINKS);
                 final List<Path> pathList = stream.collect(Collectors.toList());
                 if (pathList.size() > 0) {
+                    // TODO: 23.07.2019 SE -- Frage 2 siehe Trello https://trello.com/c/HMw8CxqL/4-fragen-an-norman
                     return DecodeQualification.INTENDED;
                 }
             } catch (IOException e) {

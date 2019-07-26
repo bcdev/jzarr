@@ -20,7 +20,7 @@ import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
 
-public interface ZarrReader {
+public interface ArrayDataReader {
 
     void read(Object targetBuffer, int[] bufferShape, int[] from) throws IOException, InvalidRangeException;
 

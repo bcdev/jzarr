@@ -29,7 +29,7 @@ public class ZarrUtilsTest {
         final StringWriter writer = new StringWriter();
         ZarrUtils.toJson(_zarrHeader, writer);
 
-        assertThat(writer.toString(), is(equalToIgnoringWhiteSpace(expectedJson())));
+        assertThat(strip(writer.toString()), is(equalToIgnoringWhiteSpace(expectedJson())));
     }
 
     @Test
@@ -129,7 +129,14 @@ public class ZarrUtilsTest {
         pw.println("    \"zarr_format\": 2");
         pw.println("}");
 
-        return sw.toString();
+        return strip(sw.toString());
+    }
+
+    private String strip(String s) {
+        s = s.replace("\r", "").replace("\n", "");
+        s = s.replace(" ", "");
+//        while (s.contains("  ")) s = s.replace("  ", " ");
+        return s;
     }
 
     @Test

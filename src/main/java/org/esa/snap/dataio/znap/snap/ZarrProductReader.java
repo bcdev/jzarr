@@ -48,8 +48,14 @@ public class ZarrProductReader extends AbstractProductReader {
 
     @Override
     protected Product readProductNodesImpl() throws IOException {
+        // TODO: 23.07.2019 SE -- Frage 1 siehe Trello https://trello.com/c/HMw8CxqL/4-fragen-an-norman
         final Path rootPath = convertToPath(getInput());
         final ZarrGroup rootGroup = ZarrGroup.open(rootPath);
+
+
+
+
+
         final List<Path> headerPaths = Files.find(rootPath, 10, (path, basicFileAttributes) ->
                 path.getFileName().toString().equals(FILENAME_DOT_ZARRAY)
         ).collect(Collectors.toList());
@@ -95,11 +101,11 @@ public class ZarrProductReader extends AbstractProductReader {
         }
 
         for (String rasterName : rasterNames) {
-            final ZarrReader zarrReader = rootGroup.createReader(rasterName);
+            final ArrayDataReader arrayDataReader = rootGroup.createReader(rasterName);
 
-            final int[] shape = zarrReader.getShape();
-            final int[] chunks = zarrReader.getChunks();
-            final ZarrDataType zarrDataType = zarrReader.getDataType();
+            final int[] shape = arrayDataReader.getShape();
+            final int[] chunks = arrayDataReader.getChunks();
+            final ZarrDataType zarrDataType = arrayDataReader.getDataType();
 
             final SnapDataType snapDataType = getSnapDataType(zarrDataType);
             final int width = shape[1];
@@ -114,7 +120,7 @@ public class ZarrProductReader extends AbstractProductReader {
                 final double subSamplingY = (double) attributes.get(SUBSAMPLING_Y);
                 final float[] dataBuffer = new float[width * height];
                 try {
-                    zarrReader.read(dataBuffer, shape, new int[]{0, 0});
+                    arrayDataReader.read(dataBuffer, shape, new int[]{0, 0});
                 } catch (InvalidRangeException e) {
                     throw new IOException("InvalidRangeException while reading tie point raster '" + rasterName + "'", e);
                 }
@@ -127,7 +133,7 @@ public class ZarrProductReader extends AbstractProductReader {
                 final Band band = new Band(rasterName, snapDataType.getValue(), width, height);
                 product.addBand(band);
                 apply(attributes, band);
-                final ZarrOpImage zarrOpImage = new ZarrOpImage(band, shape, chunks, zarrReader, ResolutionLevel.MAXRES);
+                final ZarrOpImage zarrOpImage = new ZarrOpImage(band, shape, chunks, arrayDataReader, ResolutionLevel.MAXRES);
                 band.setSourceImage(zarrOpImage);
             }
         }
