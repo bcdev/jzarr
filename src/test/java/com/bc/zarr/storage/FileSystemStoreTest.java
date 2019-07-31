@@ -1,6 +1,7 @@
 package com.bc.zarr.storage;
 
 import com.bc.zarr.*;
+import com.bc.zarr.chunk.ChunkReaderWriter;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.After;
@@ -70,6 +71,72 @@ public class FileSystemStoreTest {
     }
 
     @Test
+    public void createFileSystemStore_withPathStringAndJimfsUnix() throws NoSuchFieldException, IllegalAccessException {
+        //execution
+        final FileSystem fileSystem = Jimfs.newFileSystem(Configuration.unix().toBuilder()
+                .setWorkingDirectory("/some/working/dir").build());
+        final FileSystemStore fileSystemStore = new FileSystemStore("abc/def/ghi", fileSystem);
+
+        //verification
+        final Object root = getPrivateFieldObject(fileSystemStore, "root");
+        assertThat(root.getClass().getSimpleName(), is("JimfsPath"));
+        assertThat(((Path) root).toAbsolutePath().toString(), is("/some/working/dir/abc/def/ghi"));
+    }
+    @Test
+    public void createFileSystemStore_withPathString_withoutFS() throws NoSuchFieldException, IllegalAccessException {
+        //execution
+        final FileSystem fileSystem = null;
+        final String pathStr = "abc/def/ghi";
+        final FileSystemStore fileSystemStore = new FileSystemStore(pathStr, fileSystem);
+
+        //verification
+        final Object root = getPrivateFieldObject(fileSystemStore, "root");
+        assertThat(root, is(instanceOf(Path.class)));
+        final String expected = Paths.get(pathStr).toAbsolutePath().toString();
+        final Path rootNioPath = (Path) root;
+        assertThat(rootNioPath.getFileSystem(), is(equalTo(FileSystems.getDefault())));
+        assertThat(rootNioPath.toAbsolutePath().toString(), is(expected));
+    }
+
+    @Test
+    public void deleteDirFromStore() throws IOException {
+        //preparation
+        final Path toBeDeleted = rootPath.resolve("toBeDeleted");
+        final Path someOtherDir = toBeDeleted.resolve("someOtherDir");
+        Files.createDirectories(someOtherDir);
+        final Path someFile = someOtherDir.resolve("someFile");
+        Files.write(someFile, new byte[]{4, 3, 5, 6, 2});
+        assertThat(Files.isRegularFile(someFile), is(true));
+        assertThat(Files.isReadable(someFile), is(true));
+        assertThat(Files.isDirectory(toBeDeleted), is(true));
+
+        //execution
+        store.delete("toBeDeleted");
+
+        //verification
+        assertThat(Files.isDirectory(toBeDeleted), is(false));
+
+    }
+
+    @Test
+    public void deleteSingleFileFromStore() throws IOException {
+        //preparation
+        final Path someDirectory = rootPath.resolve("someDirectory");
+        final Path toBeDeleted = someDirectory.resolve("toBeDeleted");
+        Files.createDirectories(someDirectory);
+        Files.write(toBeDeleted, new byte[]{4, 3, 5, 6, 2});
+        assertThat(Files.isRegularFile(toBeDeleted), is(true));
+        assertThat(Files.isReadable(toBeDeleted), is(true));
+
+        //execution
+        store.delete("someDirectory/toBeDeleted");
+
+        //verification
+        assertThat(Files.exists(toBeDeleted), is(false));
+
+    }
+
+    @Test
     public void createGroup() throws IOException, InvalidRangeException {
         //preparation
         final Map<String, Object> attributes = TestUtils.createMap("lsmf", 345, "menno", 23.23);
@@ -87,7 +154,7 @@ public class FileSystemStoreTest {
     }
 
     @Test
-    public void createArray() throws IOException {
+    public void createArray() throws IOException, InvalidRangeException {
         //preparation
         final int[] shape = {10, 10};
         final int[] chunks = {5, 5};
@@ -112,6 +179,37 @@ public class FileSystemStoreTest {
     }
 
     @Test
+    public void writeArrayDataChunked() throws IOException, InvalidRangeException {
+        //preparation
+        final int[] shape = {10, 10};
+        final int[] chunks = {5, 5};
+        final byte[] data = new byte[100];
+        Arrays.fill(data, (byte) 42);
+        final Map<String, Object> attributes = TestUtils.createMap("data", new double[]{4, 5, 6, 7, 8});
+
+        //execution
+        final ZarrGroup rootGrp = ZarrGroup.create(store, null);
+        final ZarrArray fooArray = rootGrp.createArray("foo", ZarrDataType.i1, shape, chunks, 0, null, attributes);
+        fooArray.write(data, shape, new int[]{0, 0});
+
+        //verification
+        final Path fooPath = rootPath.resolve("foo");
+        assertThat(Files.isDirectory(fooPath), is(true));
+        assertThat(Files.list(fooPath).filter(
+                path -> !path.getFileName().toString().startsWith(".")
+        ).count(), is(4L));
+        final String[] chunkFileNames = {"0.0", "0.1", "1.0", "1.1"};
+        final byte[] expectedBytes = new byte[25];
+        Arrays.fill(expectedBytes, (byte) 42);
+        for (String name : chunkFileNames) {
+            final Path chunkPath = fooPath.resolve(name);
+            assertThat(Files.isReadable(chunkPath), is(true));
+            assertThat(Files.size(chunkPath), is(5L * 5));
+            assertThat(Files.readAllBytes(chunkPath), is(expectedBytes));
+        }
+    }
+
+    @Test
     public void createSubGroup() throws IOException, InvalidRangeException {
         //preparation
         final Map<String, Object> attributes = TestUtils.createMap("aaaa", "pfrt", "y", 123);
@@ -128,46 +226,6 @@ public class FileSystemStoreTest {
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZATTRS)), is(true));
         assertThat(getZgroupContent(fooPath), is("{\"zarr_format\":2}"));
         assertThat(getZattrsContent(fooPath), is("{\"y\":123,\"aaaa\":\"pfrt\"}"));
-    }
-
-    //    @Test
-    public void name() throws IOException, InvalidRangeException {
-        //preparation
-        final int[] shape = {10, 10};
-        final int[] chunks = {5, 5};
-        final byte[] data = new byte[100];
-        Arrays.fill(data, (byte) 42);
-        final Map<String, Object> attr1 = TestUtils.createMap("lsmf", 345, "menno", 23.23);
-        final Map<String, Object> attr2 = TestUtils.createMap("aaaa", "pfrt", "y", 123);
-        final Map<String, Object> attr3 = TestUtils.createMap("data", new double[]{4, 5, 6, 7, 8});
-
-        //execution
-        final ZarrGroup rootGrp = ZarrGroup.create(store, attr1);
-        ZarrGroup fooGrp = rootGrp.createGroup("foo", attr2);
-        final ZarrArray barArray = fooGrp.createArray("bar", ZarrDataType.i1, shape, chunks, 0, null, attr3);
-        barArray.write(data, shape, new int[]{0, 0});
-
-        //verification
-        final Map<String, Path> paths = new HashMap<>();
-        final Path zGrpPath;
-
-        assertThat(Files.isDirectory(rootPath), is(true));
-        assertThat(Files.isReadable(rootPath.resolve(FILENAME_DOT_ZGROUP)), is(true));
-
-        /* Files in store root dir */
-        Files.list(rootPath).forEach(path -> paths.put(path.getFileName().toString(), path));
-        assertThat(paths.size(), is(3));
-        assertThat(paths.containsKey("foo"), is(true));
-        assertThat(paths.containsKey(".zgroup"), is(true));
-        assertThat(paths.containsKey(".zattrs"), is(true));
-
-        assertThat(Files.isDirectory(paths.get("foo")), is(true));
-
-        zGrpPath = paths.get(".zgroup");
-        assertThat(Files.isReadable(zGrpPath), is(true));
-        final String content = TestUtils.readContent(zGrpPath);
-        assertThat(content, is("{\"zarr_format\":2}"));
-        assertThat(Files.isReadable(zGrpPath), is(true));
     }
 
     private String strip(String s) {

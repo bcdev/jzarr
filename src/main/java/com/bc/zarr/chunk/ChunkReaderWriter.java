@@ -16,7 +16,6 @@
  */
 package com.bc.zarr.chunk;
 
-
 import com.bc.zarr.Compressor;
 import com.bc.zarr.CompressorFactory;
 import com.bc.zarr.ZarrDataType;
@@ -33,7 +32,7 @@ import static com.bc.zarr.ZarrUtils.computeSizeInteger;
 public abstract class ChunkReaderWriter {
 
     protected final Compressor compressor;
-    protected final int[] chunkShape;
+    final int[] chunkShape;
     protected final Number fill;
     protected final Store store;
     private final int size;

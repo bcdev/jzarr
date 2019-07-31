@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 import com.bc.zarr.Compressor;
 import com.bc.zarr.CompressorFactory;
+import com.bc.zarr.TestUtils;
 import com.bc.zarr.ZarrDataType;
 import com.bc.zarr.storage.FileSystemStore;
 import com.google.common.jimfs.Configuration;
@@ -35,6 +36,15 @@ public class ChunkReaderWriterTest_2D {
         chunkStoreKey = "0.0";
         jimfsChunkPath = testRootPath.resolve(chunkStoreKey);
         store = new FileSystemStore(testRootPath);
+    }
+
+    @Test
+    public void createChunkReaderWriter_compresserIsNullValue() throws NoSuchFieldException, IllegalAccessException {
+        //execution
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(null, ZarrDataType.i1, new int[]{3, 4}, 5, store);
+
+        final Object compressor = TestUtils.getPrivateFieldObject(readerWriter, "compressor");
+        assertThat(compressor, is(sameInstance(CompressorFactory.nullCompressor)));
     }
 
     @Test

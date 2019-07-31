@@ -24,9 +24,8 @@ public class ZarrInputStreamAdapter extends InputStream {
 
     private final ImageInputStream stream;
 
-    public ZarrInputStreamAdapter(ImageInputStream stream) {
+    ZarrInputStreamAdapter(ImageInputStream stream) {
         super();
-
         this.stream = stream;
     }
 

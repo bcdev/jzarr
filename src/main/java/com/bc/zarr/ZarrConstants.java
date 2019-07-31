@@ -16,13 +16,6 @@
  */
 package com.bc.zarr;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Arrays;
-
 public final class ZarrConstants {
 
     // File name Constants

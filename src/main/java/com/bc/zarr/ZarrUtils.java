@@ -25,7 +25,10 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.bc.zarr.ZarrConstants.FILENAME_DOT_ZATTRS;
 
@@ -154,37 +157,6 @@ public final class ZarrUtils {
         }
     }
 
-    public static String normalizeStoragePath(String path) {
-
-        //replace backslashes with slashes
-        path = path.replace("\\", "/");
-
-        // collapse any repeated slashes
-        while (path.contains("//")) {
-            path = path.replace("//", "/");
-        }
-
-        // ensure no leading slash
-        if (path.startsWith("/")) {
-            path = path.substring(1);
-        }
-
-        // ensure no trailing slash
-        if (path.endsWith("/")) {
-            path = path.substring(0, path.length() - 1);
-        }
-
-        // don't allow path segments with just '.' or '..'
-        final String[] split = path.split("/");
-        for (String s : split) {
-            s = s.trim();
-            if (".".equals(s) || "..".equals(s)) {
-                throw new IllegalArgumentException("path containing '.' or '..' segment not allowed");
-            }
-        }
-        return path;
-    }
-
     public static void writeAttributes(Map<String, Object> attributes, ZarrPath zarrPath, Store store) throws IOException {
         if (attributes != null && !attributes.isEmpty()) {
             final ZarrPath attrPath = zarrPath.resolve(FILENAME_DOT_ZATTRS);
@@ -194,6 +166,13 @@ public final class ZarrUtils {
             ) {
                 toJson(attributes, writer);
             }
+        }
+    }
+
+    public static void deleteDirectoryTreeRecursively(Path toBeDeleted) throws IOException {
+        final List<Path> paths = Files.walk(toBeDeleted).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        for (Path path : paths) {
+            Files.delete(path);
         }
     }
 }

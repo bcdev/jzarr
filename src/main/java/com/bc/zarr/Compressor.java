@@ -14,7 +14,7 @@ public abstract class Compressor {
 
     public abstract void uncompress(InputStream is, OutputStream os) throws IOException;
 
-    protected void passThrough(InputStream is, OutputStream os) throws IOException {
+    void passThrough(InputStream is, OutputStream os) throws IOException {
         final byte[] bytes = new byte[4096];
         int read = is.read(bytes);
         while (read > 0) {

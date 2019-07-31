@@ -1,6 +1,7 @@
 package com.bc.zarr.storage;
 
-import org.esa.snap.core.util.io.TreeDeleter;
+import com.bc.zarr.ZarrUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.apache.commons.io.FileUtils.*;
+import static org.apache.commons.io.FileUtils.deleteDirectory;
 
 public class FileSystemStore implements Store {
 
@@ -50,7 +51,7 @@ public class FileSystemStore implements Store {
     public void delete(String key) throws IOException {
         final Path toBeDeleted = root.resolve(key);
         if (Files.isDirectory(toBeDeleted)) {
-            deleteDirectory(toBeDeleted.toFile());
+            ZarrUtils.deleteDirectoryTreeRecursively(toBeDeleted);
         }
         if (Files.exists(toBeDeleted)){
             Files.delete(toBeDeleted);

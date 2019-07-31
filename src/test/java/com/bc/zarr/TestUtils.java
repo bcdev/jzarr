@@ -13,8 +13,16 @@ import static org.junit.Assert.*;
 
 public class TestUtils {
 
-    static Object getPrivateFieldObject(Object obj, String name) throws NoSuchFieldException, IllegalAccessException {
-        final Field field = obj.getClass().getDeclaredField(name);
+    public static Object getPrivateFieldObject(Object obj, String name) throws NoSuchFieldException, IllegalAccessException {
+        Field field = null;
+        try {
+            field = obj.getClass().getDeclaredField(name);
+        } catch (NoSuchFieldException | SecurityException e) {
+            //e.printStackTrace();
+        }
+        if (field == null) {
+            field = obj.getClass().getSuperclass().getDeclaredField(name);
+        }
         field.setAccessible(true);
         return field.get(obj);
     }

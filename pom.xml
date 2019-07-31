@@ -4,45 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.esa.snap</groupId>
-    <artifactId>snap-zarr</artifactId>
+    <groupId>com.bc.zarr</groupId>
+    <artifactId>jzarr</artifactId>
     <version>0.2-SNAPSHOT</version>
 
     <properties>
-        <!--<brandingToken>snap-zarr</brandingToken>-->
-        <snap.version>7.0.0-SNAPSHOT</snap.version>
-
 <!--        <nd4j.version>1.0.0-beta4</nd4j.version>-->
 <!--        <nd4j.backend>nd4j-native-platform</nd4j.backend>-->
     </properties>
-
-    <packaging>nbm</packaging>
 
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.snap</groupId>
-            <artifactId>ceres-core</artifactId>
-            <version>${snap.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.snap</groupId>
-            <artifactId>snap-core</artifactId>
-            <version>${snap.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.snap</groupId>
-            <artifactId>ceres-glayer</artifactId>
-            <version>${snap.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.snap</groupId>
-            <artifactId>ceres-jai</artifactId>
-            <version>${snap.version}</version>
         </dependency>
         <dependency>
             <groupId>edu.ucar</groupId>
@@ -55,11 +30,6 @@
             <artifactId>gson</artifactId>
             <version>2.8.5</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--            <artifactId>jackson-databind</artifactId>-->
-<!--            <version>2.9.8</version>-->
-<!--        </dependency>-->
         <!--        <dependency>-->
         <!--            <groupId>org.nd4j</groupId>-->
         <!--            <artifactId>nd4j-api</artifactId>-->
@@ -132,31 +102,10 @@
                         </excludes>
                     </configuration>
                 </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>nbm-maven-plugin</artifactId>
-                    <version>4.1</version>
-                    <extensions>true</extensions>
-                    <!--<dependencies>-->
-                    <!--<dependency>-->
-                    <!--<groupId>javax.help</groupId>-->
-                    <!--<artifactId>javahelp</artifactId>-->
-                    <!--<version>${javahelp.version}</version>-->
-                    <!--</dependency>-->
-                    <!--</dependencies>-->
-                    <configuration>
-                        <requiresRestart>true</requiresRestart>
-                        <!--<sourceManifestFile>target/nbm/manifest.mf</sourceManifestFile>-->
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>nbm-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -176,21 +125,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>snap-repo-public</id>
-            <name>Public Maven Repository for SNAP</name>
-            <url>https://snap-build-server.tilaa.cloud/nexus/repository/snap-maven-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-
 </project>

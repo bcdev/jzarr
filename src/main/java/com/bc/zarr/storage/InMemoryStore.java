@@ -1,13 +1,14 @@
 package com.bc.zarr.storage;
 
-import com.bc.zarr.storage.Store;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class InMemoryStore implements Store {
-    final Map<String, byte[]> map = new HashMap<>();
+    private final Map<String, byte[]> map = new HashMap<>();
 
     @Override
     public InputStream getInputStream(String key) {
@@ -23,7 +24,7 @@ public class InMemoryStore implements Store {
     public OutputStream getOutputStream(String key) {
         return new ByteArrayOutputStream() {
             @Override
-            public void close() throws IOException {
+            public void close() {
                 map.remove(key);
                 map.put(key, this.toByteArray());
             }
