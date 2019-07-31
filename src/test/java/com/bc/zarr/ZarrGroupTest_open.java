@@ -78,7 +78,7 @@ public class ZarrGroupTest_open {
             fail("IOException expected");
         } catch (IOException expected) {
             //verification
-            assertThat(expected.getMessage(), is("File '.zgroup' is not readable or missing in directory /test/group ."));
+            assertThat(expected.getMessage(), is("'.zgroup' expected but is not readable or missing in store."));
         }
     }
 

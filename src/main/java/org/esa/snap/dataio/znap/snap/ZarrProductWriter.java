@@ -3,6 +3,7 @@ package org.esa.snap.dataio.znap.snap;
 import com.bc.ceres.core.ProgressMonitor;
 import com.bc.ceres.glevel.MultiLevelImage;
 import com.bc.zarr.*;
+import com.bc.zarr.storage.FileSystemStore;
 import org.esa.snap.core.dataio.AbstractProductWriter;
 import org.esa.snap.core.datamodel.*;
 import org.esa.snap.core.image.ImageManager;
@@ -25,7 +26,7 @@ import static org.esa.snap.dataio.znap.snap.ZnapConstantsAndUtils.*;
 
 public class ZarrProductWriter extends AbstractProductWriter {
 
-    private final HashMap<String, ArrayDataWriter> zarrWriters = new HashMap<>();
+    private final HashMap<String, ZarrArray> zarrWriters = new HashMap<>();
     private final ExecutorService executorService;
     private Compressor _compressor;
     private ZarrGroup zarrGroup;
@@ -40,7 +41,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
     @Override
     public void writeBandRasterData(Band sourceBand, int sourceOffsetX, int sourceOffsetY, int sourceWidth, int sourceHeight, ProductData sourceBuffer, ProgressMonitor pm) throws IOException {
         String name = sourceBand.getName();
-        final ArrayDataWriter arrayDataWriter = zarrWriters.get(name);
+        final ZarrArray zarrArray = zarrWriters.get(name);
         final int[] to = {sourceOffsetY, sourceOffsetX}; // common data model manner { y, x }
         final int[] shape = {sourceHeight, sourceWidth};  // common data model manner { y, x }
         Callable<Object> callable = () -> {
@@ -51,7 +52,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
                 } else {
                     scaledBuffer = sourceBuffer;
                 }
-                arrayDataWriter.write(scaledBuffer.getElems(), shape, to);
+                zarrArray.write(scaledBuffer.getElems(), shape, to);
                 return null;
             } catch (InvalidRangeException e) {
                 throw new IOException("Invalid range while writing raster '" + name + "'", e);
@@ -86,7 +87,7 @@ public class ZarrProductWriter extends AbstractProductWriter {
         // common data model manner { y, x }
         preferredChunks = new int[]{preferredTileSize.height, preferredTileSize.width};
 
-        zarrGroup = ZarrGroup.create(output, getProductAttributes(product));
+        zarrGroup = ZarrGroup.create(new FileSystemStore(output), getProductAttributes(product));
         for (TiePointGrid tiePointGrid : product.getTiePointGrids()) {
             writeTiePointGrid(tiePointGrid);
         }
@@ -281,9 +282,9 @@ public class ZarrProductWriter extends AbstractProductWriter {
             attributes.put(DISCONTINUITY, discontinuity);
         }
         trimChunks(chunks, shape);
-        final ArrayDataWriter arrayDataWriter = zarrGroup.createWriter(name, getZarrDataType(tiePointGrid), shape, chunks, getZarrFillValue(tiePointGrid), _compressor, attributes);
+        final ZarrArray zarrArray = zarrGroup.createArray(name, getZarrDataType(tiePointGrid), shape, chunks, getZarrFillValue(tiePointGrid), _compressor, attributes);
         try {
-            arrayDataWriter.write(gridData.getElems(), shape, new int[]{0, 0});
+            zarrArray.write(gridData.getElems(), shape, new int[]{0, 0});
         } catch (InvalidRangeException e) {
             throw new IOException("Invalid range while writing raster '" + name + "'", e);
         }
@@ -308,8 +309,8 @@ public class ZarrProductWriter extends AbstractProductWriter {
             chunks = Arrays.copyOf(preferredChunks, preferredChunks.length);
         }
         trimChunks(chunks, shape);
-        final ArrayDataWriter arrayDataWriter = zarrGroup.createWriter(name, getZarrDataType(band), shape, chunks, getZarrFillValue(band), _compressor, getBandAttributes(band));
-        zarrWriters.put(name, arrayDataWriter);
+        final ZarrArray zarrArray = zarrGroup.createArray(name, getZarrDataType(band), shape, chunks, getZarrFillValue(band), _compressor, getBandAttributes(band));
+        zarrWriters.put(name, zarrArray);
     }
 
     static Map<String, Object> getBandAttributes(Band band) {

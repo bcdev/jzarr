@@ -1,5 +1,6 @@
 package com.bc.zarr;
 
+import com.bc.zarr.storage.FileSystemStore;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Before;
@@ -8,23 +9,25 @@ import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-public class ArrayDataReaderWriterTest_2D_writeAndReadData {
+public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
 
-    private Path testPath;
+    private String arrayName;
+    private FileSystemStore store;
 
     @Before
     public void setUp() throws Exception {
         final FileSystem testFileSystem = Jimfs.newFileSystem(Configuration.windows());
         final Iterable<Path> rootDirectories = testFileSystem.getRootDirectories();
         final Path root = rootDirectories.iterator().next();
-        testPath = root.resolve("testPath");
-        Files.createDirectories(testPath);
+        store = new FileSystemStore(root);
+        arrayName = "testPath";
+//        Path testPath = root.resolve(arrayName);
+//        Files.createDirectories(this.testPath);
     }
 
     @Test
@@ -39,7 +42,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.i1; // Byte
         final byte Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final byte[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -48,11 +51,11 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
                 21, 22, 23, 24, 25, 26, 27,
                 28, 29, 30, 31, 32, 33, 34
         };
-        zarrReaderWriter.write(sourceBuffer, shape, new int[]{0, 0});
+        array.write(sourceBuffer, shape, new int[]{0, 0});
         final byte[] targetBuffer = new byte[sourceBuffer.length];
 
         //execution
-        zarrReaderWriter.read(targetBuffer, shape, new int[]{0, 0});
+        array.read(targetBuffer, shape, new int[]{0, 0});
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));
@@ -70,7 +73,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.i2; // Short
         final short Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final short[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -79,11 +82,11 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
                 21, 22, 23, 24, 25, 26, 27,
                 28, 29, 30, 31, 32, 33, 34
         };
-        zarrReaderWriter.write(sourceBuffer, shape, new int[]{0, 0});
+        array.write(sourceBuffer, shape, new int[]{0, 0});
         final short[] targetBuffer = new short[sourceBuffer.length];
 
         //execution
-        zarrReaderWriter.read(targetBuffer, shape, new int[]{0, 0});
+        array.read(targetBuffer, shape, new int[]{0, 0});
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));
@@ -101,7 +104,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.i4; // Integer
         final int Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final int[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -110,11 +113,11 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
                 21, 22, 23, 24, 25, 26, 27,
                 28, 29, 30, 31, 32, 33, 34
         };
-        zarrReaderWriter.write(sourceBuffer, shape, new int[]{0, 0});
+        array.write(sourceBuffer, shape, new int[]{0, 0});
         final int[] targetBuffer = new int[sourceBuffer.length];
 
         //execution
-        zarrReaderWriter.read(targetBuffer, shape, new int[]{0, 0});
+        array.read(targetBuffer, shape, new int[]{0, 0});
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));
@@ -132,7 +135,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.f4; // Float
         final float Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final float[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -141,11 +144,11 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
                 21, 22, 23, 24, 25, 26, 27,
                 28, 29, 30, 31, 32, 33, 34
         };
-        zarrReaderWriter.write(sourceBuffer, shape, new int[]{0, 0});
+        array.write(sourceBuffer, shape, new int[]{0, 0});
         final float[] targetBuffer = new float[sourceBuffer.length];
 
         //execution
-        zarrReaderWriter.read(targetBuffer, shape, new int[]{0, 0});
+        array.read(targetBuffer, shape, new int[]{0, 0});
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));
@@ -163,7 +166,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.f8; // Double
         final double Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final double[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -172,11 +175,11 @@ public class ArrayDataReaderWriterTest_2D_writeAndReadData {
                 21, 22, 23, 24, 25, 26, 27,
                 28, 29, 30, 31, 32, 33, 34
         };
-        zarrReaderWriter.write(sourceBuffer, shape, new int[]{0, 0});
+        array.write(sourceBuffer, shape, new int[]{0, 0});
         final double[] targetBuffer = new double[sourceBuffer.length];
 
         //execution
-        zarrReaderWriter.read(targetBuffer, shape, new int[]{0, 0});
+        array.read(targetBuffer, shape, new int[]{0, 0});
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));

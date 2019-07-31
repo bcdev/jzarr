@@ -31,7 +31,7 @@ public class ZarrHeader {
 
     public ZarrHeader(int[] shape, int[] chunks, String dtype, Number fill_value, Compressor compressor) {
         this.chunks = chunks;
-        if (CompressorFactory.nullCompressor.equals(compressor)) {
+        if (compressor == null || CompressorFactory.nullCompressor.equals(compressor)) {
             this.compressor = null;
         } else {
             this.compressor = new CompressorBean(compressor.getId(), compressor.getLevel());
@@ -62,11 +62,11 @@ public class ZarrHeader {
     }
 
     public ByteOrder getByteOrder() {
-        if(dtype.startsWith(">")) {
+        if (dtype.startsWith(">")) {
             return ByteOrder.BIG_ENDIAN;
-        } else if(dtype.startsWith("<")){
+        } else if (dtype.startsWith("<")) {
             return ByteOrder.LITTLE_ENDIAN;
-        } else if(dtype.startsWith("|")) {
+        } else if (dtype.startsWith("|")) {
             return ByteOrder.nativeOrder();
         }
         return ByteOrder.BIG_ENDIAN;

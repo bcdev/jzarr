@@ -1,12 +1,11 @@
 package com.bc.zarr;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
 import com.bc.zarr.chunk.*;
+import com.bc.zarr.storage.FileSystemStore;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 
@@ -17,17 +16,24 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
 
     private Path testPath;
+    private FileSystemStore store;
+    private String arrayName;
 
     @Before
     public void setUp() throws Exception {
         final FileSystem testFileSystem = Jimfs.newFileSystem(Configuration.windows());
         final Iterable<Path> rootDirectories = testFileSystem.getRootDirectories();
         final Path root = rootDirectories.iterator().next();
-        testPath = root.resolve("testPath");
-        Files.createDirectories(testPath);
+        store = new FileSystemStore(root);
+        arrayName = "testPath";
+        testPath = root.resolve(arrayName);
+//        Files.createDirectories(testPath);
     }
 
     @Test
@@ -42,7 +48,8 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final ZarrDataType dataType = ZarrDataType.i1; // Byte
         final byte Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final byte[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -53,7 +60,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         };
 
         //execution
-        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        array.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final byte[][] expected = {
@@ -62,36 +69,37 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
                         7, 8, 9, 10,
                         14, 15, 16, 17
                 }, {
-                        4, 5, 6, -5,
-                        11, 12, 13, -5,
-                        18, 19, 20, -5
-                }, {
-                        21, 22, 23, 24,
-                        28, 29, 30, 31,
-                        -5, -5, -5, -5
-                }, {
-                        25, 26, 27, -5,
-                        32, 33, 34, -5,
-                        -5, -5, -5, -5
-                }
+                4, 5, 6, -5,
+                11, 12, 13, -5,
+                18, 19, 20, -5
+        }, {
+                21, 22, 23, 24,
+                28, 29, 30, 31,
+                -5, -5, -5, -5
+        }, {
+                25, 26, 27, -5,
+                32, 33, 34, -5,
+                -5, -5, -5, -5
+        }
         };
 
         final String[] expectedNames = {"0.0", "0.1", "1.0", "1.1"};
 
-        final List<Path> chunkFiles = Files.list(testPath).collect(Collectors.toList());
+        final List<Path> chunkFiles = getChunkFilesWritten();
         assertEquals(4, chunkFiles.size());
 
-        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Byte(compressor, chunkShape, Fill);
-        Array array;
+        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Byte(compressor, chunkShape, Fill, store);
+        Array ma2Array;
 
         for (int i = 0; i < chunkFiles.size(); i++) {
             Path chunkFile = chunkFiles.get(i);
             assertEquals(testPath, chunkFile.getParent());
             assertEquals(12, Files.size(chunkFile));
-            assertEquals(expectedNames[i], chunkFile.getFileName().toString());
-            array = cr.read(chunkFile);
-            assertThat(array, is(notNullValue()));
-            assertThat(array.get1DJavaArray(byte.class), is(equalTo(expected[i])));
+            final String fileName = chunkFile.getFileName().toString();
+            assertEquals(expectedNames[i], fileName);
+            ma2Array = cr.read(arrayName + "/" + fileName);
+            assertThat(ma2Array, is(notNullValue()));
+            assertThat(ma2Array.get1DJavaArray(byte.class), is(equalTo(expected[i])));
         }
     }
 
@@ -107,7 +115,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final ZarrDataType dataType = ZarrDataType.i2; // Short
         final short Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final short[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -118,7 +126,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         };
 
         //execution
-        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        array.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final short[][] expected = {
@@ -127,36 +135,37 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
                         7, 8, 9, 10,
                         14, 15, 16, 17
                 }, {
-                        4, 5, 6, -5,
-                        11, 12, 13, -5,
-                        18, 19, 20, -5
-                }, {
-                        21, 22, 23, 24,
-                        28, 29, 30, 31,
-                        -5, -5, -5, -5
-                }, {
-                        25, 26, 27, -5,
-                        32, 33, 34, -5,
-                        -5, -5, -5, -5
-                }
+                4, 5, 6, -5,
+                11, 12, 13, -5,
+                18, 19, 20, -5
+        }, {
+                21, 22, 23, 24,
+                28, 29, 30, 31,
+                -5, -5, -5, -5
+        }, {
+                25, 26, 27, -5,
+                32, 33, 34, -5,
+                -5, -5, -5, -5
+        }
         };
 
         final String[] expectedNames = {"0.0", "0.1", "1.0", "1.1"};
 
-        final List<Path> chunkFiles = Files.list(testPath).collect(Collectors.toList());
+        final List<Path> chunkFiles = getChunkFilesWritten();
         assertEquals(4, chunkFiles.size());
 
-        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Short(compressor, chunkShape, Fill);
-        Array array;
+        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Short(compressor, chunkShape, Fill, store);
+        Array ma2Array;
 
         for (int i = 0; i < chunkFiles.size(); i++) {
             Path chunkFile = chunkFiles.get(i);
             assertEquals(testPath, chunkFile.getParent());
             assertEquals(24, Files.size(chunkFile));
-            assertEquals(expectedNames[i], chunkFile.getFileName().toString());
-            array = cr.read(chunkFile);
-            assertThat(array, is(notNullValue()));
-            assertThat(array.get1DJavaArray(short.class), is(equalTo(expected[i])));
+            final String fileName = chunkFile.getFileName().toString();
+            assertEquals(expectedNames[i], fileName);
+            ma2Array = cr.read(arrayName + "/" + fileName);
+            assertThat(ma2Array, is(notNullValue()));
+            assertThat(ma2Array.get1DJavaArray(short.class), is(equalTo(expected[i])));
         }
     }
 
@@ -172,7 +181,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final ZarrDataType dataType = ZarrDataType.i4; // Integer
         final int Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final int[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -183,7 +192,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         };
 
         //execution
-        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        array.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final int[][] expected = {
@@ -192,36 +201,37 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
                         7, 8, 9, 10,
                         14, 15, 16, 17
                 }, {
-                        4, 5, 6, -5,
-                        11, 12, 13, -5,
-                        18, 19, 20, -5
-                }, {
-                        21, 22, 23, 24,
-                        28, 29, 30, 31,
-                        -5, -5, -5, -5
-                }, {
-                        25, 26, 27, -5,
-                        32, 33, 34, -5,
-                        -5, -5, -5, -5
-                }
+                4, 5, 6, -5,
+                11, 12, 13, -5,
+                18, 19, 20, -5
+        }, {
+                21, 22, 23, 24,
+                28, 29, 30, 31,
+                -5, -5, -5, -5
+        }, {
+                25, 26, 27, -5,
+                32, 33, 34, -5,
+                -5, -5, -5, -5
+        }
         };
 
         final String[] expectedNames = {"0.0", "0.1", "1.0", "1.1"};
 
-        final List<Path> chunkFiles = Files.list(testPath).collect(Collectors.toList());
+        final List<Path> chunkFiles = getChunkFilesWritten();
         assertEquals(4, chunkFiles.size());
 
-        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Integer(compressor, chunkShape, Fill);
-        Array array;
+        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Integer(compressor, chunkShape, Fill, store);
+        Array ma2Array;
 
         for (int i = 0; i < chunkFiles.size(); i++) {
             Path chunkFile = chunkFiles.get(i);
             assertEquals(testPath, chunkFile.getParent());
             assertEquals(48, Files.size(chunkFile));
-            assertEquals(expectedNames[i], chunkFile.getFileName().toString());
-            array = cr.read(chunkFile);
-            assertThat(array, is(notNullValue()));
-            assertThat(array.get1DJavaArray(int.class), is(equalTo(expected[i])));
+            final String fileName = chunkFile.getFileName().toString();
+            assertEquals(expectedNames[i], fileName);
+            ma2Array = cr.read(arrayName + "/" + fileName);
+            assertThat(ma2Array, is(notNullValue()));
+            assertThat(ma2Array.get1DJavaArray(int.class), is(equalTo(expected[i])));
         }
     }
 
@@ -237,7 +247,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final ZarrDataType dataType = ZarrDataType.f4; // Float
         final float Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final float[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -248,7 +258,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         };
 
         //execution
-        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        array.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final float[][] expected = {
@@ -257,36 +267,37 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
                         7, 8, 9, 10,
                         14, 15, 16, 17
                 }, {
-                        4, 5, 6, -5,
-                        11, 12, 13, -5,
-                        18, 19, 20, -5
-                }, {
-                        21, 22, 23, 24,
-                        28, 29, 30, 31,
-                        -5, -5, -5, -5
-                }, {
-                        25, 26, 27, -5,
-                        32, 33, 34, -5,
-                        -5, -5, -5, -5
-                }
+                4, 5, 6, -5,
+                11, 12, 13, -5,
+                18, 19, 20, -5
+        }, {
+                21, 22, 23, 24,
+                28, 29, 30, 31,
+                -5, -5, -5, -5
+        }, {
+                25, 26, 27, -5,
+                32, 33, 34, -5,
+                -5, -5, -5, -5
+        }
         };
 
         final String[] expectedNames = {"0.0", "0.1", "1.0", "1.1"};
 
-        final List<Path> chunkFiles = Files.list(testPath).collect(Collectors.toList());
+        final List<Path> chunkFiles = getChunkFilesWritten();
         assertEquals(4, chunkFiles.size());
 
-        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Float(compressor, chunkShape, Fill);
-        Array array;
+        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Float(compressor, chunkShape, Fill, store);
+        Array ma2Array;
 
         for (int i = 0; i < chunkFiles.size(); i++) {
             Path chunkFile = chunkFiles.get(i);
             assertEquals(testPath, chunkFile.getParent());
             assertEquals(48, Files.size(chunkFile));
-            assertEquals(expectedNames[i], chunkFile.getFileName().toString());
-            array = cr.read(chunkFile);
-            assertThat(array, is(notNullValue()));
-            assertThat(array.get1DJavaArray(float.class), is(equalTo(expected[i])));
+            final String fileName = chunkFile.getFileName().toString();
+            assertEquals(expectedNames[i], fileName);
+            ma2Array = cr.read(arrayName + "/" + fileName);
+            assertThat(ma2Array, is(notNullValue()));
+            assertThat(ma2Array.get1DJavaArray(float.class), is(equalTo(expected[i])));
         }
     }
 
@@ -302,7 +313,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         final ZarrDataType dataType = ZarrDataType.f8; // Double
         final double Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayDataReaderWriter zarrReaderWriter = new ArrayDataReaderWriter(testPath, shape, chunkShape, dataType, Fill, compressor);
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
 
         final double[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -313,7 +324,7 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
         };
 
         //execution
-        zarrReaderWriter.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
+        array.write(sourceBuffer, new int[]{5, 7}, new int[]{0, 0});
 
         //verification
         final double[][] expected = {
@@ -322,36 +333,41 @@ public class ArrayDataReaderWriterTest_2D_writeAndEvaluateWrittenChunks {
                         7, 8, 9, 10,
                         14, 15, 16, 17
                 }, {
-                        4, 5, 6, -5,
-                        11, 12, 13, -5,
-                        18, 19, 20, -5
-                }, {
-                        21, 22, 23, 24,
-                        28, 29, 30, 31,
-                        -5, -5, -5, -5
-                }, {
-                        25, 26, 27, -5,
-                        32, 33, 34, -5,
-                        -5, -5, -5, -5
-                }
+                4, 5, 6, -5,
+                11, 12, 13, -5,
+                18, 19, 20, -5
+        }, {
+                21, 22, 23, 24,
+                28, 29, 30, 31,
+                -5, -5, -5, -5
+        }, {
+                25, 26, 27, -5,
+                32, 33, 34, -5,
+                -5, -5, -5, -5
+        }
         };
 
         final String[] expectedNames = {"0.0", "0.1", "1.0", "1.1"};
 
-        final List<Path> chunkFiles = Files.list(testPath).collect(Collectors.toList());
+        final List<Path> chunkFiles = getChunkFilesWritten();
         assertEquals(4, chunkFiles.size());
 
-        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Double(compressor, chunkShape, Fill);
-        Array array;
+        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Double(compressor, chunkShape, Fill, store);
+        Array ma2Array;
 
         for (int i = 0; i < chunkFiles.size(); i++) {
             Path chunkFile = chunkFiles.get(i);
             assertEquals(testPath, chunkFile.getParent());
             assertEquals(96, Files.size(chunkFile));
-            assertEquals(expectedNames[i], chunkFile.getFileName().toString());
-            array = cr.read(chunkFile);
-            assertThat(array, is(notNullValue()));
-            assertThat(array.get1DJavaArray(double.class), is(equalTo(expected[i])));
+            final String fileName = chunkFile.getFileName().toString();
+            assertEquals(expectedNames[i], fileName);
+            ma2Array = cr.read(arrayName + "/" + fileName);
+            assertThat(ma2Array, is(notNullValue()));
+            assertThat(ma2Array.get1DJavaArray(double.class), is(equalTo(expected[i])));
         }
+    }
+
+    public List<Path> getChunkFilesWritten() throws IOException {
+        return Files.list(testPath).filter(path -> !path.getFileName().toString().startsWith(".")).collect(Collectors.toList());
     }
 }

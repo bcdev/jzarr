@@ -101,11 +101,11 @@ public class ZarrProductReader extends AbstractProductReader {
         }
 
         for (String rasterName : rasterNames) {
-            final ArrayDataReader arrayDataReader = rootGroup.createReader(rasterName);
+            final ZarrArray zarrArray = rootGroup.openArray(rasterName);
 
-            final int[] shape = arrayDataReader.getShape();
-            final int[] chunks = arrayDataReader.getChunks();
-            final ZarrDataType zarrDataType = arrayDataReader.getDataType();
+            final int[] shape = zarrArray.getShape();
+            final int[] chunks = zarrArray.getChunks();
+            final ZarrDataType zarrDataType = zarrArray.getDataType();
 
             final SnapDataType snapDataType = getSnapDataType(zarrDataType);
             final int width = shape[1];
@@ -120,7 +120,7 @@ public class ZarrProductReader extends AbstractProductReader {
                 final double subSamplingY = (double) attributes.get(SUBSAMPLING_Y);
                 final float[] dataBuffer = new float[width * height];
                 try {
-                    arrayDataReader.read(dataBuffer, shape, new int[]{0, 0});
+                    zarrArray.read(dataBuffer, shape, new int[]{0, 0});
                 } catch (InvalidRangeException e) {
                     throw new IOException("InvalidRangeException while reading tie point raster '" + rasterName + "'", e);
                 }
@@ -133,7 +133,7 @@ public class ZarrProductReader extends AbstractProductReader {
                 final Band band = new Band(rasterName, snapDataType.getValue(), width, height);
                 product.addBand(band);
                 apply(attributes, band);
-                final ZarrOpImage zarrOpImage = new ZarrOpImage(band, shape, chunks, arrayDataReader, ResolutionLevel.MAXRES);
+                final ZarrOpImage zarrOpImage = new ZarrOpImage(band, shape, chunks, zarrArray, ResolutionLevel.MAXRES);
                 band.setSourceImage(zarrOpImage);
             }
         }

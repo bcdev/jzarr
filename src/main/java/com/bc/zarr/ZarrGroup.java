@@ -1,38 +1,64 @@
 package com.bc.zarr;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
+import com.bc.zarr.storage.FileSystemStore;
+import com.bc.zarr.storage.InMemoryStore;
+import com.bc.zarr.storage.Store;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.Map;
 
 import static com.bc.zarr.ZarrConstants.*;
 
-import static com.bc.zarr.CompressorFactory.nullCompressor;
-
 public class ZarrGroup {
 
-    public static ZarrGroup create(Path path, final Map<String, Object> attributes) throws IOException {
-        Files.createDirectories(path);
-        ZarrGroup zarrGroup = new ZarrGroup(path);
-        zarrGroup.writeJson(path, FILENAME_DOT_ZGROUP, Collections.singletonMap(ZARR_FORMAT, 2));
-        zarrGroup.writeAttributes(path, attributes);
+    /**
+     * @param path
+     * @param attributes
+     * @throws IOException
+     */
+    public static ZarrGroup create(String path, final Map<String, Object> attributes) throws IOException {
+        final Store store;
+        if (path == null) {
+            store = new InMemoryStore();
+        } else {
+            store = new FileSystemStore(Paths.get(path));
+        }
+
+        return create(store, attributes);
+    }
+
+    public static ZarrGroup create(Store store, final Map<String, Object> attributes) throws IOException {
+        ZarrGroup zarrGroup = new ZarrGroup(store);
+        zarrGroup.createHeader();
+        zarrGroup.writeAttributes(attributes);
         return zarrGroup;
     }
 
     public static ZarrGroup open(Path groupPath) throws IOException {
         ZarrUtils.ensureDirectory(groupPath);
-        final Path dotZGroupPath = groupPath.resolve(FILENAME_DOT_ZGROUP);
-        ZarrUtils.ensureFileExistAndIsReadable(dotZGroupPath);
-        ensureZarrFormat2(dotZGroupPath);
-        return new ZarrGroup(groupPath);
+        return open(new FileSystemStore(groupPath));
     }
 
-    private static void ensureZarrFormat2(Path jsonPath) throws IOException {
-        try (BufferedReader reader = Files.newBufferedReader(jsonPath)) {
+    public static ZarrGroup open(Store store) throws IOException {
+        try (InputStream is = store.getInputStream(FILENAME_DOT_ZGROUP)) {
+            if (is == null) {
+                throw new IOException("'" + FILENAME_DOT_ZGROUP + "' expected but is not readable or missing in store.");
+            }
+            ensureZarrFormatIs2(is);
+        }
+        return new ZarrGroup(store);
+    }
+
+    private static void ensureZarrFormatIs2(InputStream is) throws IOException {
+
+        try (
+                final InputStreamReader in = new InputStreamReader(is);
+                BufferedReader reader = new BufferedReader(in)
+        ) {
             final ZarrFormat fromJson = ZarrUtils.fromJson(reader, ZarrFormat.class);
             if (fromJson.zarr_format != 2) {
                 throw new IOException("Zarr format 2 expected but is '" + fromJson.zarr_format + "'");
@@ -40,78 +66,52 @@ public class ZarrGroup {
         }
     }
 
+    public ZarrGroup createGroup(String subGroupKey, Map<String, Object> attributes) throws IOException {
+        final ZarrGroup group = new ZarrGroup(subGroupKey, store);
+        group.createHeader();
+        group.writeAttributes(attributes);
+        return group;
+    }
+
     private final class ZarrFormat {
         double zarr_format;
     }
 
-    private final Path path;
+    private final Store store;
+    private final ZarrPath zarrPath;
 
-    private ZarrGroup(Path path) {
-        this.path = path;
+    private ZarrGroup(Store store) {
+        this.zarrPath = new ZarrPath("");
+        this.store = store;
     }
 
-    public ArrayDataWriter createWriter(String name, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor, final Map<String, Object> attributes) throws IOException {
-        final Path dataPath = initialize(name);
-
-        final ZarrHeader zarrHeader = new ZarrHeader(shape, chunks, dataType.toString(), fillValue, compressor);
-        writeJson(dataPath, FILENAME_DOT_ZARRAY, zarrHeader);
-        writeAttributes(dataPath, attributes);
-
-        return new ArrayDataReaderWriter(dataPath, shape, chunks, dataType, fillValue, compressor);
+    private ZarrGroup(String subGroupKey, Store store) {
+        this.zarrPath = new ZarrPath(subGroupKey);
+        this.store = store;
     }
 
-    public ArrayDataReader createReader(String name) throws IOException {
-        final Path dataPath = path.resolve(name);
-        final Path zarrHeaderPath = dataPath.resolve(FILENAME_DOT_ZARRAY);
-        try (BufferedReader reader = Files.newBufferedReader(zarrHeaderPath)) {
-            final ZarrHeader header = ZarrUtils.fromJson(reader, ZarrHeader.class);
-            final int[] shape = header.getShape();
-            final int[] chunks = header.getChunks();
-            final ZarrDataType rawDataType = header.getRawDataType();
-            final Number fill_value = header.getFill_value();
-            final ZarrHeader.CompressorBean compressorBean = header.getCompressor();
-            final Compressor compressor;
-            if (compressorBean != null) {
-                final String compId = compressorBean.getId();
-                final int compLevel = compressorBean.getLevel();
-                compressor = compressorBean != null ? CompressorFactory.create(compId, compLevel) : nullCompressor;
-            } else {
-                compressor = nullCompressor;
-            }
-            return new ArrayDataReaderWriter(dataPath, shape, chunks, rawDataType, fill_value, compressor);
+    public ZarrArray createArray(String name, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor, final Map<String, Object> attributes) throws IOException {
+        final ZarrPath relativePath = zarrPath.resolve(name);
+        return ZarrArray.create(relativePath, store, shape, chunks, dataType, fillValue, compressor, attributes);
+    }
+
+    public ZarrArray openArray(String name) throws IOException {
+        return ZarrArray.open(zarrPath.resolve(name), store);
+    }
+
+    private void createHeader() throws IOException {
+        final Map<String, Integer> singletonMap = Collections.singletonMap(ZARR_FORMAT, 2);
+        final ZarrPath headerPath = zarrPath.resolve(FILENAME_DOT_ZGROUP);
+        try (
+                final OutputStream os = store.getOutputStream(headerPath.storeKey);
+                final OutputStreamWriter writer = new OutputStreamWriter(os)
+        ) {
+            ZarrUtils.toJson(singletonMap, writer);
         }
     }
 
-    private Path initialize(String name) throws IOException {
-        final Path dataPath = path.resolve(name);
-
-        final LinkedList<IOException> exceptions = new LinkedList<>();
-        if (Files.isDirectory(dataPath)) {
-            Files.walk(dataPath).forEach(path -> {
-                try {
-                    Files.delete(path);
-                } catch (IOException e) {
-                    exceptions.add(e);
-                }
-            });
-        }
-        if (exceptions.size() > 0) {
-            final IOException ioException = new IOException(String.format("Unable to initialize the storage for array data '%s'", name), exceptions.get(0));
-            for (int i = 1; i < exceptions.size(); i++) {
-                IOException e = exceptions.get(i);
-                ioException.addSuppressed(e);
-            }
-            throw ioException;
-        }
-
-        Files.createDirectories(dataPath);
-        return dataPath;
-    }
-
-    private void writeAttributes(Path dataPath, Map<String, Object> attributes) throws IOException {
-        if (attributes != null && !attributes.isEmpty()) {
-            writeJson(dataPath, FILENAME_DOT_ZATTRS, attributes);
-        }
+    private void writeAttributes(Map<String, Object> attributes) throws IOException {
+        ZarrUtils.writeAttributes(attributes, zarrPath, store);
     }
 
     private void writeJson(Path dataPath, String filename, Object object) throws IOException {

@@ -17,46 +17,44 @@
 package com.bc.zarr.chunk;
 
 import com.bc.zarr.Compressor;
+import com.bc.zarr.storage.Store;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.*;
 
 public class ChunkReaderWriterImpl_Byte extends ChunkReaderWriter {
 
-    public ChunkReaderWriterImpl_Byte(Compressor compressor, int[] chunkShape, Number fill) {
-        super(compressor, chunkShape, fill);
+    public ChunkReaderWriterImpl_Byte(Compressor compressor, int[] chunkShape, Number fill, Store store) {
+        super(compressor, chunkShape, fill, store);
     }
 
     @Override
-    public Array read(Path path) throws IOException {
-        if (Files.isRegularFile(path)) {
-            try (
-                    final InputStream is = Files.newInputStream(path);
-                    final ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-
-                compressor.uncompress(is, os);
-                final byte[] b = os.toByteArray();
-                return Array.factory(b).reshape(chunkShape);
+    public Array read(String storeKey) throws IOException {
+        try (
+                final InputStream is = store.getInputStream(storeKey)
+        ) {
+            if (is != null) {
+                try (
+                        final ByteArrayOutputStream os = new ByteArrayOutputStream()
+                ) {
+                    compressor.uncompress(is, os);
+                    final byte[] b = os.toByteArray();
+                    return Array.factory(b).reshape(chunkShape);
+                }
+            } else {
+                return createFilled(DataType.BYTE);
             }
-
-        } else {
-            return createFilled(DataType.BYTE);
         }
     }
 
     @Override
-    public void write(Path path, Array array) throws IOException {
+    public void write(String storeKey, Array array) throws IOException {
         final byte[] bytes = (byte[]) array.get1DJavaArray(byte.class);
-        try (final ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-             final OutputStream os = Files.newOutputStream(path)) {
-
+        try (
+                final ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+                final OutputStream os = store.getOutputStream(storeKey)
+        ) {
             compressor.compress(is, os);
         }
     }

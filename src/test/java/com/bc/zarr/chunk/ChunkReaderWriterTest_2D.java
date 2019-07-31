@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import com.bc.zarr.Compressor;
 import com.bc.zarr.CompressorFactory;
 import com.bc.zarr.ZarrDataType;
+import com.bc.zarr.storage.FileSystemStore;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.*;
@@ -22,24 +23,28 @@ import java.util.zip.Deflater;
 
 public class ChunkReaderWriterTest_2D {
 
-    private Path chunkPath;
+    private String chunkStoreKey;
+    private FileSystemStore store;
+    private Path jimfsChunkPath;
 
     @Before
     public void setUp() throws Exception {
         final Path root = Jimfs.newFileSystem(Configuration.windows()).getRootDirectories().iterator().next();
-        final Path testPath = root.resolve("test");
-        Files.createDirectories(testPath);
-        chunkPath = testPath.resolve("0.0");
+        final Path testRootPath = root.resolve("test");
+        Files.createDirectories(testRootPath);
+        chunkStoreKey = "0.0";
+        jimfsChunkPath = testRootPath.resolve(chunkStoreKey);
+        store = new FileSystemStore(testRootPath);
     }
 
     @Test
     public void read_Bytes_NullCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 6;
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(CompressorFactory.nullCompressor, ZarrDataType.i1, shape, fill);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(CompressorFactory.nullCompressor, ZarrDataType.i1, shape, fill, store);
 
         //execution
-        final Array array = readerWriter.read(chunkPath);
+        final Array array = readerWriter.read(chunkStoreKey);
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
@@ -53,10 +58,10 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 7;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, fill);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, fill, store);
 
         //execution
-        final Array array = readerWriter.read(chunkPath);
+        final Array array = readerWriter.read(chunkStoreKey);
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
@@ -70,10 +75,10 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 8;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, shape, fill);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, shape, fill, store);
 
         //execution
-        final Array array = readerWriter.read(chunkPath);
+        final Array array = readerWriter.read(chunkStoreKey);
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
@@ -87,10 +92,10 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 8;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, shape, fill);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, shape, fill, store);
 
         //execution
-        final Array array = readerWriter.read(chunkPath);
+        final Array array = readerWriter.read(chunkStoreKey);
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
@@ -104,10 +109,10 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 8;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, shape, fill);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, shape, fill, store);
 
         //execution
-        final Array array = readerWriter.read(chunkPath);
+        final Array array = readerWriter.read(chunkStoreKey);
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
@@ -121,10 +126,10 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 8;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, shape, fill);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, shape, fill, store);
 
         //execution
-        final Array array = readerWriter.read(chunkPath);
+        final Array array = readerWriter.read(chunkStoreKey);
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
@@ -138,15 +143,15 @@ public class ChunkReaderWriterTest_2D {
         final Compressor compressor = CompressorFactory.nullCompressor;
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
 
-        final OutputStream outputStream = Files.newOutputStream(chunkPath);
+        final OutputStream outputStream = Files.newOutputStream(jimfsChunkPath);
         outputStream.write(bytes);
         outputStream.close();
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3, store);
 
         //execution
-        final Array array = readerWriter.read(chunkPath);
+        final Array array = readerWriter.read(chunkStoreKey);
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
@@ -159,12 +164,12 @@ public class ChunkReaderWriterTest_2D {
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3, store);
 
         //execution
-        readerWriter.write(chunkPath, Array.factory(bytes).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(bytes).reshape(shape));
 
-        final InputStream inputStream = Files.newInputStream(chunkPath);
+        final InputStream inputStream = Files.newInputStream(jimfsChunkPath);
         final byte[] buffer = new byte[100];
         final int size = inputStream.read(buffer);
         assertThat(size, equalTo(6));
@@ -178,7 +183,7 @@ public class ChunkReaderWriterTest_2D {
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        try (final OutputStream outputStream = Files.newOutputStream(chunkPath)) {
+        try (final OutputStream outputStream = Files.newOutputStream(jimfsChunkPath)) {
             final Deflater compresser = new Deflater(compressor.getLevel());
             compresser.setInput(bytes);
             compresser.finish();
@@ -187,10 +192,10 @@ public class ChunkReaderWriterTest_2D {
             outputStream.write(buffer, 0, length);
         }
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3, store);
 
         //execution
-        final Array array = readerWriter.read(chunkPath);
+        final Array array = readerWriter.read(chunkStoreKey);
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
@@ -203,16 +208,16 @@ public class ChunkReaderWriterTest_2D {
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(bytes).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(bytes).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(6L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(6L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));
@@ -226,16 +231,16 @@ public class ChunkReaderWriterTest_2D {
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(bytes).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(bytes).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(14L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(14L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));
@@ -252,16 +257,16 @@ public class ChunkReaderWriterTest_2D {
         };
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(input).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(12L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(12L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));
@@ -275,16 +280,16 @@ public class ChunkReaderWriterTest_2D {
         final short[] shorts = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(shorts).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(shorts).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(20L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(20L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));
@@ -301,16 +306,16 @@ public class ChunkReaderWriterTest_2D {
         };
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(input).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(24L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(24L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));
@@ -324,16 +329,16 @@ public class ChunkReaderWriterTest_2D {
         final int[] ints = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(ints).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ints).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(26L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(26L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));
@@ -350,16 +355,16 @@ public class ChunkReaderWriterTest_2D {
         };
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(input).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(24L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(24L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));
@@ -373,16 +378,16 @@ public class ChunkReaderWriterTest_2D {
         final float[] floats = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(floats).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(floats).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(25L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(25L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));
@@ -399,16 +404,16 @@ public class ChunkReaderWriterTest_2D {
         };
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(input).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(48L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(48L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));
@@ -422,16 +427,16 @@ public class ChunkReaderWriterTest_2D {
         final double[] doubles = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, shape, 3);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkPath, Array.factory(doubles).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(doubles).reshape(shape));
 
         //intermediate verification
-        assertThat(Files.size(chunkPath), is(equalTo(28L)));
+        assertThat(Files.size(jimfsChunkPath), is(equalTo(28L)));
 
         //execution read
-        final Array read = readerWriter.read(chunkPath);
+        final Array read = readerWriter.read(chunkStoreKey);
 
         //verification
         assertThat(read, is(notNullValue()));

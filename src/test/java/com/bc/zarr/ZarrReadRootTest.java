@@ -1,12 +1,12 @@
 package com.bc.zarr;
 
+import com.bc.zarr.storage.FileSystemStore;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -32,21 +32,19 @@ public class ZarrReadRootTest {
 
     @Test
     public void create() throws NoSuchFieldException, IllegalAccessException, IOException {
-        final ZarrGroup readRoot = ZarrGroup.open(rootPath);
+        final ZarrGroup rootGrp = ZarrGroup.open(rootPath);
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ArrayDataWriter reader = readRoot.createWriter("rastername", ZarrDataType.f4, new int[]{101, 102}, new int[]{11, 12}, 4.2, compressor, null);
+        final ZarrArray arrayData = rootGrp.createArray("rastername", ZarrDataType.f4, new int[]{101, 102}, new int[]{11, 12}, 4.2, compressor, null);
 
-        assertThat(reader, is(instanceOf(ArrayDataReaderWriter.class)));
-
-        final ArrayDataReaderWriter zarrReaderWriter = (ArrayDataReaderWriter) reader;
         final String name = "_dataPath";
-        final Object path = getPrivateFieldObject(zarrReaderWriter, name);
-        assertThat(path.toString(), is("lsmf\\rastername"));
+        final Object path = TestUtils.getPrivateFieldObject(arrayData, name);
+        assertThat(path, is(instanceOf(ZarrPath.class)));
+        assertThat(((ZarrPath)path).storeKey, is("rastername"));
+        final Object store = TestUtils.getPrivateFieldObject(rootGrp, "store");
+        assertThat(store, is(instanceOf(FileSystemStore.class)));
+        final Object root = TestUtils.getPrivateFieldObject(store, "root");
+        assertThat(root, is(instanceOf(Path.class)));
+        assertThat(((Path)root).toString(), is("lsmf"));
     }
 
-    private Object getPrivateFieldObject(ArrayDataReaderWriter zarrReaderWriter, String name) throws NoSuchFieldException, IllegalAccessException {
-        final Field dataPath = zarrReaderWriter.getClass().getDeclaredField(name);
-        dataPath.setAccessible(true);
-        return dataPath.get(zarrReaderWriter);
-    }
 }

@@ -17,51 +17,58 @@
 package com.bc.zarr.chunk;
 
 
-import static com.bc.zarr.ZarrUtils.computeSizeInteger;
-
 import com.bc.zarr.Compressor;
+import com.bc.zarr.CompressorFactory;
 import com.bc.zarr.ZarrDataType;
+import com.bc.zarr.storage.Store;
 import com.bc.zarr.ucar.NetCDF_Util;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
+
+import static com.bc.zarr.ZarrUtils.computeSizeInteger;
 
 public abstract class ChunkReaderWriter {
 
     protected final Compressor compressor;
     protected final int[] chunkShape;
     protected final Number fill;
+    protected final Store store;
     private final int size;
 
-    ChunkReaderWriter(Compressor compressor, int[] chunkShape, Number fill) {
-        this.compressor = compressor;
+    ChunkReaderWriter(Compressor compressor, int[] chunkShape, Number fill, Store store) {
+        if (compressor != null) {
+            this.compressor = compressor;
+        } else {
+            this.compressor = CompressorFactory.nullCompressor;
+        }
         this.chunkShape = Arrays.copyOf(chunkShape, chunkShape.length);
         this.fill = fill;
         this.size = computeSizeInteger(chunkShape);
+        this.store = store;
     }
 
-    public static ChunkReaderWriter create(Compressor compressor, ZarrDataType dataType, int[] chunkShape, Number fill) {
+    public static ChunkReaderWriter create(Compressor compressor, ZarrDataType dataType, int[] chunkShape, Number fill, Store store) {
         if (dataType == ZarrDataType.f8) {
-            return new ChunkReaderWriterImpl_Double(compressor, chunkShape, fill);
+            return new ChunkReaderWriterImpl_Double(compressor, chunkShape, fill, store);
         } else if (dataType == ZarrDataType.f4) {
-            return new ChunkReaderWriterImpl_Float(compressor, chunkShape, fill);
+            return new ChunkReaderWriterImpl_Float(compressor, chunkShape, fill, store);
         } else if (dataType == ZarrDataType.i4 || dataType == ZarrDataType.u4) {
-            return new ChunkReaderWriterImpl_Integer(compressor, chunkShape, fill);
+            return new ChunkReaderWriterImpl_Integer(compressor, chunkShape, fill, store);
         } else if (dataType == ZarrDataType.i2 || dataType == ZarrDataType.u2) {
-            return new ChunkReaderWriterImpl_Short(compressor, chunkShape, fill);
+            return new ChunkReaderWriterImpl_Short(compressor, chunkShape, fill, store);
         } else if (dataType == ZarrDataType.i1 || dataType == ZarrDataType.u1) {
-            return new ChunkReaderWriterImpl_Byte(compressor, chunkShape, fill);
+            return new ChunkReaderWriterImpl_Byte(compressor, chunkShape, fill, store);
         } else {
             throw new IllegalStateException();
         }
     }
 
-    public abstract Array read(Path path) throws IOException;
+    public abstract Array read(String path) throws IOException;
 
-    public abstract void write(Path path, Array array) throws IOException;
+    public abstract void write(String path, Array array) throws IOException;
 
     protected Array createFilled(final DataType dataType) {
         return NetCDF_Util.createFilledArray(dataType, chunkShape, fill);
@@ -70,4 +77,5 @@ public abstract class ChunkReaderWriter {
     protected int getSize() {
         return this.size;
     }
+
 }
