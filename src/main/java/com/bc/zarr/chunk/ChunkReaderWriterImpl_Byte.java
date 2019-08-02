@@ -26,7 +26,7 @@ import java.io.*;
 public class ChunkReaderWriterImpl_Byte extends ChunkReaderWriter {
 
     public ChunkReaderWriterImpl_Byte(Compressor compressor, int[] chunkShape, Number fill, Store store) {
-        super(compressor, chunkShape, fill, store);
+        super(null, compressor, chunkShape, fill, store);
     }
 
     @Override

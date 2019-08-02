@@ -99,7 +99,7 @@ public final class ZarrUtils {
         return gson.fromJson(reader, classOfType);
     }
 
-    public static long computeSizeLong(int[] ints) {
+    public static long computeSize(int[] ints) {
         long count = 1;
         for (int i : ints) {
             count *= i;
@@ -174,5 +174,25 @@ public final class ZarrUtils {
         for (Path path : paths) {
             Files.delete(path);
         }
+    }
+
+    public static Object createDataBuffer(ZarrDataType dataType, int[] shape) {
+        final int size = computeSizeInteger(shape);
+        switch (dataType) {
+            case i1:
+            case u1:
+                return new byte[size];
+            case i2:
+            case u2:
+                return new short[size];
+            case i4:
+            case u4:
+                return new int[size];
+            case f4:
+                return new float[size];
+            case f8:
+                return new double[size];
+        }
+        return null;
     }
 }

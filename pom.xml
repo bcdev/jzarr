@@ -24,6 +24,7 @@
             <artifactId>netcdf</artifactId>
             <version>4.3.23</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -73,23 +74,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
-                    <configuration>
-                        <archive>
-                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                        </archive>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>test-jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-
-                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.0</version>
                     <configuration>
@@ -110,10 +94,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.10</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

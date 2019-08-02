@@ -142,7 +142,7 @@ public class ZarrUtilsTest {
     @Test
     public void computeSize() {
         final int intSize = ZarrUtils.computeSizeInteger(new int[]{2, 3, 4});
-        final long longSize = ZarrUtils.computeSizeLong(new int[]{2, 3, 4});
+        final long longSize = ZarrUtils.computeSize(new int[]{2, 3, 4});
         assertEquals(24, intSize);
         assertEquals((long) intSize, longSize);
     }

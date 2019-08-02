@@ -21,14 +21,14 @@ public class ZarrGroup {
      * @throws IOException
      */
     public static ZarrGroup create(String path, final Map<String, Object> attributes) throws IOException {
-        final Store store;
         if (path == null) {
-            store = new InMemoryStore();
-        } else {
-            store = new FileSystemStore(Paths.get(path));
+            return create(new InMemoryStore(), attributes);
         }
+        return create(Paths.get(path), attributes);
+    }
 
-        return create(store, attributes);
+    private static ZarrGroup create(Path fileSystemPath, final Map<String, Object> attributes) throws IOException {
+        return create(new FileSystemStore(fileSystemPath), attributes);
     }
 
     public static ZarrGroup create(Store store, final Map<String, Object> attributes) throws IOException {
@@ -38,12 +38,27 @@ public class ZarrGroup {
         return zarrGroup;
     }
 
-    public static ZarrGroup open(Path groupPath) throws IOException {
-        ZarrUtils.ensureDirectory(groupPath);
-        return open(new FileSystemStore(groupPath));
+    public static ZarrGroup open() throws IOException {
+        return create(new InMemoryStore(), null);
+    }
+
+    public static ZarrGroup open(String path) throws IOException {
+        if (path == null) {
+            return open();
+        }
+        return open(Paths.get(path));
+    }
+
+    public static ZarrGroup open(Path fileSystemPath) throws IOException {
+        if (fileSystemPath == null) {
+            return open();
+        }
+        ZarrUtils.ensureDirectory(fileSystemPath);
+        return open(new FileSystemStore(fileSystemPath));
     }
 
     public static ZarrGroup open(Store store) throws IOException {
+        if (store == null) return open();
         try (InputStream is = store.getInputStream(FILENAME_DOT_ZGROUP)) {
             if (is == null) {
                 throw new IOException("'" + FILENAME_DOT_ZGROUP + "' expected but is not readable or missing in store.");
@@ -66,8 +81,9 @@ public class ZarrGroup {
         }
     }
 
-    public ZarrGroup createGroup(String subGroupKey, Map<String, Object> attributes) throws IOException {
-        final ZarrGroup group = new ZarrGroup(subGroupKey, store);
+    public ZarrGroup createSubGroup(String subGroupName, Map<String, Object> attributes) throws IOException {
+        final ZarrPath relativePath = this.relativePath.resolve(subGroupName);
+        final ZarrGroup group = new ZarrGroup(relativePath, store);
         group.createHeader();
         group.writeAttributes(attributes);
         return group;
@@ -78,30 +94,31 @@ public class ZarrGroup {
     }
 
     private final Store store;
-    private final ZarrPath zarrPath;
+    private final ZarrPath relativePath;
 
     private ZarrGroup(Store store) {
-        this.zarrPath = new ZarrPath("");
+        this.relativePath = new ZarrPath("");
         this.store = store;
     }
 
-    private ZarrGroup(String subGroupKey, Store store) {
-        this.zarrPath = new ZarrPath(subGroupKey);
+    private ZarrGroup(ZarrPath relativePath, Store store) {
+        this.relativePath = relativePath;
         this.store = store;
     }
 
     public ZarrArray createArray(String name, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor, final Map<String, Object> attributes) throws IOException {
-        final ZarrPath relativePath = zarrPath.resolve(name);
+        final ZarrPath relativePath = this.relativePath.resolve(name);
         return ZarrArray.create(relativePath, store, shape, chunks, dataType, fillValue, compressor, attributes);
     }
 
     public ZarrArray openArray(String name) throws IOException {
-        return ZarrArray.open(zarrPath.resolve(name), store);
+        final ZarrPath relativePath = this.relativePath.resolve(name);
+        return ZarrArray.open(relativePath, store);
     }
 
     private void createHeader() throws IOException {
         final Map<String, Integer> singletonMap = Collections.singletonMap(ZARR_FORMAT, 2);
-        final ZarrPath headerPath = zarrPath.resolve(FILENAME_DOT_ZGROUP);
+        final ZarrPath headerPath = relativePath.resolve(FILENAME_DOT_ZGROUP);
         try (
                 final OutputStream os = store.getOutputStream(headerPath.storeKey);
                 final OutputStreamWriter writer = new OutputStreamWriter(os)
@@ -111,7 +128,7 @@ public class ZarrGroup {
     }
 
     private void writeAttributes(Map<String, Object> attributes) throws IOException {
-        ZarrUtils.writeAttributes(attributes, zarrPath, store);
+        ZarrUtils.writeAttributes(attributes, relativePath, store);
     }
 
     private void writeJson(Path dataPath, String filename, Object object) throws IOException {

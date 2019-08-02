@@ -41,17 +41,13 @@ public class ZarrGroupTest_open {
     }
 
     @Test
-    public void open_pathIsNull() {
+    public void open_pathIsNull_willBeDelegatedToCreateGroupWithInMemoryStore() throws IOException {
         //preparation
         final Path groupPath = null;
-        try {
-            //execution
-            ZarrGroup.open(groupPath);
-            fail("IOException expected");
-        } catch (IOException expected) {
-            //verification
-            assertThat(expected.getMessage(), is("Path 'null' is not a valid path or not a directory."));
-        }
+        //execution
+        final ZarrGroup open = ZarrGroup.open(groupPath);
+        //verification
+        assertThat(open, is(notNullValue()));
     }
 
     @Test

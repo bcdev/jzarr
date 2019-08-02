@@ -1,7 +1,6 @@
 package com.bc.zarr.storage;
 
 import com.bc.zarr.*;
-import com.bc.zarr.chunk.ChunkReaderWriter;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.After;
@@ -216,7 +215,7 @@ public class FileSystemStoreTest {
 
         //execution
         final ZarrGroup rootGrp = ZarrGroup.create(store, null);
-        final ZarrGroup foo = rootGrp.createGroup("foo", attributes);
+        final ZarrGroup foo = rootGrp.createSubGroup("foo", attributes);
 
         //verification
         final Path fooPath = rootPath.resolve("foo");

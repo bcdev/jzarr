@@ -16,6 +16,7 @@
  */
 package com.bc.zarr.ucar;
 
+import com.bc.zarr.ZarrDataType;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
 import ucar.ma2.IndexIterator;
@@ -31,10 +32,10 @@ public class NetCDF_Util {
         return netCDF;
     }
 
-    public static Array createArrayWithGivenStorage(Object storage, int[] shape ) {
+    public static Array createArrayWithGivenStorage(Object storage, int[] shape) {
         final Class<?> aClass = storage.getClass();
-        if (aClass.isArray()){
-                return Array.factory(storage.getClass().getComponentType(), shape, storage);
+        if (aClass.isArray()) {
+            return Array.factory(storage.getClass().getComponentType(), shape, storage);
         }
         return null;
     }
@@ -42,29 +43,44 @@ public class NetCDF_Util {
     public static Array createFilledArray(DataType dataType, int[] shape, Number fill) {
         final Array array = Array.factory(dataType, shape);
         final IndexIterator iter = array.getIndexIterator();
-        if (DataType.DOUBLE.equals(dataType)) {
-            while (iter.hasNext()) {
-                iter.setDoubleNext(fill.doubleValue());
+        if (fill != null) {
+            if (DataType.DOUBLE.equals(dataType)) {
+                while (iter.hasNext()) {
+                    iter.setDoubleNext(fill.doubleValue());
+                }
+            } else if (DataType.FLOAT.equals(dataType)) {
+                while (iter.hasNext()) {
+                    iter.setFloatNext(fill.floatValue());
+                }
+            } else if (DataType.INT.equals(dataType)) {
+                while (iter.hasNext()) {
+                    iter.setIntNext(fill.intValue());
+                }
+            } else if (DataType.SHORT.equals(dataType)) {
+                while (iter.hasNext()) {
+                    iter.setShortNext(fill.shortValue());
+                }
+            } else if (DataType.BYTE.equals(dataType)) {
+                while (iter.hasNext()) {
+                    iter.setByteNext(fill.byteValue());
+                }
+            } else {
+                throw new IllegalStateException();
             }
-        } else if (DataType.FLOAT.equals(dataType)) {
-            while (iter.hasNext()) {
-                iter.setFloatNext(fill.floatValue());
-            }
-        } else if (DataType.INT.equals(dataType)) {
-            while (iter.hasNext()) {
-                iter.setIntNext(fill.intValue());
-            }
-        } else if (DataType.SHORT.equals(dataType)) {
-            while (iter.hasNext()) {
-                iter.setShortNext(fill.shortValue());
-            }
-        } else if (DataType.BYTE.equals(dataType)) {
-            while (iter.hasNext()) {
-                iter.setByteNext(fill.byteValue());
-            }
-        } else {
-            throw new IllegalStateException();
         }
         return array;
+    }
+
+    public static DataType getDataType(ZarrDataType dataType) {
+        if (dataType == ZarrDataType.f8) {
+            return DataType.DOUBLE;
+        } else if (dataType == ZarrDataType.f4) {
+            return DataType.FLOAT;
+        } else if (dataType == ZarrDataType.i4 || dataType == ZarrDataType.u4) {
+            return DataType.INT;
+        } else if (dataType == ZarrDataType.i2 || dataType == ZarrDataType.u2) {
+            return DataType.SHORT;
+        }
+        return DataType.BYTE;
     }
 }

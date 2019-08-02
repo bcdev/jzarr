@@ -30,8 +30,8 @@ import java.nio.ByteOrder;
 
 public class ChunkReaderWriterImpl_Integer extends ChunkReaderWriter {
 
-    public ChunkReaderWriterImpl_Integer(Compressor compressor, int[] chunkShape, Number fill, Store store) {
-        super(compressor, chunkShape, fill, store);
+    public ChunkReaderWriterImpl_Integer(ByteOrder order, Compressor compressor, int[] chunkShape, Number fill, Store store) {
+        super(order, compressor, chunkShape, fill, store);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ChunkReaderWriterImpl_Integer extends ChunkReaderWriter {
                             final ByteArrayInputStream bais = new ByteArrayInputStream(os.toByteArray());
                             final ImageInputStream iis = new MemoryCacheImageInputStream(bais)
                     ) {
-                        iis.setByteOrder(ByteOrder.BIG_ENDIAN);
+                        iis.setByteOrder(order);
                         iis.readFully(ints, 0, ints.length);
                     }
                     return Array.factory(ints).reshape(chunkShape);
@@ -68,7 +68,7 @@ public class ChunkReaderWriterImpl_Integer extends ChunkReaderWriter {
                 final OutputStream os = store.getOutputStream(storeKey)
         ) {
             final int[] ints = (int[]) array.get1DJavaArray(int.class);
-            iis.setByteOrder(ByteOrder.BIG_ENDIAN);
+            iis.setByteOrder(order);
             iis.writeInts(ints, 0, ints.length);
             iis.seek(0);
             compressor.compress(is, os);

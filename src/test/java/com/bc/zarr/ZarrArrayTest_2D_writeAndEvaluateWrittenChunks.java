@@ -10,6 +10,7 @@ import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -154,7 +155,7 @@ public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
         final List<Path> chunkFiles = getChunkFilesWritten();
         assertEquals(4, chunkFiles.size());
 
-        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Short(compressor, chunkShape, Fill, store);
+        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Short(ByteOrder.BIG_ENDIAN, compressor, chunkShape, Fill, store);
         Array ma2Array;
 
         for (int i = 0; i < chunkFiles.size(); i++) {
@@ -220,7 +221,7 @@ public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
         final List<Path> chunkFiles = getChunkFilesWritten();
         assertEquals(4, chunkFiles.size());
 
-        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Integer(compressor, chunkShape, Fill, store);
+        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Integer(ByteOrder.BIG_ENDIAN, compressor, chunkShape, Fill, store);
         Array ma2Array;
 
         for (int i = 0; i < chunkFiles.size(); i++) {
@@ -286,7 +287,7 @@ public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
         final List<Path> chunkFiles = getChunkFilesWritten();
         assertEquals(4, chunkFiles.size());
 
-        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Float(compressor, chunkShape, Fill, store);
+        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Float(ByteOrder.BIG_ENDIAN, compressor, chunkShape, Fill, store);
         Array ma2Array;
 
         for (int i = 0; i < chunkFiles.size(); i++) {
@@ -352,7 +353,7 @@ public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
         final List<Path> chunkFiles = getChunkFilesWritten();
         assertEquals(4, chunkFiles.size());
 
-        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Double(compressor, chunkShape, Fill, store);
+        final ChunkReaderWriter cr = new ChunkReaderWriterImpl_Double(ByteOrder.BIG_ENDIAN, compressor, chunkShape, Fill, store);
         Array ma2Array;
 
         for (int i = 0; i < chunkFiles.size(); i++) {

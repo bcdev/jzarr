@@ -26,3 +26,6 @@ hs_err_pid*
 target/
 
 
+/jzarr.ipr
+/jzarr.iws
+/src/test/java/temp/

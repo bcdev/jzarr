@@ -25,6 +25,7 @@ import ucar.ma2.Array;
 import ucar.ma2.DataType;
 
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import static com.bc.zarr.ZarrUtils.computeSizeInteger;
@@ -35,9 +36,10 @@ public abstract class ChunkReaderWriter {
     final int[] chunkShape;
     protected final Number fill;
     protected final Store store;
+    protected final ByteOrder order;
     private final int size;
 
-    ChunkReaderWriter(Compressor compressor, int[] chunkShape, Number fill, Store store) {
+    ChunkReaderWriter(ByteOrder order, Compressor compressor, int[] chunkShape, Number fill, Store store) {
         if (compressor != null) {
             this.compressor = compressor;
         } else {
@@ -47,17 +49,18 @@ public abstract class ChunkReaderWriter {
         this.fill = fill;
         this.size = computeSizeInteger(chunkShape);
         this.store = store;
+        this.order = order;
     }
 
-    public static ChunkReaderWriter create(Compressor compressor, ZarrDataType dataType, int[] chunkShape, Number fill, Store store) {
+    public static ChunkReaderWriter create(Compressor compressor, ZarrDataType dataType, ByteOrder order, int[] chunkShape, Number fill, Store store) {
         if (dataType == ZarrDataType.f8) {
-            return new ChunkReaderWriterImpl_Double(compressor, chunkShape, fill, store);
+            return new ChunkReaderWriterImpl_Double(order, compressor, chunkShape, fill, store);
         } else if (dataType == ZarrDataType.f4) {
-            return new ChunkReaderWriterImpl_Float(compressor, chunkShape, fill, store);
+            return new ChunkReaderWriterImpl_Float(order, compressor, chunkShape, fill, store);
         } else if (dataType == ZarrDataType.i4 || dataType == ZarrDataType.u4) {
-            return new ChunkReaderWriterImpl_Integer(compressor, chunkShape, fill, store);
+            return new ChunkReaderWriterImpl_Integer(order, compressor, chunkShape, fill, store);
         } else if (dataType == ZarrDataType.i2 || dataType == ZarrDataType.u2) {
-            return new ChunkReaderWriterImpl_Short(compressor, chunkShape, fill, store);
+            return new ChunkReaderWriterImpl_Short(order, compressor, chunkShape, fill, store);
         } else if (dataType == ZarrDataType.i1 || dataType == ZarrDataType.u1) {
             return new ChunkReaderWriterImpl_Byte(compressor, chunkShape, fill, store);
         } else {
