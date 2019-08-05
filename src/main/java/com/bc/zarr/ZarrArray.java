@@ -4,7 +4,7 @@ import com.bc.zarr.chunk.ChunkReaderWriter;
 import com.bc.zarr.storage.FileSystemStore;
 import com.bc.zarr.storage.Store;
 import com.bc.zarr.ucar.NetCDF_Util;
-import com.bc.zarr.ucar.Partial2dDataCopier;
+import com.bc.zarr.ucar.PartialDataCopier;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 
@@ -151,8 +151,8 @@ public class ZarrArray {
                 }
                 synchronized (_locks.get(chunkFilename)) {
                     final Array targetChunk = _chunkReaderWriter.read(chunkFilePath.storeKey);
-                    final Array read = Partial2dDataCopier.copy(fromBufferPos, source, targetChunk);
-                    _chunkReaderWriter.write(chunkFilePath.storeKey, read);
+                    PartialDataCopier.copy(fromBufferPos, source, targetChunk);
+                    _chunkReaderWriter.write(chunkFilePath.storeKey, targetChunk);
                 }
             }
         }
@@ -182,7 +182,7 @@ public class ZarrArray {
                 System.arraycopy(sourceChunk.getStorage(), 0, targetBuffer, 0, (int) sourceChunk.getSize());
             } else {
                 final Array target = NetCDF_Util.createArrayWithGivenStorage(targetBuffer, bufferShape);
-                Partial2dDataCopier.copy(fromChunkPos, sourceChunk, target);
+                PartialDataCopier.copy(fromChunkPos, sourceChunk, target);
             }
         }
     }
@@ -200,7 +200,7 @@ public class ZarrArray {
     }
 
     private int[] computeFrom(int[] chunkIndex, int[] to, boolean read) {
-        int[] from = {0, 0};
+        int[] from = new int[chunkIndex.length];
         for (int i = 0; i < chunkIndex.length; i++) {
             int index = chunkIndex[i];
             from[i] = index * _chunks[i];
