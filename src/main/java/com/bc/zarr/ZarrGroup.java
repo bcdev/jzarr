@@ -10,10 +10,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import static com.bc.zarr.ZarrConstants.*;
 
 public class ZarrGroup {
+
+    public static ZarrGroup create(String path) throws IOException {
+        return create(path, null);
+    }
 
     /**
      * @param path
@@ -31,6 +37,9 @@ public class ZarrGroup {
         return create(new FileSystemStore(fileSystemPath), attributes);
     }
 
+    public static ZarrGroup create(Store store) throws IOException {
+        return create(store, null);
+    }
     public static ZarrGroup create(Store store, final Map<String, Object> attributes) throws IOException {
         ZarrGroup zarrGroup = new ZarrGroup(store);
         zarrGroup.createHeader();
@@ -81,6 +90,9 @@ public class ZarrGroup {
         }
     }
 
+    public ZarrGroup createSubGroup(String subGroupName) throws IOException {
+        return createSubGroup(subGroupName, null);
+    }
     public ZarrGroup createSubGroup(String subGroupName, Map<String, Object> attributes) throws IOException {
         final ZarrPath relativePath = this.relativePath.resolve(subGroupName);
         final ZarrGroup group = new ZarrGroup(relativePath, store);
@@ -106,6 +118,9 @@ public class ZarrGroup {
         this.store = store;
     }
 
+    public ZarrArray createArray(String name, ArrayParameters params) throws IOException {
+        return createArray(name, params, null);
+    }
     public ZarrArray createArray(String name, ArrayParameters params, final Map<String, Object> attributes) throws IOException {
         final ZarrPath relativePath = this.relativePath.resolve(name);
         return ZarrArray.create(relativePath, store, params, attributes);
@@ -114,6 +129,16 @@ public class ZarrGroup {
     public ZarrArray openArray(String name) throws IOException {
         final ZarrPath relativePath = this.relativePath.resolve(name);
         return ZarrArray.open(relativePath, store);
+    }
+
+    public TreeSet<String> getArrayKeys() throws IOException {
+        return store.getArrayKeys();
+    }
+
+    public Set<String> getGroupKeys() throws IOException {
+        final Set<String> groupKeys = store.getGroupKeys();
+        groupKeys.remove("");
+        return groupKeys;
     }
 
     private void createHeader() throws IOException {

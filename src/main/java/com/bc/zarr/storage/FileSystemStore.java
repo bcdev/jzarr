@@ -1,7 +1,7 @@
 package com.bc.zarr.storage;
 
+import com.bc.zarr.ZarrConstants;
 import com.bc.zarr.ZarrUtils;
-import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,8 +10,10 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static org.apache.commons.io.FileUtils.deleteDirectory;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class FileSystemStore implements Store {
 
@@ -59,5 +61,22 @@ public class FileSystemStore implements Store {
         if (Files.exists(toBeDeleted)|| Files.isDirectory(toBeDeleted)) {
             throw new IOException("Unable to initialize " + toBeDeleted.toAbsolutePath().toString());
         }
+    }
+
+    @Override
+    public TreeSet<String> getArrayKeys() throws IOException {
+        return getKeysFor(ZarrConstants.FILENAME_DOT_ZARRAY);
+    }
+
+    @Override
+    public TreeSet<String> getGroupKeys() throws IOException {
+        return getKeysFor(ZarrConstants.FILENAME_DOT_ZGROUP);
+    }
+
+    private TreeSet<String> getKeysFor(String suffix) throws IOException {
+        return  Files.walk(root)
+                .filter(path -> path.getFileName().toString().endsWith(suffix))
+                .map(path -> root.relativize(path.getParent()).toString())
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 }

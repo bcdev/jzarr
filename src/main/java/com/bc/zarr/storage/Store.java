@@ -3,6 +3,7 @@ package com.bc.zarr.storage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.TreeSet;
 
 /**
  * Store interface according to https://zarr.readthedocs.io/en/stable/spec/v2.html#storage
@@ -18,4 +19,8 @@ public interface Store {
     OutputStream getOutputStream(String key) throws IOException;
 
     void delete(String key) throws IOException;
+
+    TreeSet<String> getArrayKeys() throws IOException;
+
+    TreeSet<String> getGroupKeys() throws IOException;
 }
