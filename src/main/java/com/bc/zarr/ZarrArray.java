@@ -31,11 +31,7 @@ public class ZarrArray {
     private final Number _fillValue;
     private final Compressor _compressor;
     private final Store _store;
-    private ByteOrder byteOrder;
-
-    private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, ZarrDataType dataType, Number fillValue, Compressor compressor, Store store) {
-        this(relativePath, shape, chunkShape, dataType, ByteOrder.BIG_ENDIAN, fillValue, compressor, store);
-    }
+    private final ByteOrder _byteOrder;
 
     private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, ZarrDataType dataType, ByteOrder order, Number fillValue, Compressor compressor, Store store) {
         _dataPath = relativePath;
@@ -51,7 +47,7 @@ public class ZarrArray {
         _store = store;
         _chunkReaderWriter = ChunkReaderWriter.create(_compressor, _dataType, order, _chunks, _fillValue, _store);
         _locks = Collections.synchronizedMap(new TreeMap<>());
-        byteOrder = order;
+        _byteOrder = order;
     }
 
     public static ZarrArray open(String path) throws IOException {
@@ -91,23 +87,29 @@ public class ZarrArray {
         }
     }
 
-    public static ZarrArray create(String path, int[] shape, int[] chunks, ZarrDataType dataType, Number fillValue, Compressor compressor, Map<String, Object> attributes) throws IOException {
+    public static ZarrArray create(String path, ArrayParameters params, Map<String, Object> attributes) throws IOException {
         final Path fsPath = Paths.get(path);
-        return create(fsPath, shape, chunks, dataType, fillValue, compressor, attributes);
+        return create(fsPath, params, attributes);
     }
 
-    public static ZarrArray create(Path fsPath, int[] shape, int[] chunks, ZarrDataType dataType, Number fillValue, Compressor compressor, Map<String, Object> attributes) throws IOException {
+    public static ZarrArray create(Path fsPath, ArrayParameters params, Map<String, Object> attributes) throws IOException {
         final FileSystemStore store = new FileSystemStore(fsPath);
-        return create(store, shape, chunks, dataType, fillValue, compressor, attributes);
+        return create(store, params, attributes);
     }
 
-    public static ZarrArray create(Store store, int[] shape, int[] chunks, ZarrDataType dataType, Number fillValue, Compressor compressor, Map<String, Object> attributes) throws IOException {
-        return create(new ZarrPath(""), store, shape, chunks, dataType, fillValue, compressor, attributes);
+    public static ZarrArray create(Store store, ArrayParameters params, Map<String, Object> attributes) throws IOException {
+        return create(new ZarrPath(""), store, params, attributes);
     }
 
-    public static ZarrArray create(ZarrPath relativePath, Store store, int[] shape, int[] chunks, ZarrDataType dataType, Number fillValue, Compressor compressor, Map<String, Object> attributes) throws IOException {
+    public static ZarrArray create(ZarrPath relativePath, Store store, ArrayParameters params, Map<String, Object> attributes) throws IOException {
         store.delete(relativePath.storeKey);
-        final ZarrArray zarrArray = new ZarrArray(relativePath, shape, chunks, dataType, fillValue, compressor, store);
+        final int[] shape = params.getShape();
+        final int[] chunks = params.getChunks();
+        final ZarrDataType dataType = params.getDataType();
+        final Number fillValue = params.getFillValue();
+        final Compressor compressor = params.getCompressor();
+        final ByteOrder byteOrder = params.getByteOrder();
+        final ZarrArray zarrArray = new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, store);
         zarrArray.writeZArrayHeader();
         zarrArray.writeAttributes(attributes);
         return zarrArray;
@@ -130,7 +132,7 @@ public class ZarrArray {
     }
 
     public ByteOrder getByteOrder() {
-        return byteOrder;
+        return _byteOrder;
     }
 
     public void write(Object dataBuffer, int[] bufferShape, int[] to) throws IOException, InvalidRangeException {
@@ -215,7 +217,7 @@ public class ZarrArray {
     }
 
     void writeZArrayHeader() throws IOException {
-        final ZarrHeader zarrHeader = new ZarrHeader(_shape, _chunks, _dataType.toString(), _fillValue, _compressor);
+        final ZarrHeader zarrHeader = new ZarrHeader(_shape, _chunks, _dataType.toString(), _byteOrder, _fillValue, _compressor);
         final ZarrPath zArray = _dataPath.resolve(FILENAME_DOT_ZARRAY);
         try (
                 OutputStream os = _store.getOutputStream(zArray.storeKey);

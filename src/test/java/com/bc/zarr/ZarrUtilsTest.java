@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.ByteOrder;
 
 public class ZarrUtilsTest {
 
@@ -20,7 +21,7 @@ public class ZarrUtilsTest {
         final Compressor compressor = CompressorFactory.create("zlib", 1);
         final String dtype = "i4";
         final int[] shape = {10, 15};
-        _zarrHeader = new ZarrHeader(shape, chunks, dtype, 3.6d, compressor);
+        _zarrHeader = new ZarrHeader(shape, chunks, dtype, ByteOrder.BIG_ENDIAN, 3.6d, compressor);
 
     }
 

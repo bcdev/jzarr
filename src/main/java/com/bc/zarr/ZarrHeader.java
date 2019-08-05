@@ -29,14 +29,15 @@ public class ZarrHeader {
     private final int[] shape;
     private final int zarr_format = 2;
 
-    public ZarrHeader(int[] shape, int[] chunks, String dtype, Number fill_value, Compressor compressor) {
+    public ZarrHeader(int[] shape, int[] chunks, String dtype, ByteOrder byteOrder, Number fill_value, Compressor compressor) {
         this.chunks = chunks;
         if (compressor == null || CompressorFactory.nullCompressor.equals(compressor)) {
             this.compressor = null;
         } else {
             this.compressor = new CompressorBean(compressor.getId(), compressor.getLevel());
         }
-        this.dtype = ">" + dtype;
+
+        this.dtype = translateByteOrder(byteOrder) + dtype;
         this.fill_value = fill_value;
         this.shape = shape;
     }
@@ -70,6 +71,16 @@ public class ZarrHeader {
             return ByteOrder.nativeOrder();
         }
         return ByteOrder.BIG_ENDIAN;
+    }
+
+    private String translateByteOrder(ByteOrder order) {
+        if (order == null) {
+            order = ByteOrder.nativeOrder();
+        }
+        if (ByteOrder.BIG_ENDIAN.equals(order)) {
+            return ">";
+        }
+        return "<";
     }
 
     public Number getFill_value() {

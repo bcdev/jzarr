@@ -37,7 +37,7 @@ public class ArrayParametersBuilderTest {
                     .withByteOrder(ByteOrder.LITTLE_ENDIAN)
                     .withDataType(ZarrDataType.i2)
                     .withFillValue(23)
-                    .withCompressor(CompressorFactory.nullCompressor)
+                    .withCompressor(null)
                     // .withShape(3,4,5) // suspended
                     .build();
             fail("IllegalArgumentException expected");
@@ -56,8 +56,8 @@ public class ArrayParametersBuilderTest {
                     .withByteOrder(ByteOrder.LITTLE_ENDIAN)
                     .withDataType(ZarrDataType.i2)
                     .withFillValue(23)
-                    .withCompressor(CompressorFactory.nullCompressor)
-                    .withShape()
+                    .withCompressor(null)
+                    .withShape() // no values given
                     .build();
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException expected) {

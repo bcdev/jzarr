@@ -9,6 +9,7 @@ import org.junit.Test;
 import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,6 +82,7 @@ public class FileSystemStoreTest {
         assertThat(root.getClass().getSimpleName(), is("JimfsPath"));
         assertThat(((Path) root).toAbsolutePath().toString(), is("/some/working/dir/abc/def/ghi"));
     }
+
     @Test
     public void createFileSystemStore_withPathString_withoutFS() throws NoSuchFieldException, IllegalAccessException {
         //execution
@@ -163,7 +165,14 @@ public class FileSystemStoreTest {
 
         //execution
         final ZarrGroup rootGrp = ZarrGroup.create(store, null);
-        final ZarrArray fooArray = rootGrp.createArray("foo", ZarrDataType.i1, shape, chunks, 0, null, attributes);
+        final ArrayParameters parameters = ArrayParameters.builder()
+                .withDataType(ZarrDataType.i1)
+                .withShape(shape)
+                .withChunks(chunks)
+                .withByteOrder(ByteOrder.LITTLE_ENDIAN)
+                .withFillValue(0)
+                .withCompressor(null).build();
+        final ZarrArray fooArray = rootGrp.createArray("foo", parameters, attributes);
 
         //verification
         final Path fooPath = rootPath.resolve("foo");
@@ -171,7 +180,7 @@ public class FileSystemStoreTest {
         assertThat(Files.list(fooPath).count(), is(2L));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZARRAY)), is(true));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZATTRS)), is(true));
-        final ZarrHeader header = new ZarrHeader(shape, chunks, ZarrDataType.i1.toString(), 0, null);
+        final ZarrHeader header = new ZarrHeader(shape, chunks, ZarrDataType.i1.toString(), ByteOrder.LITTLE_ENDIAN, 0, null);
         final String expected = strip(ZarrUtils.toJson(header, true));
         assertThat(strip(getZarrayContent(fooPath)), is(equalToIgnoringWhiteSpace(expected)));
         assertThat(getZattrsContent(fooPath), is("{\"data\":[4.0,5.0,6.0,7.0,8.0]}"));
@@ -186,9 +195,13 @@ public class FileSystemStoreTest {
         Arrays.fill(data, (byte) 42);
         final Map<String, Object> attributes = TestUtils.createMap("data", new double[]{4, 5, 6, 7, 8});
 
+        final ArrayParameters parameters = ArrayParameters.builder()
+                .withDataType(ZarrDataType.i1).withShape(shape).withChunks(chunks)
+                .withFillValue(0).withCompressor(null).build();
+
         //execution
         final ZarrGroup rootGrp = ZarrGroup.create(store, null);
-        final ZarrArray fooArray = rootGrp.createArray("foo", ZarrDataType.i1, shape, chunks, 0, null, attributes);
+        final ZarrArray fooArray = rootGrp.createArray("foo", parameters, attributes);
         fooArray.write(data, shape, new int[]{0, 0});
 
         //verification

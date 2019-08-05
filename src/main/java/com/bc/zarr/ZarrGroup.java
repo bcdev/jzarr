@@ -106,9 +106,9 @@ public class ZarrGroup {
         this.store = store;
     }
 
-    public ZarrArray createArray(String name, ZarrDataType dataType, int[] shape, int[] chunks, Number fillValue, Compressor compressor, final Map<String, Object> attributes) throws IOException {
+    public ZarrArray createArray(String name, ArrayParameters params, final Map<String, Object> attributes) throws IOException {
         final ZarrPath relativePath = this.relativePath.resolve(name);
-        return ZarrArray.create(relativePath, store, shape, chunks, dataType, fillValue, compressor, attributes);
+        return ZarrArray.create(relativePath, store, params, attributes);
     }
 
     public ZarrArray openArray(String name) throws IOException {

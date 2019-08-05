@@ -42,7 +42,12 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.i1; // Byte
         final byte Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
+        final ArrayParameters parameters = ArrayParameters.builder()
+                .withShape(shape).withChunks(chunkShape)
+                .withDataType(dataType).withFillValue(Fill)
+                .withCompressor(compressor).build();
+
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
         final byte[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -73,7 +78,12 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.i2; // Short
         final short Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
+        final ArrayParameters parameters = ArrayParameters.builder()
+                .withShape(shape).withChunks(chunkShape)
+                .withDataType(dataType).withFillValue(Fill)
+                .withCompressor(compressor).build();
+
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
         final short[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -104,7 +114,11 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.i4; // Integer
         final int Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
+        final ArrayParameters parameters = ArrayParameters.builder()
+                .withShape(shape).withChunks(chunkShape)
+                .withDataType(dataType).withFillValue(Fill)
+                .withCompressor(compressor).build();
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
         final int[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -135,7 +149,11 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.f4; // Float
         final float Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
+        final ArrayParameters parameters = ArrayParameters.builder()
+                .withShape(shape).withChunks(chunkShape)
+                .withDataType(dataType).withFillValue(Fill)
+                .withCompressor(compressor).build();
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
         final float[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
@@ -166,7 +184,12 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrDataType dataType = ZarrDataType.f8; // Double
         final double Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, shape, chunkShape, dataType, Fill, compressor, null);
+        final ArrayParameters parameters = ArrayParameters.builder()
+                .withShape(shape).withChunks(chunkShape)
+                .withDataType(dataType).withFillValue(Fill)
+                .withCompressor(compressor).build();
+
+        final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
         final double[] sourceBuffer = {
                 0, 1, 2, 3, 4, 5, 6,
