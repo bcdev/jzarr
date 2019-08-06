@@ -1,10 +1,11 @@
 package com.bc.zarr.ucar;
 
-import sun.text.normalizer.RangeValueIterator;
-import ucar.ma2.*;
+import ucar.ma2.Array;
+import ucar.ma2.IndexIterator;
+import ucar.ma2.InvalidRangeException;
+import ucar.ma2.Range;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @author sabine.bc
@@ -17,12 +18,17 @@ public class PartialDataCopier {
      * For example in the case of one dimensional arrays:<br/>
      * <pre>
      *     source array initialized { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
-     *     target array initialized { 0, 0, 0 }
+     *     target array initialized { -1, -1, -1 }
      * </pre><br/>
-     * An offset of 3 means that the arrays will be displayed that way:<br/>
+     * An offset of 3 means that the target arrays will be displayed that way:<br/>
      * <pre>
      *     source   { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
      *     target            { 4, 5, 6 }
+     * </pre>
+     * An offset of -2 means that the target arrays will be displayed that way:<br/>
+     * <pre>
+     *     source           { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+     *     target   { -1, -1, 1 }
      * </pre>
      *
      * @param offset - the displacement between source and target
