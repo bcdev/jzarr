@@ -14,12 +14,11 @@ see `CreatingAnArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/j
 .. literalinclude:: ./examples/CreatingAnArray.java
    :language: java
    :lines: 7-11
-   :linenos:
+   :dent: 8
+   :caption: this.java
+   :name: this-java
 
 creates the following output::
 
     com.bc.zarr.ZarrArray{shape=[10000, 10000], chunks=[1000, 1000], dataType=i4, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
-
-
-
 
