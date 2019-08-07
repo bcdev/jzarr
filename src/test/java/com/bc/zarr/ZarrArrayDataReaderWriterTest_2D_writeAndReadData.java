@@ -39,13 +39,13 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final int chunkWidth = 4;
         final int chunkHeight = 3;
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
-        final ZarrDataType dataType = ZarrDataType.i1; // Byte
+        final DataType dataType = DataType.i1; // Byte
         final byte Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams parameters = new ArrayParams()
                 .withShape(shape).withChunks(chunkShape)
                 .withDataType(dataType).withFillValue(Fill)
-                .withCompressor(compressor).build();
+                .withCompressor(compressor);
 
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
@@ -75,13 +75,13 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final int chunkWidth = 4;
         final int chunkHeight = 3;
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
-        final ZarrDataType dataType = ZarrDataType.i2; // Short
+        final DataType dataType = DataType.i2; // Short
         final short Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams parameters = new ArrayParams()
                 .withShape(shape).withChunks(chunkShape)
                 .withDataType(dataType).withFillValue(Fill)
-                .withCompressor(compressor).build();
+                .withCompressor(compressor);
 
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
@@ -111,13 +111,13 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final int chunkWidth = 4;
         final int chunkHeight = 3;
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
-        final ZarrDataType dataType = ZarrDataType.i4; // Integer
+        final DataType dataType = DataType.i4; // Integer
         final int Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams parameters = new ArrayParams()
                 .withShape(shape).withChunks(chunkShape)
                 .withDataType(dataType).withFillValue(Fill)
-                .withCompressor(compressor).build();
+                .withCompressor(compressor);
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
         final int[] sourceBuffer = {
@@ -146,13 +146,13 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final int chunkWidth = 4;
         final int chunkHeight = 3;
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
-        final ZarrDataType dataType = ZarrDataType.f4; // Float
+        final DataType dataType = DataType.f4; // Float
         final float Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams parameters = new ArrayParams()
                 .withShape(shape).withChunks(chunkShape)
                 .withDataType(dataType).withFillValue(Fill)
-                .withCompressor(compressor).build();
+                .withCompressor(compressor);
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
         final float[] sourceBuffer = {
@@ -181,13 +181,13 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final int chunkWidth = 4;
         final int chunkHeight = 3;
         final int[] chunkShape = {chunkHeight, chunkWidth};   // common data model manner { y, x }
-        final ZarrDataType dataType = ZarrDataType.f8; // Double
+        final DataType dataType = DataType.f8; // Double
         final double Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams parameters = new ArrayParams()
                 .withShape(shape).withChunks(chunkShape)
                 .withDataType(dataType).withFillValue(Fill)
-                .withCompressor(compressor).build();
+                .withCompressor(compressor);
 
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 

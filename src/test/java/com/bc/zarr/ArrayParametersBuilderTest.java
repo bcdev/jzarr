@@ -11,10 +11,10 @@ public class ArrayParametersBuilderTest {
 
     @Test
     public void buildWithAllMethodCalls() {
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams.Params parameters = new ArrayParams()
                 .withShape(800, 1000)
                 .withChunks(200, 100)
-                .withDataType(ZarrDataType.i2)
+                .withDataType(DataType.i2)
                 .withByteOrder(ByteOrder.LITTLE_ENDIAN)
                 .withFillValue(42)
                 .withCompressor(CompressorFactory.nullCompressor)
@@ -22,7 +22,7 @@ public class ArrayParametersBuilderTest {
 
         assertThat(parameters.getShape(), is(new int[]{800, 1000}));
         assertThat(parameters.getChunks(), is(new int[]{200, 100}));
-        assertThat(parameters.getDataType(), is(ZarrDataType.i2));
+        assertThat(parameters.getDataType(), is(DataType.i2));
         assertThat(parameters.getByteOrder(), is(ByteOrder.LITTLE_ENDIAN));
         assertThat(parameters.getFillValue(), is(42));
         assertThat(parameters.getCompressor(), is(sameInstance(CompressorFactory.nullCompressor)));
@@ -32,10 +32,10 @@ public class ArrayParametersBuilderTest {
     public void ShapeMustBeGiven_noCallToWithShape() {
         try {
             //execution
-            ArrayParameters.builder()
+            new ArrayParams()
                     .withChunks(2, 3, 4)
                     .withByteOrder(ByteOrder.LITTLE_ENDIAN)
-                    .withDataType(ZarrDataType.i2)
+                    .withDataType(DataType.i2)
                     .withFillValue(23)
                     .withCompressor(null)
                     // .withShape(3,4,5) // suspended
@@ -51,10 +51,10 @@ public class ArrayParametersBuilderTest {
     public void ShapeMustBeGiven_bulderMethodCallWithZeroArguments() {
         try {
             //execution
-            ArrayParameters.builder()
+            new ArrayParams()
                     .withChunks(2, 3, 4)
                     .withByteOrder(ByteOrder.LITTLE_ENDIAN)
-                    .withDataType(ZarrDataType.i2)
+                    .withDataType(DataType.i2)
                     .withFillValue(23)
                     .withCompressor(null)
                     .withShape() // no values given
@@ -70,7 +70,7 @@ public class ArrayParametersBuilderTest {
     public void WrongNumberOfChunkDimensions() {
         try {
             //execution
-            ArrayParameters.builder()
+            new ArrayParams()
                     .withShape(1000, 1000)
                     .withChunks(10, 10, 100)
                     .build();
@@ -84,7 +84,7 @@ public class ArrayParametersBuilderTest {
     @Test
     public void Unchuncked() {
         //execution
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams.Params parameters = new ArrayParams()
                 .withShape(1000, 1000)
                 .withChunked(false)
                 .build();
@@ -96,7 +96,7 @@ public class ArrayParametersBuilderTest {
     @Test
     public void DefaultValues() {
         //execution
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams.Params parameters = new ArrayParams()
                 .withShape(3800, 5000)
                 .build();
 
@@ -104,7 +104,7 @@ public class ArrayParametersBuilderTest {
         assertThat(parameters.getShape(), is(new int[]{3800, 5000}));
         assertThat(parameters.getChunks(), is(new int[]{476, 501}));
         assertThat(parameters.isChunked(), is(true));
-        assertThat(parameters.getDataType(), is(ZarrDataType.f8));
+        assertThat(parameters.getDataType(), is(DataType.f8));
         assertThat(parameters.getByteOrder(), is(ByteOrder.BIG_ENDIAN));
         assertThat(parameters.getFillValue(), is(0));
         assertThat(parameters.getCompressor().getId(), is("zlib"));
@@ -114,24 +114,24 @@ public class ArrayParametersBuilderTest {
     @Test
     public void Rebuild() {
         //preparation
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams.Params parameters = new ArrayParams()
                 .withShape(3800, 5000)
                 .withChunks(12, 13)
-                .withDataType(ZarrDataType.i2)
+                .withDataType(DataType.i2)
                 .withByteOrder(ByteOrder.LITTLE_ENDIAN)
                 .withFillValue(null)
                 .withCompressor(CompressorFactory.nullCompressor)
                 .build();
 
         //execution
-        final ArrayParameters newParams = parameters.toBuilder()
+        final ArrayParams.Params newParams = parameters.toBuilder()
                 .withShape(123, 456)
                 .build();
 
         //verification
         assertThat(newParams.getShape(), is(new int[]{123, 456}));
         assertThat(newParams.getChunks(), is(new int[]{12, 13}));
-        assertThat(newParams.getDataType(), is(ZarrDataType.i2));
+        assertThat(newParams.getDataType(), is(DataType.i2));
         assertThat(newParams.getByteOrder(), is(ByteOrder.LITTLE_ENDIAN));
         assertThat(newParams.getFillValue(), is(nullValue()));
         assertThat(newParams.getCompressor(), is(sameInstance(CompressorFactory.nullCompressor)));

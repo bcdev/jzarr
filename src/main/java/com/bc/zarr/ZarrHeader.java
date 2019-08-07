@@ -54,12 +54,12 @@ public class ZarrHeader {
         return dtype;
     }
 
-    public ZarrDataType getRawDataType() {
+    public DataType getRawDataType() {
         String str = dtype;
         str = str.replace(">", "");
         str = str.replace("<", "");
         str = str.replace("|", "");
-        return ZarrDataType.valueOf(str);
+        return DataType.valueOf(str);
     }
 
     public ByteOrder getByteOrder() {

@@ -2,6 +2,7 @@ package com.bc.zarr;
 
 import com.bc.zarr.chunk.ChunkReaderWriter;
 import com.bc.zarr.storage.FileSystemStore;
+import com.bc.zarr.storage.InMemoryStore;
 import com.bc.zarr.storage.Store;
 import com.bc.zarr.ucar.NetCDF_Util;
 import com.bc.zarr.ucar.PartialDataCopier;
@@ -24,17 +25,17 @@ public class ZarrArray {
 
     private final int[] _shape;
     private final int[] _chunks;
-    private final ZarrPath _dataPath;
+    private final ZarrPath relativePath;
     private final ChunkReaderWriter _chunkReaderWriter;
     private final Map<Object, Object> _locks;
-    private final ZarrDataType _dataType;
+    private final DataType _dataType;
     private final Number _fillValue;
     private final Compressor _compressor;
     private final Store _store;
     private final ByteOrder _byteOrder;
 
-    private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, ZarrDataType dataType, ByteOrder order, Number fillValue, Compressor compressor, Store store) {
-        _dataPath = relativePath;
+    private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, DataType dataType, ByteOrder order, Number fillValue, Compressor compressor, Store store) {
+        this.relativePath = relativePath;
         _shape = shape;
         _chunks = chunkShape;
         _dataType = dataType;
@@ -71,7 +72,7 @@ public class ZarrArray {
             final ZarrHeader header = ZarrUtils.fromJson(reader, ZarrHeader.class);
             final int[] shape = header.getShape();
             final int[] chunks = header.getChunks();
-            final ZarrDataType dataType = header.getRawDataType();
+            final DataType dataType = header.getRawDataType();
             final ByteOrder byteOrder = header.getByteOrder();
             final Number fillValue = header.getFill_value();
             final ZarrHeader.CompressorBean compressorBean = header.getCompressor();
@@ -87,25 +88,46 @@ public class ZarrArray {
         }
     }
 
-    public static ZarrArray create(String path, ArrayParameters params, Map<String, Object> attributes) throws IOException {
+    public static ZarrArray create(ArrayParams arrayParams) throws IOException {
+        return create(new InMemoryStore(), arrayParams);
+    }
+
+    public static ZarrArray create(String path, ArrayParams params) throws IOException {
+        return create(path, params, null);
+    }
+
+    public static ZarrArray create(String path, ArrayParams params, Map<String, Object> attributes) throws IOException {
         final Path fsPath = Paths.get(path);
         return create(fsPath, params, attributes);
     }
 
-    public static ZarrArray create(Path fsPath, ArrayParameters params, Map<String, Object> attributes) throws IOException {
+    public static ZarrArray create(Path fsPath, ArrayParams params) throws IOException {
+        return create(fsPath, params, null);
+    }
+
+    public static ZarrArray create(Path fsPath, ArrayParams params, Map<String, Object> attributes) throws IOException {
         final FileSystemStore store = new FileSystemStore(fsPath);
         return create(store, params, attributes);
     }
 
-    public static ZarrArray create(Store store, ArrayParameters params, Map<String, Object> attributes) throws IOException {
+    public static ZarrArray create(Store store, ArrayParams params) throws IOException {
+        return create(store, params, null);
+    }
+
+    public static ZarrArray create(Store store, ArrayParams params, Map<String, Object> attributes) throws IOException {
         return create(new ZarrPath(""), store, params, attributes);
     }
 
-    public static ZarrArray create(ZarrPath relativePath, Store store, ArrayParameters params, Map<String, Object> attributes) throws IOException {
+    public static ZarrArray create(ZarrPath relativePath, Store store, ArrayParams params) throws IOException {
+        return create(relativePath, store, params, null);
+    }
+
+    public static ZarrArray create(ZarrPath relativePath, Store store, ArrayParams arrayParams, Map<String, Object> attributes) throws IOException {
         store.delete(relativePath.storeKey);
+        final ArrayParams.Params params = arrayParams.build();
         final int[] shape = params.getShape();
         final int[] chunks = params.getChunks();
-        final ZarrDataType dataType = params.getDataType();
+        final DataType dataType = params.getDataType();
         final Number fillValue = params.getFillValue();
         final Compressor compressor = params.getCompressor();
         final ByteOrder byteOrder = params.getByteOrder();
@@ -115,7 +137,7 @@ public class ZarrArray {
         return zarrArray;
     }
 
-    public ZarrDataType getDataType() {
+    public DataType getDataType() {
         return _dataType;
     }
 
@@ -141,7 +163,7 @@ public class ZarrArray {
 
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
-            final ZarrPath chunkFilePath = _dataPath.resolve(chunkFilename);
+            final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
             final int[] fromBufferPos = computeFrom(chunkIndex, to, false);
             if (partialCopyingIsNotNeeded(bufferShape, fromBufferPos)) {
                 _chunkReaderWriter.write(chunkFilePath.storeKey, source);
@@ -177,7 +199,7 @@ public class ZarrArray {
 
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
-            final ZarrPath chunkFilePath = _dataPath.resolve(chunkFilename);
+            final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
             final int[] fromChunkPos = computeFrom(chunkIndex, from, true);
             final Array sourceChunk = _chunkReaderWriter.read(chunkFilePath.storeKey);
             if (partialCopyingIsNotNeeded(bufferShape, fromChunkPos)) {
@@ -189,16 +211,38 @@ public class ZarrArray {
         }
     }
 
-    public boolean partialCopyingIsNotNeeded(int[] bufferShape, int[] position) {
+    boolean partialCopyingIsNotNeeded(int[] bufferShape, int[] position) {
         return isZeroOffset(position) && isBufferShapeEqualChunkShape(bufferShape);
     }
 
-    public boolean isBufferShapeEqualChunkShape(int[] bufferShape) {
+    boolean isBufferShapeEqualChunkShape(int[] bufferShape) {
         return Arrays.equals(bufferShape, _chunks);
     }
 
-    public boolean isZeroOffset(int[] position) {
+    boolean isZeroOffset(int[] position) {
         return Arrays.equals(position, new int[position.length]);
+    }
+
+    public void writeAttributes(Map<String, Object> attributes) throws IOException {
+        ZarrUtils.writeAttributes(attributes, relativePath, _store);
+    }
+
+    public Map<String, Object> getAttributes() throws IOException {
+        return ZarrUtils.readAttributes(relativePath, _store);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getCanonicalName()+ "{" +
+                "shape=" + Arrays.toString(_shape) +
+                ", chunks=" + Arrays.toString(_chunks) +
+//                ", relativePath=" + relativePath.storeKey +
+                ", dataType=" + _dataType +
+                ", fillValue=" + _fillValue +
+                ", compressor=" + _compressor.getId() + "/level=" +_compressor.getLevel() +
+                ", store=" + _store.getClass().getSimpleName() +
+                ", byteOrder=" + _byteOrder +
+                '}';
     }
 
     private int[] computeFrom(int[] chunkIndex, int[] to, boolean read) {
@@ -218,17 +262,13 @@ public class ZarrArray {
 
     void writeZArrayHeader() throws IOException {
         final ZarrHeader zarrHeader = new ZarrHeader(_shape, _chunks, _dataType.toString(), _byteOrder, _fillValue, _compressor);
-        final ZarrPath zArray = _dataPath.resolve(FILENAME_DOT_ZARRAY);
+        final ZarrPath zArray = relativePath.resolve(FILENAME_DOT_ZARRAY);
         try (
                 OutputStream os = _store.getOutputStream(zArray.storeKey);
                 OutputStreamWriter writer = new OutputStreamWriter(os)
         ) {
             ZarrUtils.toJson(zarrHeader, writer, true);
         }
-    }
-
-    void writeAttributes(Map<String, Object> attributes) throws IOException {
-        ZarrUtils.writeAttributes(attributes, _dataPath, _store);
     }
 }
 

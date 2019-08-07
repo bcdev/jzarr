@@ -1,6 +1,6 @@
 package com.bc.zarr;
 
-public enum ZarrDataType {
+public enum DataType {
     f8,
     f4,
     i4,

@@ -24,10 +24,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.bc.zarr.ZarrConstants.FILENAME_DOT_ZATTRS;
@@ -164,8 +161,18 @@ public final class ZarrUtils {
                     final OutputStream os = store.getOutputStream(attrPath.storeKey);
                     final OutputStreamWriter writer = new OutputStreamWriter(os);
             ) {
-                toJson(attributes, writer);
+                toJson(attributes, writer, true);
             }
+        }
+    }
+
+    public static Map<String, Object> readAttributes(ZarrPath zarrPath, Store store) throws IOException {
+        final ZarrPath attrPath = zarrPath.resolve(FILENAME_DOT_ZATTRS);
+        try (InputStream inputStream = store.getInputStream(attrPath.storeKey)) {
+            if (inputStream == null) {
+                return new HashMap<>();
+            }
+            return fromJson(new InputStreamReader(inputStream), Map.class);
         }
     }
 
@@ -176,7 +183,7 @@ public final class ZarrUtils {
         }
     }
 
-    public static Object createDataBuffer(ZarrDataType dataType, int[] shape) {
+    public static Object createDataBuffer(DataType dataType, int[] shape) {
         final int size = computeSizeInteger(shape);
         switch (dataType) {
             case i1:

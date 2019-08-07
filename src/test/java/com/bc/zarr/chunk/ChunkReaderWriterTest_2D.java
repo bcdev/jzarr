@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 import com.bc.zarr.Compressor;
 import com.bc.zarr.CompressorFactory;
 import com.bc.zarr.TestUtils;
-import com.bc.zarr.ZarrDataType;
+import com.bc.zarr.DataType;
 import com.bc.zarr.storage.FileSystemStore;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
@@ -42,7 +42,7 @@ public class ChunkReaderWriterTest_2D {
     @Test
     public void createChunkReaderWriter_compresserIsNullValue() throws NoSuchFieldException, IllegalAccessException {
         //execution
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(null, ZarrDataType.i1, ByteOrder.BIG_ENDIAN, new int[]{3, 4}, 5, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(null, DataType.i1, ByteOrder.BIG_ENDIAN, new int[]{3, 4}, 5, store);
 
         final Object compressor = TestUtils.getPrivateFieldObject(readerWriter, "compressor");
         assertThat(compressor, is(sameInstance(CompressorFactory.nullCompressor)));
@@ -52,7 +52,7 @@ public class ChunkReaderWriterTest_2D {
     public void read_Bytes_NullCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 6;
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(CompressorFactory.nullCompressor, ZarrDataType.i1, ByteOrder.BIG_ENDIAN, shape, fill, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(CompressorFactory.nullCompressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
         final Array array = readerWriter.read(chunkStoreKey);
@@ -69,7 +69,7 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 7;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, ByteOrder.BIG_ENDIAN, shape, fill, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
         final Array array = readerWriter.read(chunkStoreKey);
@@ -86,7 +86,7 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 8;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, ByteOrder.BIG_ENDIAN, shape, fill, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i2, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
         final Array array = readerWriter.read(chunkStoreKey);
@@ -103,7 +103,7 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 8;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, ByteOrder.BIG_ENDIAN, shape, fill, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i4, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
         final Array array = readerWriter.read(chunkStoreKey);
@@ -120,7 +120,7 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 8;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, ByteOrder.BIG_ENDIAN, shape, fill, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
         final Array array = readerWriter.read(chunkStoreKey);
@@ -137,7 +137,7 @@ public class ChunkReaderWriterTest_2D {
         final int[] shape = {2, 3};
         final Number fill = 8;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, ByteOrder.BIG_ENDIAN, shape, fill, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f8, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
         final Array array = readerWriter.read(chunkStoreKey);
@@ -159,7 +159,7 @@ public class ChunkReaderWriterTest_2D {
         outputStream.close();
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution
         final Array array = readerWriter.read(chunkStoreKey);
@@ -175,7 +175,7 @@ public class ChunkReaderWriterTest_2D {
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution
         readerWriter.write(chunkStoreKey, Array.factory(bytes).reshape(shape));
@@ -203,7 +203,7 @@ public class ChunkReaderWriterTest_2D {
             outputStream.write(buffer, 0, length);
         }
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution
         final Array array = readerWriter.read(chunkStoreKey);
@@ -219,7 +219,7 @@ public class ChunkReaderWriterTest_2D {
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(bytes).reshape(shape));
@@ -242,7 +242,7 @@ public class ChunkReaderWriterTest_2D {
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(bytes).reshape(shape));
@@ -268,7 +268,7 @@ public class ChunkReaderWriterTest_2D {
         };
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i2, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
@@ -291,7 +291,7 @@ public class ChunkReaderWriterTest_2D {
         final short[] shorts = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i2, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i2, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(shorts).reshape(shape));
@@ -317,7 +317,7 @@ public class ChunkReaderWriterTest_2D {
         };
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i4, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
@@ -340,7 +340,7 @@ public class ChunkReaderWriterTest_2D {
         final int[] ints = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.i4, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i4, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(ints).reshape(shape));
@@ -366,7 +366,7 @@ public class ChunkReaderWriterTest_2D {
         };
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
@@ -389,7 +389,7 @@ public class ChunkReaderWriterTest_2D {
         final float[] floats = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f4, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(floats).reshape(shape));
@@ -415,7 +415,7 @@ public class ChunkReaderWriterTest_2D {
         };
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f8, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
@@ -438,7 +438,7 @@ public class ChunkReaderWriterTest_2D {
         final double[] doubles = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, ZarrDataType.f8, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f8, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
         readerWriter.write(chunkStoreKey, Array.factory(doubles).reshape(shape));

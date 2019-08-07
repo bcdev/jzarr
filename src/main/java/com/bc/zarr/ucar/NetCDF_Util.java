@@ -16,9 +16,8 @@
  */
 package com.bc.zarr.ucar;
 
-import com.bc.zarr.ZarrDataType;
+import com.bc.zarr.DataType;
 import ucar.ma2.Array;
-import ucar.ma2.DataType;
 import ucar.ma2.IndexIterator;
 
 public class NetCDF_Util {
@@ -40,27 +39,27 @@ public class NetCDF_Util {
         return null;
     }
 
-    public static Array createFilledArray(DataType dataType, int[] shape, Number fill) {
+    public static Array createFilledArray(ucar.ma2.DataType dataType, int[] shape, Number fill) {
         final Array array = Array.factory(dataType, shape);
         final IndexIterator iter = array.getIndexIterator();
         if (fill != null) {
-            if (DataType.DOUBLE.equals(dataType)) {
+            if (ucar.ma2.DataType.DOUBLE.equals(dataType)) {
                 while (iter.hasNext()) {
                     iter.setDoubleNext(fill.doubleValue());
                 }
-            } else if (DataType.FLOAT.equals(dataType)) {
+            } else if (ucar.ma2.DataType.FLOAT.equals(dataType)) {
                 while (iter.hasNext()) {
                     iter.setFloatNext(fill.floatValue());
                 }
-            } else if (DataType.INT.equals(dataType)) {
+            } else if (ucar.ma2.DataType.INT.equals(dataType)) {
                 while (iter.hasNext()) {
                     iter.setIntNext(fill.intValue());
                 }
-            } else if (DataType.SHORT.equals(dataType)) {
+            } else if (ucar.ma2.DataType.SHORT.equals(dataType)) {
                 while (iter.hasNext()) {
                     iter.setShortNext(fill.shortValue());
                 }
-            } else if (DataType.BYTE.equals(dataType)) {
+            } else if (ucar.ma2.DataType.BYTE.equals(dataType)) {
                 while (iter.hasNext()) {
                     iter.setByteNext(fill.byteValue());
                 }
@@ -71,16 +70,16 @@ public class NetCDF_Util {
         return array;
     }
 
-    public static DataType getDataType(ZarrDataType dataType) {
-        if (dataType == ZarrDataType.f8) {
-            return DataType.DOUBLE;
-        } else if (dataType == ZarrDataType.f4) {
-            return DataType.FLOAT;
-        } else if (dataType == ZarrDataType.i4 || dataType == ZarrDataType.u4) {
-            return DataType.INT;
-        } else if (dataType == ZarrDataType.i2 || dataType == ZarrDataType.u2) {
-            return DataType.SHORT;
+    public static ucar.ma2.DataType getDataType(DataType dataType) {
+        if (dataType == DataType.f8) {
+            return ucar.ma2.DataType.DOUBLE;
+        } else if (dataType == DataType.f4) {
+            return ucar.ma2.DataType.FLOAT;
+        } else if (dataType == DataType.i4 || dataType == DataType.u4) {
+            return ucar.ma2.DataType.INT;
+        } else if (dataType == DataType.i2 || dataType == DataType.u2) {
+            return ucar.ma2.DataType.SHORT;
         }
-        return DataType.BYTE;
+        return ucar.ma2.DataType.BYTE;
     }
 }

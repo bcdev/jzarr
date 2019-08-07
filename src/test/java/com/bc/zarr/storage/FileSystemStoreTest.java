@@ -150,8 +150,8 @@ public class FileSystemStoreTest {
         assertThat(Files.list(rootPath).count(), is(2L));
         assertThat(Files.isReadable(rootPath.resolve(FILENAME_DOT_ZGROUP)), is(true));
         assertThat(Files.isReadable(rootPath.resolve(FILENAME_DOT_ZATTRS)), is(true));
-        assertThat(getZgroupContent(rootPath), is("{\"zarr_format\":2}"));
-        assertThat(getZattrsContent(rootPath), is("{\"lsmf\":345,\"menno\":23.23}"));
+        assertThat(strip(getZgroupContent(rootPath)), is("{\"zarr_format\":2}"));
+        assertThat(strip(getZattrsContent(rootPath)), is("{\"lsmf\":345,\"menno\":23.23}"));
     }
 
     @Test
@@ -165,13 +165,13 @@ public class FileSystemStoreTest {
 
         //execution
         final ZarrGroup rootGrp = ZarrGroup.create(store, null);
-        final ArrayParameters parameters = ArrayParameters.builder()
-                .withDataType(ZarrDataType.i1)
+        final ArrayParams parameters = new ArrayParams()
+                .withDataType(DataType.i1)
                 .withShape(shape)
                 .withChunks(chunks)
                 .withByteOrder(ByteOrder.LITTLE_ENDIAN)
                 .withFillValue(0)
-                .withCompressor(null).build();
+                .withCompressor(null);
         final ZarrArray fooArray = rootGrp.createArray("foo", parameters, attributes);
 
         //verification
@@ -180,10 +180,10 @@ public class FileSystemStoreTest {
         assertThat(Files.list(fooPath).count(), is(2L));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZARRAY)), is(true));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZATTRS)), is(true));
-        final ZarrHeader header = new ZarrHeader(shape, chunks, ZarrDataType.i1.toString(), ByteOrder.LITTLE_ENDIAN, 0, null);
+        final ZarrHeader header = new ZarrHeader(shape, chunks, DataType.i1.toString(), ByteOrder.LITTLE_ENDIAN, 0, null);
         final String expected = strip(ZarrUtils.toJson(header, true));
         assertThat(strip(getZarrayContent(fooPath)), is(equalToIgnoringWhiteSpace(expected)));
-        assertThat(getZattrsContent(fooPath), is("{\"data\":[4.0,5.0,6.0,7.0,8.0]}"));
+        assertThat(strip(getZattrsContent(fooPath)), is("{\"data\":[4.0,5.0,6.0,7.0,8.0]}"));
     }
 
     @Test
@@ -195,9 +195,9 @@ public class FileSystemStoreTest {
         Arrays.fill(data, (byte) 42);
         final Map<String, Object> attributes = TestUtils.createMap("data", new double[]{4, 5, 6, 7, 8});
 
-        final ArrayParameters parameters = ArrayParameters.builder()
-                .withDataType(ZarrDataType.i1).withShape(shape).withChunks(chunks)
-                .withFillValue(0).withCompressor(null).build();
+        final ArrayParams parameters = new ArrayParams()
+                .withDataType(DataType.i1).withShape(shape).withChunks(chunks)
+                .withFillValue(0).withCompressor(null);
 
         //execution
         final ZarrGroup rootGrp = ZarrGroup.create(store, null);
@@ -236,8 +236,8 @@ public class FileSystemStoreTest {
         assertThat(Files.list(fooPath).count(), is(2L));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZGROUP)), is(true));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZATTRS)), is(true));
-        assertThat(getZgroupContent(fooPath), is("{\"zarr_format\":2}"));
-        assertThat(getZattrsContent(fooPath), is("{\"y\":123,\"aaaa\":\"pfrt\"}"));
+        assertThat(strip(getZgroupContent(fooPath)), is("{\"zarr_format\":2}"));
+        assertThat(strip(getZattrsContent(fooPath)), is("{\"y\":123,\"aaaa\":\"pfrt\"}"));
     }
 
     private String strip(String s) {

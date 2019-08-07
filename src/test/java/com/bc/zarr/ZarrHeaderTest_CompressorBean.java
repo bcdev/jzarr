@@ -33,7 +33,7 @@ public class ZarrHeaderTest_CompressorBean {
     public void createdCompressorBean() {
         //execution
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ZarrHeader zarrHeader = new ZarrHeader(new int[]{1001, 1002}, new int[]{101, 102}, ZarrDataType.f4.name(),null, 4.2, compressor);
+        final ZarrHeader zarrHeader = new ZarrHeader(new int[]{1001, 1002}, new int[]{101, 102}, DataType.f4.name(),null, 4.2, compressor);
 
         //verification
         assertThat(zarrHeader.getCompressor(), is(equalTo(compressorBean)));

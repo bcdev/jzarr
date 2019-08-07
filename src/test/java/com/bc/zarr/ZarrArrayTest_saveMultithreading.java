@@ -33,9 +33,9 @@ public class ZarrArrayTest_saveMultithreading {
     @Test
     public void parallelWriting_toTheSameChunk_withCompression() throws IOException, InvalidRangeException {
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ArrayParameters parameters = ArrayParameters.builder()
+        final ArrayParams parameters = new ArrayParams()
                 .withShape(30, 30).withChunks(10, 10)
-                .withDataType(ZarrDataType.i4).withFillValue(0).withCompressor(compressor).build();
+                .withDataType(DataType.i4).withFillValue(0).withCompressor(compressor);
         final ZarrArray zarrArray = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
         final List<Exception> exceptions = Collections.synchronizedList(new LinkedList<>());

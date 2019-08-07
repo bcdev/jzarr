@@ -18,11 +18,10 @@ package com.bc.zarr.chunk;
 
 import com.bc.zarr.Compressor;
 import com.bc.zarr.CompressorFactory;
-import com.bc.zarr.ZarrDataType;
+import com.bc.zarr.DataType;
 import com.bc.zarr.storage.Store;
 import com.bc.zarr.ucar.NetCDF_Util;
 import ucar.ma2.Array;
-import ucar.ma2.DataType;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -52,16 +51,16 @@ public abstract class ChunkReaderWriter {
         this.order = order;
     }
 
-    public static ChunkReaderWriter create(Compressor compressor, ZarrDataType dataType, ByteOrder order, int[] chunkShape, Number fill, Store store) {
-        if (dataType == ZarrDataType.f8) {
+    public static ChunkReaderWriter create(Compressor compressor, DataType dataType, ByteOrder order, int[] chunkShape, Number fill, Store store) {
+        if (dataType == DataType.f8) {
             return new ChunkReaderWriterImpl_Double(order, compressor, chunkShape, fill, store);
-        } else if (dataType == ZarrDataType.f4) {
+        } else if (dataType == DataType.f4) {
             return new ChunkReaderWriterImpl_Float(order, compressor, chunkShape, fill, store);
-        } else if (dataType == ZarrDataType.i4 || dataType == ZarrDataType.u4) {
+        } else if (dataType == DataType.i4 || dataType == DataType.u4) {
             return new ChunkReaderWriterImpl_Integer(order, compressor, chunkShape, fill, store);
-        } else if (dataType == ZarrDataType.i2 || dataType == ZarrDataType.u2) {
+        } else if (dataType == DataType.i2 || dataType == DataType.u2) {
             return new ChunkReaderWriterImpl_Short(order, compressor, chunkShape, fill, store);
-        } else if (dataType == ZarrDataType.i1 || dataType == ZarrDataType.u1) {
+        } else if (dataType == DataType.i1 || dataType == DataType.u1) {
             return new ChunkReaderWriterImpl_Byte(compressor, chunkShape, fill, store);
         } else {
             throw new IllegalStateException();
@@ -72,7 +71,7 @@ public abstract class ChunkReaderWriter {
 
     public abstract void write(String path, Array array) throws IOException;
 
-    protected Array createFilled(final DataType dataType) {
+    protected Array createFilled(final ucar.ma2.DataType dataType) {
         return NetCDF_Util.createFilledArray(dataType, chunkShape, fill);
     }
 

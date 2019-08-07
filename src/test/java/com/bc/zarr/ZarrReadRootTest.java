@@ -34,15 +34,15 @@ public class ZarrReadRootTest {
     public void create() throws NoSuchFieldException, IllegalAccessException, IOException {
         final ZarrGroup rootGrp = ZarrGroup.open(rootPath);
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ArrayParameters parameters = ArrayParameters.builder()
-                .withDataType(ZarrDataType.f4)
+        final ArrayParams parameters = new ArrayParams()
+                .withDataType(DataType.f4)
                 .withShape(101, 102)
                 .withChunks(11, 12)
                 .withFillValue(4.2)
-                .withCompressor(compressor).build();
+                .withCompressor(compressor);
         final ZarrArray arrayData = rootGrp.createArray("rastername", parameters, null);
 
-        final String name = "_dataPath";
+        final String name = "relativePath";
         final Object path = TestUtils.getPrivateFieldObject(arrayData, name);
         assertThat(path, is(instanceOf(ZarrPath.class)));
         assertThat(((ZarrPath)path).storeKey, is("rastername"));

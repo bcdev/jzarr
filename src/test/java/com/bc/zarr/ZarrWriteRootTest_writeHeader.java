@@ -43,11 +43,11 @@ public class ZarrWriteRootTest_writeHeader {
         final int[] chunks = {6, 8};
         final Number fillValue = 0;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
-        final ArrayParameters parameters = ArrayParameters.builder()
-                .withDataType(ZarrDataType.i4)
+        final ArrayParams parameters = new ArrayParams()
+                .withDataType(DataType.i4)
                 .withShape(shape)
                 .withChunks(chunks)
-                .withFillValue(fillValue).withCompressor(compressor).build();
+                .withFillValue(fillValue).withCompressor(compressor);
 
         //execution
         zarrGroup.createArray(rastername, parameters, null);
@@ -77,12 +77,12 @@ public class ZarrWriteRootTest_writeHeader {
         attributes.put("some", "new");
         attributes.put("with", "count");
         attributes.put("of", 3.0);
-        final ArrayParameters parameters = ArrayParameters.builder()
-                .withDataType(ZarrDataType.i4)
+        final ArrayParams parameters = new ArrayParams()
+                .withDataType(DataType.i4)
                 .withShape(shape)
                 .withChunks(chunks)
                 .withFillValue(fillValue)
-                .withCompressor(null).build();
+                .withCompressor(null);
 
         //execution
         zarrGroup.createArray(rastername, parameters, attributes);
