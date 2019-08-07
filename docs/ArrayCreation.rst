@@ -5,7 +5,8 @@ Zarr has several functions for creating arrays.
 
 Examples:
 """""""""
-### Creating an Array
+Creating an Array
+
 .. literalinclude:: ./examples/CreatingAnArray.java
   :caption: 
   :language: java
