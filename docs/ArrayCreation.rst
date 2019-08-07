@@ -4,7 +4,7 @@ Array Creation
 Zarr has several functions for creating arrays.
 
 .. `Creating an Array <https://github.com/bcdev/jzarr/blob/master/docs/examples/CreatingAnArray.java>`_
-`Creating an Array <./examples/CreatingAnArray.java>`_
+`Creating annn Array <./examples/CreatingAnArray.java>`_
 
 .. literalinclude:: ./examples/CreatingAnArray.java
   :language: java
