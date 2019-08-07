@@ -1,13 +1,13 @@
 Array Creation
 ==============
 
-Zarr has several functions for creating arrays. For example
+Zarr has several functions for creating arrays. For example:
 
 
 .. literalinclude:: examples/CreatingAnArray.java
    :caption: 
    :language: java
-   :javaobject: CreatingAnArray.main
+   :lines: 7-11
    :dedent: 8
 
 creates the following output::
