@@ -3,8 +3,7 @@ Array Creation
 
 Zarr has several functions for creating arrays.
 
-.. Code snippet from: `Creating an Array <https://github.com/bcdev/jzarr/blob/master/docs/examples/CreatingAnArray.java>`_
-Code snippet from: `Creating an Array <./examples/CreatingAnArray.java>`_
+Code snippet from: `Creating an Array <https://github.com/bcdev/jzarr/blob/master/docs/examples/CreatingAnArray.java>`_
 
 .. literalinclude:: ./examples/CreatingAnArray.java
   :language: java
