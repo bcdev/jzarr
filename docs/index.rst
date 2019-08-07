@@ -3,10 +3,10 @@
 
 .. _zarr package: https://zarr.readthedocs.io/en/stable/index.html
 
-jzarr
+JZarr
 =====
 
-jzarr is a Java library providing an implementation of chunked,
+JZarr is a Java library providing an implementation of chunked,
 compressed, N-dimensional arrays close to the python `zarr package`_.
 
 Highlights
