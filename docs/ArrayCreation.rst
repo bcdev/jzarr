@@ -12,7 +12,6 @@ Zarr has several functions for creating arrays. For example::
 see `CreatingAnArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/CreatingAnArray.java>`_
 
 .. literalinclude:: examples/CreatingAnArray.java
-   :caption: examples/CreatingAnArray.java
    :language: java
    :lines: 7-11
    :dent: 8
