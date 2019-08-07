@@ -25,3 +25,8 @@ Status
 
 jzarr is still a young project. Feedback and bug reports are very welcome, please get in touch via
 the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
+
+.. toctree::
+    :maxdepth: 2
+
+    ArrayCreation
