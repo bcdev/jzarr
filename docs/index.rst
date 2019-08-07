@@ -1,11 +1,13 @@
 .. zarr documentation master file, created by
    sphinx-quickstart on Wen Aug  7 12:12:00 2019.
 
+.. _zarr package: https://zarr.readthedocs.io/en/stable/index.html
+
 jzarr
 =====
 
-jzarr is a Java package providing an implementation of chunked,
-compressed, N-dimensional arrays like the python zarr package.
+jzarr is a Java library providing an implementation of chunked,
+compressed, N-dimensional arrays close to the python `zarr package`_.
 
 Highlights
 ----------
