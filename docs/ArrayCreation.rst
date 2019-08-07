@@ -6,7 +6,7 @@ Zarr has several functions for creating arrays. For example::
 .. literalinclude:: examples/CreatingAnArray.java
    :caption: 
    :language: java
-   :lines: 7-11
+   :pyobject: CreatingAnArray.main
    :dedent: 8
 
 creates the following output::
