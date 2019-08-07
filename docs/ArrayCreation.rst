@@ -3,12 +3,11 @@ Array Creation
 
 Zarr has several functions for creating arrays.
 
-`Creating an Array <https://github.com/bcdev/jzarr/blob/master/docs/examples/CreatingAnArray.java>`_
-
 .. literalinclude:: ./examples/CreatingAnArray.java
   :language: java
   :lines: 7-11
   :dedent: 8
+source: `Creating an Array <https://github.com/bcdev/jzarr/blob/master/docs/examples/CreatingAnArray.java>`_
 
 creates the following output::
 
