@@ -12,11 +12,11 @@ Zarr has several functions for creating arrays. For example::
 see `CreatingAnArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/java/com/bc/zarr/examples/CreatingAnArray.java>`_
 
 .. literalinclude:: ./examples/CreatingAnArray.java
+   :caption: CreatingAnArray.java
+   :name: CreatingAnArray-java
    :language: java
    :lines: 7-11
    :dent: 8
-   :caption: this.java
-   :name: this-java
 
 creates the following output::
 
