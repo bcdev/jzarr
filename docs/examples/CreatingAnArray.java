@@ -1,4 +1,3 @@
-package com.bc.zarr.examples;
 import com.bc.zarr.*;
 import java.io.IOException;
 

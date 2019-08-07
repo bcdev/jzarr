@@ -1,4 +1,4 @@
-package com.bc.zarr.examples.out;
+package out;
 
 import java.util.Collections;
 
