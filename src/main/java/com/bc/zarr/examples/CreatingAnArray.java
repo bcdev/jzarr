@@ -1,11 +1,8 @@
 package com.bc.zarr.examples;
-
 import com.bc.zarr.*;
-
 import java.io.IOException;
 
 public class CreatingAnArray {
-
     public static void main(String[] args) throws IOException {
         
         ZarrArray array = ZarrArray.create(new ArrayParams()
