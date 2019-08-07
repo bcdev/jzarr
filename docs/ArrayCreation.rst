@@ -3,6 +3,9 @@ Array Creation
 
 Zarr has several functions for creating arrays.
 
+Examples:
+---------
+
 .. literalinclude:: ./examples/CreatingAnArray.java
   :caption: 
   :language: java
