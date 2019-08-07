@@ -1,7 +1,7 @@
 Array Creation
 ==============
 
-Zarr has several functions for creating arrays. For example::
+Zarr has several functions for creating arrays. For example:
 
 .. literalinclude:: examples/CreatingAnArray.java
    :caption: 
