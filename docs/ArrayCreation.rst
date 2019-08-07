@@ -13,7 +13,7 @@ see `CreatingAnArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/j
 
 .. literalinclude:: ./examples/CreatingAnArray.java
    :language: java
-   :emphasize-lines: 8-12
+   :lines: 8-12
    :linenos:
 
 creates the following output::
