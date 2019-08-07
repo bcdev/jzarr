@@ -9,9 +9,9 @@ Zarr has several functions for creating arrays. For example::
 
     System.out.println(array);
 
-see `CreatingAnArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/java/com/bc/zarr/examples/CreatingAnArray.java>`_
+see `CreatingAnArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/CreatingAnArray.java>`_
 
-.. literalinclude:: ./examples/CreatingAnArray.java
+.. literalinclude:: examples/CreatingAnArray.java
    :caption:
    :language: java
    :lines: 7-11
