@@ -1,12 +1,13 @@
 Array Creation
 ==============
 
-Zarr has several functions for creating arrays. For example:
+Zarr has several functions for creating arrays. For example
+
 
 .. literalinclude:: examples/CreatingAnArray.java
    :caption: 
    :language: java
-   :pyobject: CreatingAnArray.main
+   :javaobject: CreatingAnArray.main
    :dedent: 8
 
 creates the following output::
