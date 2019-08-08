@@ -28,7 +28,7 @@ store              InMemoryStore :code:`default`
 byte order         BIG_ENDIAN :code:`default`
 =================  ==========================================
 
-Why the same dimensions as the shape ?
+Why are chunks dimensions the same as shape dimension?
   | If chunks is not given, the default chunks will be applied. 512 in each dimension.
-  | If a chunk dimension is bigger than a shape dimension, the chunk dimension will be trimmed to shape.
+  | If a chunk dimension is bigger than a shape dimension itself, the chunk dimension will be trimmed to shape.
 
