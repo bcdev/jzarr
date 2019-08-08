@@ -29,7 +29,7 @@ property           value
 =================  ==========================================
 shape dimensions   y:10 x:8
 chunks dimensions  also y:10 x:8
-data type          :ref:`f8` :code:`default` .. means java primitive :code:`double`
+data type          f8_ :code:`default` .. means java primitive :code:`double`
 fill value         :code:`0`
 compressor         zlib compressor with level 1 :code:`default`
 store              InMemoryStore :code:`default`
