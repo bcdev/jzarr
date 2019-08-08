@@ -1,4 +1,4 @@
-.. _f8: <datatype.rst>
+.. _f8: :ref:<datatype.rst>
 .. _f4: <datatype.rst>
 .. _i8: <datatype.rst>
 .. _i4: <datatype.rst>
