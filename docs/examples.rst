@@ -4,8 +4,8 @@ Examples
 ========
 .. **intro start**
 
-Here can find some examples for
- * creating array
+Here can find examples for
+ * `creating an array`_
  * using the array params
  * storage definitions
  * define compression
@@ -15,7 +15,7 @@ Here can find some examples for
 
 .. **intro end**
 
-.. _creating arrays:
+.. _creating an array:
 
 Creating Arrays
 ^^^^^^^^^^^^^^^
