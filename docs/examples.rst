@@ -22,6 +22,6 @@ Creating Arrays
 
 .. include:: ArrayCreation.rst
   :start-after: **intro start**
-  :end-before: **intro end**
+  :end-before: To create an instance of com.bc.zarr.ZarrArray
 
 :ref:`Read more ... <arrayCreation>`

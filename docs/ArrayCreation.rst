@@ -9,11 +9,8 @@ Array Creation
 | If no storage is given a default in memory store will be used instead.
 | Arrays can be created with or without additional user defined attributes.
 
-At least there is only one mandatory information which must be given at creation time.
-
-.. **intro end**
-
-To create an instance of com.bc.zarr.ZarrArray at leas a shape must be given
+| At least there is only one mandatory information which must be given at creation time.
+| To create an instance of com.bc.zarr.ZarrArray at least a shape must be given
 
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
