@@ -3,16 +3,25 @@ Array Creation
 
 Zarr has several functions for creating arrays.
 
-Code snippet from: `/docs/examples/CreatingAnArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/CreatingAnArray.java>`_
-
-.. literalinclude:: ../src/main/examples/array/creation/CreatingAnArray.java
-  :caption: `Code snippet <../src/main/examples/array/creation/CreatingAnArray.java>`_
-  :language: java
-  :start-after: main(String[] args)
-  :end-before: System.out.println(array)
+.. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
+  :caption: `InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java>`_
+  :start-after: snippet 1
+  :end-before: end 1
   :dedent: 8
 
-creates the following output::
+A :code:`System.out.println(array);` then creates the following output::
 
-    com.bc.zarr.ZarrArray{shape=[10000, 10000], chunks=[1000, 1000], dataType=i4, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+ com.bc.zarr.ZarrArray{shape=[10, 8], chunks=[10, 8], dataType=i4, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 
+As you can see, an array with the following characteristics has been created
+
+* shape dimensions = y:10 x:8
+* chunks dimensions = also y:10 x:8
+* data type = i4 ... means java primitive :code:`int`
+* fill value = :code:`0`
+* compressor = zlib compressor with level 1 ``(default)``
+* store = InMemoryStore ``(default)``
+* byte order = BIG_ENDIAN ``(default)``
+
+Why the same dimensions as the shape ?
+  asda
