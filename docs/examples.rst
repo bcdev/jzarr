@@ -17,8 +17,8 @@ Here can find examples for
 
 .. _creating an array:
 
-Creating Arrays
-^^^^^^^^^^^^^^^
+:ref:`Creating Arrays <arrayCreation>`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. include:: ArrayCreation.rst
   :start-after: **intro start**
