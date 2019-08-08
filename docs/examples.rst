@@ -4,14 +4,14 @@ Examples
 ========
 .. **intro start**
 
-Here can find examples for
- * `creating an array`_
- * using the array params
- * storage definitions
- * define compression
- * opening existing arrays
- * read and write data
- * create hierarchical structures
+Here you can find examples for
+ | * :ref:`creating an array <creating an array>`
+ | * using the array params
+ | * storage definitions
+ | * define compression
+ | * opening existing arrays
+ | * read and write data
+ | * create hierarchical structures
 
 .. **intro end**
 
