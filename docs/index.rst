@@ -6,6 +6,8 @@
 Welcome to jzarr's documentation!
 =================================
 
+Some example text
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
