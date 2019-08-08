@@ -20,3 +20,5 @@ Creating Arrays
 .. include:: ArrayCreation.rst
   :start-after: **intro start**
   :end-before: **intro end**
+
+:ref:`Read more ... <arrayCreation>`
