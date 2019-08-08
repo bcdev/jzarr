@@ -5,7 +5,7 @@ Examples
 .. **intro start**
 
 Here you can find examples for
- | * :ref:`creating an array <arrayCreation>`
+ | * :ref:`creating an array <creatingAnArray>`
  | * using the array params
  | * storage definitions
  | * define compression
@@ -15,7 +15,7 @@ Here you can find examples for
 
 .. **intro end**
 
-.. _creating an array:
+.. _creatingAnArray:
 
 :ref:`Creating An Array <arrayCreation>`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
