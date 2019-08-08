@@ -2,6 +2,7 @@
 
 Examples
 ========
+.. **intro start**
 
 Here can find some examples for
  * creating array
@@ -11,6 +12,8 @@ Here can find some examples for
  * opening existing arrays
  * read and write data
  * create hierarchical structures
+
+.. **intro end**
 
 .. _creating arrays:
 

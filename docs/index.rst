@@ -29,7 +29,7 @@ the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
 Api Examples
 ------------
 
-.. include:: ArrayCreation.rst
+.. include:: examples.rst
   :start-after: **intro start**
   :end-before: **intro end**
 
