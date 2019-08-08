@@ -17,11 +17,11 @@ Here can find examples for
 
 .. _creating an array:
 
-:ref:`Creating Arrays <arrayCreation>`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+:ref:`Creating An Arrays <arrayCreation>`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. include:: ArrayCreation.rst
   :start-after: **intro start**
   :end-before: To create an instance of com.bc.zarr.ZarrArray
 
-:ref:`Read more ... <arrayCreation>`
+:ref:`Using The Array Params <arrayParams>`
