@@ -3,6 +3,7 @@ package com.bc.zarr;
 public enum DataType {
     f8,
     f4,
+    i8,
     i4,
     u4,
     i2,

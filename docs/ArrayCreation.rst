@@ -1,6 +1,6 @@
+
 Array Creation
 ==============
-
 Zarr has several functions for creating arrays.
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
@@ -20,7 +20,7 @@ property           value
 =================  ==========================================
 shape dimensions   y:10 x:8
 chunks dimensions  also y:10 x:8
-data type          i4 .. means java primitive :code:`int`
+data type          f8_ :code:`default` .. means java primitive :code:`double`
 fill value         :code:`0`
 compressor         zlib compressor with level 1 :code:`default`
 store              InMemoryStore :code:`default`
@@ -30,3 +30,13 @@ byte order         BIG_ENDIAN :code:`default`
 Why the same dimensions as the shape ?
   | If chunks is not given, the default chunks will be applied. 512 in each dimension.
   | If a chunk dimension is bigger than a shape dimension, the chunk dimension will be trimmed to shape.
+
+.. _f8: <datatype>
+.. _f4: <datatype>
+.. _i8: <datatype>
+.. _i4: <datatype>
+.. _i2: <datatype>
+.. _i1: <datatype>
+.. _u4: <datatype>
+.. _u2: <datatype>
+.. _u1: <datatype>
