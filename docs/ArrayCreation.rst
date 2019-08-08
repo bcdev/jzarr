@@ -2,7 +2,18 @@
 
 Array Creation
 ==============
-Zarr has several functions for creating arrays.
+.. **intro start**
+
+| JZarr has several functions for creating arrays.
+| Arrays can be created with or without a given storage.
+| If no storage is given a default in memory store will be used instead.
+| Arrays can be created with or without additional user defined attributes.
+
+At least there is only one mandatory information which must be given at creation time.
+.. **intro end**
+
+To create an instance of com.bc.zarr.ZarrArray at leas a shape must be given
+
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :caption: `InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java>`_

@@ -28,11 +28,12 @@ the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
 
 Api Examples
 ------------
-:ref:`array creation <arrayCreation>`
-
+.. literalinclude:: ArrayCreation
+  :start-after: **intro start**
+  :end-before: **intro end**
 
 .. toctree::
    :hidden:
 
-   JZarr documentation <index>
-   ArrayCreation
+   index
+   examples
