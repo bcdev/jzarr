@@ -22,7 +22,7 @@ copyright = '2019, Sabine Embacher'
 author = 'Sabine Embacher'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2'
+release = 'latest'
 
 
 # -- General configuration ---------------------------------------------------
