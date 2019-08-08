@@ -39,4 +39,3 @@ Api Examples
    :hidden:
 
    index
-   examples
