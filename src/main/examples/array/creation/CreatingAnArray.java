@@ -1,5 +1,5 @@
+package array.creation;
 import com.bc.zarr.*;
-
 import java.io.IOException;
 
 public class CreatingAnArray {
