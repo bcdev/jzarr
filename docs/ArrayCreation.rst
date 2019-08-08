@@ -10,6 +10,7 @@ Array Creation
 | Arrays can be created with or without additional user defined attributes.
 
 At least there is only one mandatory information which must be given at creation time.
+
 .. **intro end**
 
 To create an instance of com.bc.zarr.ZarrArray at leas a shape must be given
