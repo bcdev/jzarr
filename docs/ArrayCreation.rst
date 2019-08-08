@@ -1,4 +1,4 @@
-.. _f8: `datatype`
+.. _f8: datatype
 .. _f4: <datatype.rst>
 .. _i8: <datatype.rst>
 .. _i4: <datatype.rst>
