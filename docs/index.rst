@@ -32,7 +32,6 @@ Api Examples
 
 
 .. toctree::
-  :maxdepth: 2
 
-  :ref:`JZarr documentation <index>`
-  ArrayCreation
+   JZarr documentation <index>
+   ArrayCreation
