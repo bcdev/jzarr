@@ -3,8 +3,8 @@
 
 .. _zarr package: https://zarr.readthedocs.io/en/stable/index.html
 
-JZarr
-=====
+JZarr |version| documentation
+=============================
 
 JZarr is a Java library providing an implementation of chunked,
 compressed, N-dimensional arrays close to the python `zarr package`_.
