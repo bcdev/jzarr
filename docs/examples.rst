@@ -14,4 +14,7 @@ Here can find some examples for
 
 Creating Arrays
 ^^^^^^^^^^^^^^^
-Arrays can be created in
+
+.. literalinclude:: ArrayCreation.rst
+  :start-after: **intro start**
+  :end-before: **intro end**

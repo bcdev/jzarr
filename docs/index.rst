@@ -28,7 +28,8 @@ the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
 
 Api Examples
 ------------
-.. literalinclude:: ArrayCreation
+
+.. literalinclude:: ArrayCreation.rst
   :start-after: **intro start**
   :end-before: **intro end**
 
