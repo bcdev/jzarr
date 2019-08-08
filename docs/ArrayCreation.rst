@@ -13,15 +13,20 @@ A :code:`System.out.println(array);` then creates the following output::
 
  com.bc.zarr.ZarrArray{shape=[10, 8], chunks=[10, 8], dataType=i4, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 
-As you can see, an array with the following characteristics has been created
+The output describes that an array with the following characteristics has been created
 
-* shape dimensions = y:10 x:8
-* chunks dimensions = also y:10 x:8
-* data type = i4 ... means java primitive :code:`int`
-* fill value = :code:`0`
-* compressor = zlib compressor with level 1 ``(default)``
-* store = InMemoryStore ``(default)``
-* byte order = BIG_ENDIAN ``(default)``
+=================  ==========================================
+property           value
+=================  ==========================================
+shape dimensions   y:10 x:8
+chunks dimensions  also y:10 x:8
+data type          i4 .. means java primitive :code:`int`
+fill value         :code:`0`
+compressor         zlib compressor with level 1 :code:`default`
+store              InMemoryStore :code:`default`
+byte order         BIG_ENDIAN :code:`default`
+=================  ==========================================
 
 Why the same dimensions as the shape ?
-  asda
+  | If chunks is not given, the default chunks will be applied. 512 in each dimension.
+  | If a chunk dimension is bigger than a shape dimension, the chunk dimension will be trimmed to shape.
