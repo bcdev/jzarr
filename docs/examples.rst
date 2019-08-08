@@ -5,7 +5,7 @@ Examples
 .. **intro start**
 
 Here you can find examples for
- | * :ref:`creating an array <creating an array>`
+ | * :ref:`creating an array <arrayCreation>`
  | * using the array params
  | * storage definitions
  | * define compression
@@ -17,7 +17,7 @@ Here you can find examples for
 
 .. _creating an array:
 
-:ref:`Creating An Arrays <arrayCreation>`
+:ref:`Creating An Array <arrayCreation>`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. include:: ArrayCreation.rst
