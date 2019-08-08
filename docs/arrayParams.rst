@@ -2,9 +2,12 @@
 
 ArrayParams
 ===========
+.. **intro start**
 
 In python a function can be defined with default values for arguments.
 
-.. highlight:: python
+.. **intro end**
 
-    dfghieauruairh
+.. code-block::
+
+   dfghieauruairh
