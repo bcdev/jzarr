@@ -31,12 +31,12 @@ Why the same dimensions as the shape ?
   | If chunks is not given, the default chunks will be applied. 512 in each dimension.
   | If a chunk dimension is bigger than a shape dimension, the chunk dimension will be trimmed to shape.
 
-.. _f8: <datatype>
-.. _f4: <datatype>
-.. _i8: <datatype>
-.. _i4: <datatype>
-.. _i2: <datatype>
-.. _i1: <datatype>
-.. _u4: <datatype>
-.. _u2: <datatype>
-.. _u1: <datatype>
+.. _f8: <datatype.rst>
+.. _f4: <datatype.rst>
+.. _i8: <datatype.rst>
+.. _i4: <datatype.rst>
+.. _i2: <datatype.rst>
+.. _i1: <datatype.rst>
+.. _u4: <datatype.rst>
+.. _u2: <datatype.rst>
+.. _u1: <datatype.rst>
