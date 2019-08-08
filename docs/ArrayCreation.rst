@@ -1,4 +1,4 @@
-.. _f8: :ref:`_ <data types>`
+.. _f8: <./datatype.html>
 
 Array Creation
 ==============
