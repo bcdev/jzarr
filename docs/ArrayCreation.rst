@@ -1,13 +1,3 @@
-.. _f8:
-.. _f4:
-.. _i8:
-.. _i4:
-.. _i2:
-.. _i1:
-.. _u4:
-.. _u2:
-.. _u1: :ref:`data types`
-
 Array Creation
 ==============
 Zarr has several functions for creating arrays.
@@ -29,7 +19,7 @@ property           value
 =================  ==========================================
 shape dimensions   y:10 x:8
 chunks dimensions  also y:10 x:8
-data type          f8_ :code:`default` .. means java primitive :code:`double`
+data type          :ref:`f8 <data types>` :code:`default` .. means java primitive :code:`double`
 fill value         :code:`0`
 compressor         zlib compressor with level 1 :code:`default`
 store              InMemoryStore :code:`default`
