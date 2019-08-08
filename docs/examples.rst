@@ -1,3 +1,5 @@
+.. _examples:
+
 Examples
 ========
 
@@ -15,6 +17,6 @@ Here can find some examples for
 Creating Arrays
 ^^^^^^^^^^^^^^^
 
-.. literalinclude:: ArrayCreation.rst
+.. include:: ArrayCreation.rst
   :start-after: **intro start**
   :end-before: **intro end**
