@@ -28,8 +28,9 @@ the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
 
 Api Examples
 ------------
+:ref:`array creation <arrayCreation>`
 
-.. toctree::
-    :maxdepth: 2
 
-    ArrayCreation
+.. .. toctree::
+..      :maxdepth: 2
+..      ArrayCreation

@@ -1,3 +1,5 @@
+.. _arrayCreation:
+
 Array Creation
 ==============
 Zarr has several functions for creating arrays.
