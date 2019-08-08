@@ -1,12 +1,12 @@
-.. _f8: datatype
-.. _f4: <datatype.rst>
-.. _i8: <datatype.rst>
-.. _i4: <datatype.rst>
-.. _i2: <datatype.rst>
-.. _i1: <datatype.rst>
-.. _u4: <datatype.rst>
-.. _u2: <datatype.rst>
-.. _u1: <datatype.rst>
+.. _f8:
+.. _f4:
+.. _i8:
+.. _i4:
+.. _i2:
+.. _i1:
+.. _u4:
+.. _u2:
+.. _u1: :ref:`data types`
 
 Array Creation
 ==============
