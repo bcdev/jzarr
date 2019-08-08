@@ -33,5 +33,6 @@ Api Examples
 
 .. toctree::
    :hidden:
+
    JZarr documentation <index>
    ArrayCreation
