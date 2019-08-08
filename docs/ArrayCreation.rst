@@ -6,7 +6,7 @@ Zarr has several functions for creating arrays.
 Code snippet from: `/docs/examples/CreatingAnArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/CreatingAnArray.java>`_
 
 .. literalinclude:: ../src/main/examples/array/creation/CreatingAnArray.java
-  :caption: Code snippet from <../src/main/examples/array/creation/CreatingAnArray.java>
+  :caption: `Code snippet <../src/main/examples/array/creation/CreatingAnArray.java>`_
   :language: java
   :start-after: main(String[] args)
   :end-before: System.out.println(array)
