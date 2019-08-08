@@ -7,7 +7,8 @@ Code snippet from: `/docs/examples/CreatingAnArray.java <https://github.com/bcde
 
 .. literalinclude:: ./examples/CreatingAnArray.java
   :language: java
-  :lines: 7-11
+  :start-after: main(String[] args)
+  :end-before: System.out.println(array)
   :dedent: 8
 
 creates the following output::
