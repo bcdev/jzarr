@@ -22,8 +22,8 @@ Simple small array
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
   :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java>`_
-  :start-after: snippet 1
-  :end-before: end 1
+  :start-after: System.out.println("Snippet 1")
+  :end-before: System.out.println(array)
   :dedent: 8
 
 A :code:`System.out.println(array);` then creates the following output::
@@ -81,3 +81,21 @@ A :code:`System.out.println(array);` then creates the following output::
 
  com.bc.zarr.ZarrArray{shape=[4000, 3500], chunks=[4000, 3500], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 Now you can see, the chunk size ins the same as shape size.
+
+.. _array_with_user_defined_chunks:
+
+Array with user defined chunks
+------------------------------
+
+.. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
+  :language: java
+  :caption: `snippet 4 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java>`_
+  :start-after: snippet 4
+  :end-before: end 4
+  :dedent: 8
+
+A :code:`System.out.println(array);` then creates the following output::
+
+ com.bc.zarr.ZarrArray{shape=[4000, 3500], chunks=[400, 350], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+Chunk size now are user defined [400, 350] .
+
