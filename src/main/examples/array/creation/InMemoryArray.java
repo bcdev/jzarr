@@ -78,6 +78,7 @@ public class InMemoryArray {
         };
         final int[] withShape = {3, 5};
         final int[] toPosition = {1, 1};
+
         // write the data
         array.write(dataWeWantWrite, withShape, toPosition);
 
@@ -87,8 +88,10 @@ public class InMemoryArray {
 
         // now we can wrap the data in a ucar.ma2.Array
         final Array ma2Array = Array.factory(entireData).reshape(array.getShape());
+
         // split it into arrays per line
         final int[][] allLines = (int[][]) ma2Array.copyToNDJavaArray();
+
         // and print out the lines
         System.out.println("Snippet 5");
         for (int i = 0; i < allLines.length; i++) {
