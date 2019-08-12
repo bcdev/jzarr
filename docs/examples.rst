@@ -15,15 +15,11 @@ Here you can find examples for
 
 .. **intro end**
 
-.. _array_creation:
-
 :ref:`Creating An Array <array_creation>`
 
 .. include:: array_creation.rst
   :start-after: **intro start**
   :end-before: To create an instance of com.bc.zarr.ZarrArray
-
-.. _array_params:
 
 :ref:`Using The Array Params <array_params>`
 
