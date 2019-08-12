@@ -5,8 +5,8 @@ Examples
 .. **intro start**
 
 Here you can find examples for
- | * :ref:`creating an array <creatingAnArray>`
- | * :ref:`using the array params <theArrayParams>`
+ | * :ref:`creating an array <array_creation>`
+ | * :ref:`using the array params <array_params>`
  | * storage definitions
  | * define compression
  | * opening existing arrays
@@ -17,17 +17,17 @@ Here you can find examples for
 
 .. _creatingAnArray:
 
-:ref:`Creating An Array <arrayCreation>`
+:ref:`Creating An Array <array_creation>`
 
-.. include:: ArrayCreation.rst
+.. include:: array_creation.rst
   :start-after: **intro start**
   :end-before: To create an instance of com.bc.zarr.ZarrArray
 
 .. _theArrayParams:
 
-:ref:`Using The Array Params <arrayParams>`
+:ref:`Using The Array Params <array_params>`
 
-.. include:: arrayParams.rst
+.. include:: array_params.rst
   :start-after: **intro start**
   :end-before: **intro end**
 

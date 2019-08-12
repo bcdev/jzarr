@@ -40,6 +40,6 @@ Api Examples
    :maxdepth: 2
 
    examples
-   arrayParams
-   ArrayCreation
+   array_creation
+   array_params
    datatype
