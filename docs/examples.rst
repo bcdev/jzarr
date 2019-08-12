@@ -15,7 +15,7 @@ Here you can find examples for
 
 .. **intro end**
 
-:ref:`Creating An Array <array_creation>`
+`Creating An Array <array_creation>`_
 
 .. include:: array_creation.rst
   :start-after: **intro start**
