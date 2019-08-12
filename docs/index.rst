@@ -37,6 +37,7 @@ Api Examples
 
 .. toctree::
    :hidden:
+   :maxdepth: 1
 
    index
    examples
