@@ -39,3 +39,7 @@ Api Examples
    :hidden:
 
    index
+   examples
+   arrayParams
+   ArrayCreation
+   datatype
