@@ -14,6 +14,9 @@ Array Creation
 
 .. (highlight:: java)
 
+Very simple small array
+-----------------------
+
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
   :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java>`_
@@ -56,5 +59,5 @@ A :code:`System.out.println(array);` then creates the following output
 
 ::
 
- com.bc.zarr.ZarrArray{shape=[10, 8], chunks=[10, 8], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+ com.bc.zarr.ZarrArray{shape=[10000, 8000], chunks=[501, 501], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 The output describes that an array with the following characteristics has been created
