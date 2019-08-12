@@ -21,8 +21,7 @@ Array Creation
 
 A :code:`System.out.println(array);` then creates the following output::
 
- com.bc.zarr.ZarrArray{shape=[10, 8], chunks=[10, 8], dataType=i4, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
-
+ com.bc.zarr.ZarrArray{shape=[10, 8], chunks=[10, 8], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 The output describes that an array with the following characteristics has been created
 
 =================  ==========================================
@@ -39,6 +38,6 @@ byte order         BIG_ENDIAN :code:`default`
 =================  ==========================================
 
 Why are chunks dimensions the same as shape dimension?
-  | If chunks is not given, the default chunks will be applied. 512 in each dimension.
+  | If chunks is not given, the default chunks, with a size of 512 in each dimension, will be applied.
   | If a chunk dimension is bigger than a shape dimension itself, the chunk dimension will be trimmed to shape.
 
