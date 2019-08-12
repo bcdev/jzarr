@@ -103,10 +103,11 @@ public class ArrayParams {
                 chunks = new int[shape.length];
                 for (int i = 0; i < shape.length; i++) {
                     int shapeDim = shape[i];
-                    chunks[i] = shapeDim;
                     final int numChunks = (shapeDim / 512) + 1;
                     if (numChunks > 1) {
                         chunks[i] = (shapeDim / numChunks) + 1;
+                    } else {
+                        chunks[i] = shapeDim;
                     }
                 }
             } else {

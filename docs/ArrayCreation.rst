@@ -14,7 +14,8 @@ Array Creation
 
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
-  :caption: `InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java>`_
+  :language: java
+  :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java>`_
   :start-after: snippet 1
   :end-before: end 1
   :dedent: 8
