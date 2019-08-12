@@ -12,19 +12,21 @@ Array Creation
 | At least there is only one mandatory information which must be given at creation time.
 | To create an instance of com.bc.zarr.ZarrArray at least a shape must be given
 
-.. (highlight:: java)
 
 .. _simple_small_array:
 
 Simple small array
 ------------------
 
+.. highlight:: java
+
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
-  :language: java
   :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L20>`_
   :start-after: snippet 1
   :end-before: end 1
   :dedent: 8
+
+.. highlight:: none
 
 A :code:`System.out.println(array);` then creates the following output::
 
@@ -52,6 +54,7 @@ Why are chunks dimensions the same as shape dimension?
 
 Array with automatically computed chunk size
 --------------------------------------------
+.. highlight:: java
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
@@ -59,6 +62,8 @@ Array with automatically computed chunk size
   :start-after: snippet 2
   :end-before: end 2
   :dedent: 8
+
+.. highlight:: none
 
 A :code:`System.out.println(array);` then creates the following output::
 
@@ -69,6 +74,7 @@ As you can see now, the chunk size in both dimensions is 500. This is an autogen
 
 Array with disabled chunking
 ----------------------------
+.. highlight:: java
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
@@ -76,6 +82,8 @@ Array with disabled chunking
   :start-after: snippet 3
   :end-before: end 3
   :dedent: 8
+
+.. highlight:: none
 
 A :code:`System.out.println(array);` then creates the following output::
 
@@ -86,6 +94,7 @@ Now you can see, the chunk size ins the same as shape size.
 
 Array with user defined chunks
 ------------------------------
+.. highlight:: java
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
@@ -93,6 +102,8 @@ Array with user defined chunks
   :start-after: snippet 4
   :end-before: end 4
   :dedent: 8
+
+.. highlight:: none
 
 A :code:`System.out.println(array);` then creates the following output::
 
@@ -103,6 +114,7 @@ Chunk size now are user defined [400, 350] .
 
 Write/Read data to and from array
 ---------------------------------
+.. highlight:: java
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
@@ -110,6 +122,8 @@ Write/Read data to and from array
   :start-after: snippet 5
   :end-before: end 5
   :dedent: 8
+
+.. highlight:: none
 
 Creates the following output::
 
