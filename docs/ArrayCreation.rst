@@ -12,7 +12,7 @@ Array Creation
 | At least there is only one mandatory information which must be given at creation time.
 | To create an instance of com.bc.zarr.ZarrArray at least a shape must be given
 
-.. highlight:: java
+.. (highlight:: java)
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
@@ -21,7 +21,9 @@ Array Creation
   :end-before: end 1
   :dedent: 8
 
-A :code:`System.out.println(array);` then creates the following output::
+A :code:`System.out.println(array);` then creates the following output
+
+::
 
  com.bc.zarr.ZarrArray{shape=[10, 8], chunks=[10, 8], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 The output describes that an array with the following characteristics has been created
@@ -43,3 +45,16 @@ Why are chunks dimensions the same as shape dimension?
   | If chunks is not given, the default chunks, with a size of 512 in each dimension, will be applied.
   | If a chunk dimension is bigger than a shape dimension itself, the chunk dimension will be trimmed to shape.
 
+.. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
+  :language: java
+  :caption: `snippet 2 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java>`_
+  :start-after: snippet 2
+  :end-before: end 2
+  :dedent: 8
+
+A :code:`System.out.println(array);` then creates the following output
+
+::
+
+ com.bc.zarr.ZarrArray{shape=[10, 8], chunks=[10, 8], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+The output describes that an array with the following characteristics has been created
