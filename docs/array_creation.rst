@@ -21,7 +21,7 @@ Simple small array
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L15>`_
+  :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L20>`_
   :start-after: snippet 1
   :end-before: end 1
   :dedent: 8
@@ -55,7 +55,7 @@ Array with automatically computed chunk size
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 2 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L26>`_
+  :caption: `snippet 2 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L31>`_
   :start-after: snippet 2
   :end-before: end 2
   :dedent: 8
@@ -72,7 +72,7 @@ Array with disabled chunking
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 3 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L37>`_
+  :caption: `snippet 3 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L42>`_
   :start-after: snippet 3
   :end-before: end 3
   :dedent: 8
@@ -89,7 +89,7 @@ Array with user defined chunks
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 4 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L49>`_
+  :caption: `snippet 4 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L54>`_
   :start-after: snippet 4
   :end-before: end 4
   :dedent: 8
@@ -99,10 +99,10 @@ A :code:`System.out.println(array);` then creates the following output::
  com.bc.zarr.ZarrArray{shape=[4000, 3500], chunks=[400, 350], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 Chunk size now are user defined [400, 350] .
 
-.. _array_with_user_defined_chunks:
+.. _write_read_data_to_from_array:
 
-Array with user defined chunks
-------------------------------
+Write/Read data to and from array
+---------------------------------
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
