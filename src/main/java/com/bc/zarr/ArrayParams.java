@@ -105,7 +105,12 @@ public class ArrayParams {
                     int shapeDim = shape[i];
                     final int numChunks = (shapeDim / 512) + 1;
                     if (numChunks > 1) {
-                        chunks[i] = (shapeDim / numChunks) + 1;
+                        int chunkDim = shapeDim / numChunks;
+                        if(shapeDim % chunkDim == 0) {
+                            chunks[i] = chunkDim;
+                        }else {
+                            chunks[i] = chunkDim + 1;
+                        }
                     } else {
                         chunks[i] = shapeDim;
                     }
