@@ -13,10 +13,13 @@ public class InMemoryArray {
     }
 
     private static void createSimpleSmallArray() throws IOException {
-        System.out.println("Snippet 1");
+        // snippet 1
         ZarrArray array = ZarrArray.create(new ArrayParams()
                 .withShape(10, 8)
         );
+        // end 1
+
+        System.out.println("Snippet 1");
         System.out.println(array);
     }
 
