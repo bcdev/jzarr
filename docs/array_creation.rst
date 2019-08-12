@@ -55,7 +55,7 @@ Array with automatically computed chunk size
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 2 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L23>`_
+  :caption: `snippet 2 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L26>`_
   :start-after: snippet 2
   :end-before: end 2
   :dedent: 8
@@ -72,7 +72,7 @@ Array with disabled chunking
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 3 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L34>`_
+  :caption: `snippet 3 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L37>`_
   :start-after: snippet 3
   :end-before: end 3
   :dedent: 8
@@ -89,7 +89,7 @@ Array with user defined chunks
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 4 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L46>`_
+  :caption: `snippet 4 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L49>`_
   :start-after: snippet 4
   :end-before: end 4
   :dedent: 8
@@ -98,4 +98,28 @@ A :code:`System.out.println(array);` then creates the following output::
 
  com.bc.zarr.ZarrArray{shape=[4000, 3500], chunks=[400, 350], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 Chunk size now are user defined [400, 350] .
+
+.. _array_with_user_defined_chunks:
+
+Array with user defined chunks
+------------------------------
+
+.. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
+  :language: java
+  :caption: `snippet 5 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L66>`_
+  :start-after: snippet 5
+  :end-before: end 5
+  :dedent: 8
+
+Creates the following output::
+
+ Snippet 5
+ line 0 = [-1, -1, -1, -1, -1, -1, -1]
+ line 1 = [-1, 11, 12, 13, 14, 15, -1]
+ line 2 = [-1, 21, 22, 23, 24, 25, -1]
+ line 3 = [-1, 31, 32, 33, 34, 35, -1]
+ line 4 = [-1, -1, -1, -1, -1, -1, -1]
+
+We can see now, the data is written in the center of the array.
+And we can see a :code:`-1` value border which is the fill value we had defined above.
 
