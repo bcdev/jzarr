@@ -12,6 +12,7 @@ Array Creation
 | At least there is only one mandatory information which must be given at creation time.
 | To create an instance of com.bc.zarr.ZarrArray at least a shape must be given
 
+.. highlight:: java
 
 .. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
   :language: java
