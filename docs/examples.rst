@@ -5,8 +5,8 @@ Examples
 .. **intro start**
 
 Here you can find examples for
- | * :ref:`creating an array <array_creation.rst>`
- | * :ref:`using the array params <array_params.rst>`
+ | * :ref:`creating an array <array_creation>`
+ | * :ref:`using the array params <array_params>`
  | * storage definitions
  | * define compression
  | * opening existing arrays

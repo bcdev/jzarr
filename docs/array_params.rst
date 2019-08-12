@@ -1,4 +1,4 @@
-.. _arrayParams:
+.. _array_params:
 
 ArrayParams
 ===========
