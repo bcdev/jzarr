@@ -22,7 +22,7 @@ Simple small array
 
 .. literalinclude:: ./examples/java/ArrayCreation.java
   :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
-  :start-after: example_1(
+  :start-after: void example_1(
   :end-before: createOutput(
   :dedent: 8
 
