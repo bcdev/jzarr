@@ -22,8 +22,8 @@ Simple small array
 
 .. literalinclude:: ./examples/java/ArrayCreation.java
   :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
-  :start-after: snippet 1
-  :end-before: end 1
+  :start-after: example_1(
+  :end-before: createOutput(
   :dedent: 8
 
 .. highlight:: none
@@ -31,6 +31,7 @@ Simple small array
 A :code:`System.out.println(array);` then creates the following output::
 
 .. literalinclude:: ./examples/output/ArrayVreation_example_1.txt
+
 The output describes that an array with the following characteristics has been created
 
 ===========  ==========================================
