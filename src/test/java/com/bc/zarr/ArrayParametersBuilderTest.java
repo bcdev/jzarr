@@ -102,7 +102,7 @@ public class ArrayParametersBuilderTest {
 
         //verification
         assertThat(parameters.getShape(), is(new int[]{3800, 5000}));
-        assertThat(parameters.getChunks(), is(new int[]{476, 501}));
+        assertThat(parameters.getChunks(), is(new int[]{475, 500}));
         assertThat(parameters.isChunked(), is(true));
         assertThat(parameters.getDataType(), is(DataType.f8));
         assertThat(parameters.getByteOrder(), is(ByteOrder.BIG_ENDIAN));

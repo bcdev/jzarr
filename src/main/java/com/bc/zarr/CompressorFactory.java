@@ -46,7 +46,6 @@ public class CompressorFactory {
 
     private static class ZlibCompressor extends Compressor {
         private final String id = "zlib";
-        private final boolean nowrap = false;
         private final int level;
 
         private ZlibCompressor(int level) {
@@ -65,14 +64,14 @@ public class CompressorFactory {
 
         @Override
         public void compress(InputStream is, OutputStream os) throws IOException {
-            try (final DeflaterOutputStream dos = new DeflaterOutputStream(os, new Deflater(level, nowrap))) {
+            try (final DeflaterOutputStream dos = new DeflaterOutputStream(os, new Deflater(level))) {
                 passThrough(is, dos);
             }
         }
 
         @Override
         public void uncompress(InputStream is, OutputStream os) throws IOException {
-            try (final InflaterInputStream iis = new InflaterInputStream(is, new Inflater(nowrap))) {
+            try (final InflaterInputStream iis = new InflaterInputStream(is, new Inflater())) {
                 passThrough(iis, os);
             }
         }

@@ -99,7 +99,7 @@ public class ZarrGroup {
     }
     public ZarrGroup createSubGroup(String subGroupName, Map<String, Object> attributes) throws IOException {
         final ZarrPath relativePath = this.relativePath.resolve(subGroupName);
-        final ZarrGroup group = new ZarrGroup(relativePath, store);
+        final ZarrGroup group = new ZarrGroup(store, relativePath);
         group.createHeader();
         group.writeAttributes(attributes);
         return group;
@@ -117,7 +117,7 @@ public class ZarrGroup {
         this.store = store;
     }
 
-    private ZarrGroup(ZarrPath relativePath, Store store) {
+    private ZarrGroup(Store store, ZarrPath relativePath) {
         this.relativePath = relativePath;
         this.store = store;
     }
@@ -135,7 +135,7 @@ public class ZarrGroup {
         return ZarrArray.open(relativePath, store);
     }
 
-    public TreeSet<String> getArrayKeys() throws IOException {
+    public Set<String> getArrayKeys() throws IOException {
         return store.getArrayKeys();
     }
 

@@ -1,5 +1,3 @@
-package array.creation;
-
 import com.bc.zarr.ArrayParams;
 import com.bc.zarr.ZarrArray;
 

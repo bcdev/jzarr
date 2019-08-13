@@ -1,31 +1,28 @@
-package array.creation;
-
 import com.bc.zarr.*;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
+import utils.OutputHelper;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.concurrent.LinkedTransferQueue;
 
-public class InMemoryArray {
+public class ArrayCreation {
+
     public static void main(String[] args) throws IOException, InvalidRangeException {
-        createSimpleSmallArray();
-        createArrayWithAutomaticallyComputedChunkSize();
-        createArrayWithDisabledChunking();
-        createArrayWithUserDefinedChunks();
-        createArray_WriteAndReadData();
+        example_1();
+//        createArrayWithAutomaticallyComputedChunkSize();
+//        createArrayWithDisabledChunking();
+//        createArrayWithUserDefinedChunks();
+//        createArray_WriteAndReadData();
     }
 
-    private static void createSimpleSmallArray() throws IOException {
-        // snippet 1
-        ZarrArray array = ZarrArray.create(new ArrayParams()
+    // Create a simple small zArray
+    private static void example_1() throws IOException {
+        ZarrArray zarray = ZarrArray.create(new ArrayParams()
                 .withShape(10, 8)
         );
-        // end 1
-
-        System.out.println("Snippet 1");
-        System.out.println(array);
+        OutputHelper.createOutput(ps -> ps.println(zarray));
     }
 
     private static void createArrayWithAutomaticallyComputedChunkSize() throws IOException {

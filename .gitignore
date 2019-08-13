@@ -29,3 +29,4 @@ target/
 /jzarr.ipr
 /jzarr.iws
 /src/test/java/temp/
+/docs/examples/resources/s3.properties

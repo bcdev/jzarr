@@ -1,5 +1,12 @@
 package utils;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 public class OutputHelper {
@@ -47,4 +54,30 @@ public class OutputHelper {
         return string.split("(?<!^)(?=[A-Z])");
     }
 
+    public static void createOutput(Writer writer) throws IOException {
+        final String fileName = createOutputFilename();
+        final Path workDir = Paths.get(".");
+        final Path outDir = workDir.resolve("docs").resolve("examples").resolve("output");
+        Files.createDirectories(outDir);
+        final Path filePath = outDir.resolve(fileName);
+        try (PrintStream printStream = new PrintStream(Files.newOutputStream(filePath))) {
+            writer.write(printStream);
+        }
+    }
+
+    @NotNull
+    private static String createOutputFilename() {
+        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        final StackTraceElement element = stackTrace[3];
+        String className = element.getClassName();
+        if (className.contains(".")) {
+            className = className.substring(className.lastIndexOf(".") + 1);
+        }
+        final String methodName = element.getMethodName();
+        return className + "_" + methodName + ".txt";
+    }
+
+    public interface Writer {
+        void write(PrintStream ps);
+    }
 }

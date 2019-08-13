@@ -20,8 +20,8 @@ Simple small array
 
 .. highlight:: java
 
-.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
-  :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L20>`_
+.. literalinclude:: ./examples/java/ArrayCreation.java
+  :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
   :start-after: snippet 1
   :end-before: end 1
   :dedent: 8
@@ -30,7 +30,7 @@ Simple small array
 
 A :code:`System.out.println(array);` then creates the following output::
 
- com.bc.zarr.ZarrArray{shape=[10, 8], chunks=[10, 8], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+.. literalinclude:: ./examples/output/ArrayVreation_example_1.txt
 The output describes that an array with the following characteristics has been created
 
 ===========  ==========================================
@@ -57,9 +57,9 @@ Array with automatically computed chunk size
 --------------------------------------------
 .. highlight:: java
 
-.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
+.. literalinclude:: ./examples/java/ArrayCreation.java
   :language: java
-  :caption: `snippet 2 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L31>`_
+  :caption: `snippet 2 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
   :start-after: snippet 2
   :end-before: end 2
   :dedent: 8
@@ -77,9 +77,9 @@ Array with disabled chunking
 ----------------------------
 .. highlight:: java
 
-.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
+.. literalinclude:: ./examples/java/ArrayCreation.java
   :language: java
-  :caption: `snippet 3 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L42>`_
+  :caption: `snippet 3 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
   :start-after: snippet 3
   :end-before: end 3
   :dedent: 8
@@ -97,9 +97,9 @@ Array with user defined chunks
 ------------------------------
 .. highlight:: java
 
-.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
+.. literalinclude:: ./examples/java/ArrayCreation.java
   :language: java
-  :caption: `snippet 4 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L54>`_
+  :caption: `snippet 4 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
   :start-after: snippet 4
   :end-before: end 4
   :dedent: 8
@@ -117,9 +117,9 @@ Write/Read data to and from array
 ---------------------------------
 .. highlight:: java
 
-.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
+.. literalinclude:: ./examples/java/ArrayCreation.java
   :language: java
-  :caption: `snippet 5 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L66>`_
+  :caption: `snippet 5 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
   :start-after: snippet 5
   :end-before: end 5
   :dedent: 8
