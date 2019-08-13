@@ -28,9 +28,9 @@ Simple small array
 
 .. highlight:: none
 
-A :code:`System.out.println(array);` then creates the following output::
+A :code:`System.out.println(array);` then creates the following output
 
-.. include:: ./examples/output/ArrayCreation_example_1.txt
+.. literalinclude:: ./examples/output/ArrayCreation_example_1.txt
 
 The output describes that an array with the following characteristics has been created
 
