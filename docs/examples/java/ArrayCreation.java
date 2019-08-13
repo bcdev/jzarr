@@ -3,15 +3,10 @@ import com.bc.zarr.DataType;
 import com.bc.zarr.ZarrArray;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.util.ArrayUtil;
-import org.nd4j.linalg.util.NDArrayUtil;
-import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
-import utils.OutputHelper;
 import utils.OutputHelper.Writer;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import static utils.OutputHelper.createOutput;
 
