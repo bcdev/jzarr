@@ -78,6 +78,6 @@ public class OutputHelper {
     }
 
     public interface Writer {
-        void write(PrintStream ps);
+        void write(PrintStream out);
     }
 }
