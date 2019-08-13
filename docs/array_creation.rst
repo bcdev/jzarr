@@ -30,7 +30,7 @@ Simple small array
 
 A :code:`System.out.println(array);` then creates the following output::
 
-.. literalinclude:: ./examples/output/ArrayVreation_example_1.txt
+.. literalinclude:: ./examples/output/ArrayCreation_example_1.txt
 
 The output describes that an array with the following characteristics has been created
 
