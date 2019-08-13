@@ -115,6 +115,11 @@ Chunk size now are user defined [400, 350] .
 
 Write/Read data to and from array
 ---------------------------------
+1. First creates an array with size 5 * 7 and with a fill value of :code:`-1`.
+2. Then write data with the shape 3 * 5 into the center of the array.
+3. Read the data from the entire array (int[] with size 5 * 7)
+4. Print out the entire data and we can see the data written before surrounded by the fill value :code:`-1`.
+
 .. highlight:: java
 
 .. literalinclude:: ./examples/java/ArrayCreation.java
