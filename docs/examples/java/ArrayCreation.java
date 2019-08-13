@@ -1,6 +1,7 @@
 import com.bc.zarr.ArrayParams;
 import com.bc.zarr.DataType;
 import com.bc.zarr.ZarrArray;
+import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import ucar.ma2.InvalidRangeException;
@@ -97,8 +98,8 @@ public class ArrayCreation {
 
         // Finally we can instantiate for example an org.nd4j.linalg.api.ndarray.INDArray and print out the data
         final Writer writer = out -> {
-            final INDArray nd4j = Nd4j.create(Nd4j.createBuffer(entireData)).reshape('c', array.getShape());
-            out.println(nd4j);
+            final DataBuffer buffer = Nd4j.createBuffer(entireData);
+            out.println(Nd4j.create(buffer).reshape('c', array.getShape()));
         };
 
         createOutput(writer);
