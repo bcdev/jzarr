@@ -20,8 +20,8 @@ Simple small array
 
 .. highlight:: java
 
-.. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
-  :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L20>`_
+.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
+  :caption: `snippet 1 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L20>`_
   :start-after: snippet 1
   :end-before: end 1
   :dedent: 8
@@ -33,22 +33,23 @@ A :code:`System.out.println(array);` then creates the following output::
  com.bc.zarr.ZarrArray{shape=[10, 8], chunks=[10, 8], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 The output describes that an array with the following characteristics has been created
 
-=================  ==========================================
-property           value
-=================  ==========================================
-shape dimensions   y:10 x:8
-chunks dimensions  also y:10 x:8
-data type          :ref:`f8 <data-types>` :code:`default`
-data type          :ref:`f8 <dtype>` :code:`default`
-fill value         :code:`0` :code:`default`
-compressor         zlib compressor with level 1 :code:`default`
-store              InMemoryStore :code:`default`
-byte order         BIG_ENDIAN :code:`default`
-=================  ==========================================
+===========  ==========================================
+property     value
+===========  ==========================================
+shape        y:10 x:8
+chunks       also y:10 x:8
+data type    :ref:`f8 <data-types>` :code:`default`
+data type    :ref:`f8 <dtype>` :code:`default`
+fill value   :code:`0` :code:`default`
+compressor   zlib compressor with level 1 :code:`default`
+store        InMemoryStore :code:`default`
+byte order   BIG_ENDIAN :code:`default`
+===========  ==========================================
 
 Why are chunks dimensions the same as shape dimension?
-  | If chunks is not given, the default chunks, with a size of 512 in each dimension, will be applied.
-  | If a chunk dimension is bigger than a shape dimension itself, the chunk dimension will be trimmed to shape.
+  | If chunks is not given, a default chunks size of 512 in each dimension, will be applied.
+  | If a chunk dimension is bigger than the corresponding shape dimension, the chunk dimension will be trimmed to shape dimension.
+  | For detailed explanation see :ref:`Array Parameter explanation <array_params>`
 
 .. _array_with_automatically_computed_chunk_size:
 
@@ -56,9 +57,9 @@ Array with automatically computed chunk size
 --------------------------------------------
 .. highlight:: java
 
-.. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
+.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 2 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L31>`_
+  :caption: `snippet 2 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L31>`_
   :start-after: snippet 2
   :end-before: end 2
   :dedent: 8
@@ -76,9 +77,9 @@ Array with disabled chunking
 ----------------------------
 .. highlight:: java
 
-.. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
+.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 3 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L42>`_
+  :caption: `snippet 3 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L42>`_
   :start-after: snippet 3
   :end-before: end 3
   :dedent: 8
@@ -96,9 +97,9 @@ Array with user defined chunks
 ------------------------------
 .. highlight:: java
 
-.. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
+.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 4 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L54>`_
+  :caption: `snippet 4 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L54>`_
   :start-after: snippet 4
   :end-before: end 4
   :dedent: 8
@@ -116,9 +117,9 @@ Write/Read data to and from array
 ---------------------------------
 .. highlight:: java
 
-.. literalinclude:: ../src/main/examples/array/creation/InMemoryArray.java
+.. literalinclude:: ../src/test/examples/array/creation/InMemoryArray.java
   :language: java
-  :caption: `snippet 5 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/main/examples/array/creation/InMemoryArray.java#L66>`_
+  :caption: `snippet 5 from InMemoryArray.java <https://github.com/bcdev/jzarr/blob/master/src/test/examples/array/creation/InMemoryArray.java#L66>`_
   :start-after: snippet 5
   :end-before: end 5
   :dedent: 8
