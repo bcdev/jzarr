@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 
+import static utils.OutputHelper.createOutput;
+
 public class ArrayCreation {
 
     public static void main(String[] args) throws IOException, InvalidRangeException {
@@ -22,7 +24,8 @@ public class ArrayCreation {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
                 .withShape(10, 8)
         );
-        OutputHelper.createOutput(ps -> ps.println(zarray));
+
+        createOutput(ps -> ps.println(zarray));
     }
 
     private static void createArrayWithAutomaticallyComputedChunkSize() throws IOException {
