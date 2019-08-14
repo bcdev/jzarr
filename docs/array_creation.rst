@@ -6,12 +6,10 @@ Array Creation
 
 | JZarr has several functions for creating arrays.
 | Arrays can be created with or without a given storage.
-| If no storage is given a default in memory store will be used instead.
+| If no storage is given a store in memory is used as default.
 | Arrays can be created with or without additional user defined attributes.
 
-| At least there is only one mandatory information which must be given at creation time.
-| To create an instance of com.bc.zarr.ZarrArray at least a shape must be given
-
+| The shape is the only mandatory information which must be given to create arrays.
 
 .. _simple_small_array:
 
@@ -38,7 +36,7 @@ The output describes that an array with the following characteristics has been c
 property     value
 ===========  ==========================================
 shape        y:10 x:8
-chunks       also y:10 x:8
+chunks       y:10 x:8
 data type    :ref:`f8 <data-types>` :code:`default`
 data type    :ref:`f8 <dtype>` :code:`default`
 fill value   :code:`0` :code:`default`
@@ -135,6 +133,6 @@ Creates the following output
 
 .. literalinclude:: ./examples/output/ArrayCreation_example_5.txt
 
-We can see now, the data is written in the center of the array.
-And we can see a :code:`-1` value border which is the fill value we had defined above.
+| The output displays that the data is written to the center of the array.
+| The written data is surrounded by a :code:`-1` value border which is the fill value defined above.
 

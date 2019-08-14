@@ -12,10 +12,10 @@ compressed, N-dimensional arrays close to the python `zarr package`_.
 Highlights
 ----------
 
-* Create N-dimensional arrays with java primitive data types. At the moment except boolean and char type.
+* Create N-dimensional arrays with java primitive data types. At the moment boolean and char type are not supported.
 * Chunk arrays along any dimension.
 * Compress and/or filter chunks.
-* Store arrays in memory, on disk, (not now ... inside a Zip file, on S3, ...
+* Store arrays in memory, on disk, (Future plans: inside a Zip file, on S3, ...)
 * Read an array concurrently from multiple threads or processes.
 * Write to an array concurrently from multiple threads or processes.
 * Organize arrays into hierarchies via groups.
@@ -23,8 +23,10 @@ Highlights
 Status
 ------
 
-jzarr is still a young project. Feedback and bug reports are very welcome, please get in touch via
+JZarr is in the very beginning phase. Feedback and bug reports are very welcome. Please get in touch via
 the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
+
+
 
 Api Examples
 ------------

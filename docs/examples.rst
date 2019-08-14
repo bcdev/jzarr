@@ -19,7 +19,7 @@ Here you can find examples for
 
 .. include:: array_creation.rst
   :start-after: **intro start**
-  :end-before: To create an instance of com.bc.zarr.ZarrArray
+  :end-before: _simple_small_array
 
 :ref:`Using The Array Params <array_params>`
 
