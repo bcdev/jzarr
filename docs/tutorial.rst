@@ -38,4 +38,4 @@ A :code:`System.out.println(array);` then creates the following output
 The code above creates a 2-dimensional array of 32-bit integers with 10000 rows and 10000 columns,
 divided into chunks where each chunk has 1000 rows and 1000 columns (and so there will be 100 chunks in total).
 
-For a complete list of array creation routines see the :ref:`array_creation`_ module documentation.
+For a complete list of array creation routines see the :ref:`array creation <array_creation>` module documentation.

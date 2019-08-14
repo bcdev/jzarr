@@ -12,6 +12,10 @@ public class Tutorial {
         example_1();
     }
 
+    /**
+     * Creates a 2-dimensional array of 32-bit integers with 10000 rows and 10000 columns, divided into
+     * chunks where each chunk has 1000 rows and 1000 columns (and so there will be 100 chunks in total).
+     */
     private static void example_1() throws IOException {
         ZarrArray z = ZarrArray.create(new ArrayParams()
                 .withShape(10000, 10000)
