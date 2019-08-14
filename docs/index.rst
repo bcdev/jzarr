@@ -27,6 +27,17 @@ JZarr is in the very beginning phase. Feedback and bug reports are very welcome.
 the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
 
 
+Contents
+--------
+
+.. toctree::
+    :maxdepth: 2
+
+    tutorial
+    api
+    spec
+    release
+    contributing
 
 Api Examples
 ------------
@@ -37,11 +48,11 @@ Api Examples
 
 :ref:`Read more ... <examples>`
 
-.. toctree::
-   :hidden:
-   :maxdepth: 2
-
-   examples
-   array_creation
-   array_params
-   datatype
+.. .. toctree::
+..    :hidden:
+..    :maxdepth: 2
+..
+..    examples
+..    array_creation
+..    array_params
+..    datatype
