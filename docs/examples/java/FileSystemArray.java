@@ -1,6 +1,3 @@
-import com.bc.zarr.ArrayParams;
-import com.bc.zarr.ZarrArray;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;

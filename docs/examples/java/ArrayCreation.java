@@ -4,10 +4,10 @@ import com.bc.zarr.ZarrArray;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.factory.Nd4j;
 import ucar.ma2.InvalidRangeException;
-import utils.OutputHelper.Writer;
 
 import java.io.IOException;
 
+import static utils.OutputHelper.Writer;
 import static utils.OutputHelper.createOutput;
 
 public class ArrayCreation {
