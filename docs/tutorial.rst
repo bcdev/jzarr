@@ -5,7 +5,7 @@ Tutorial
 
 JZarr provides classes and functions to handle N-dimensional arrays data
 whose data can be divided into chunks and each chunk can be compressed.
-If you are already familiar with the python `zarr package`_ then JZarr
+If you are already familiar with the python :ref:`zarr package`_ then JZarr
 provide similar functionality, but without NumPy array behavior.
 
 If you need array objects which behave almost like NumPy arrays you can wrap the data
