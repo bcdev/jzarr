@@ -26,6 +26,28 @@ Status
 JZarr is in the very beginning phase. Feedback and bug reports are very welcome. Please get in touch via
 the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
 
+Requirements
+------------
+JZarr needs Java 8 or higher
+
+Maven integration:
+------------------
+
+::
+     <dependency>
+         <groupId>com.bc.zarr</groupId>
+         <artifactId>jzarr</artifactId>
+         <version>0.2-SNAPSHOT</version>
+     </dependency>
+
+    <repositories>
+        <repository>
+            <id>bc-nexus-repo</id>
+            <name>Brockmann-Consult Public Maven Repository</name>
+            <url>http://nexus.senbox.net/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
 
 Contents
 --------
