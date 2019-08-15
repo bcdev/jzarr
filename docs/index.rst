@@ -3,14 +3,3 @@
 
 .. include:: intro.rst
 
-.. toctree::
-    :hidden:
-    :maxdepth: 2
-
-    intro
-    tutorial
-    api
-    spec
-    release
-    contributing
-    license

@@ -62,7 +62,7 @@ source_suffix = ['.rst', '.md']
 master_doc = 'index'
 
 # General information about the project.
-project = 'jzarr'
+project = 'JZarr'
 copyright = '2019 Brockmann Consult GmbH'
 author = 'Sabine Embacher'
 
@@ -128,7 +128,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-# htmlhelp_basename = 'jzarr'
+# htmlhelp_basename = 'JZarr'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -176,7 +176,7 @@ latex_elements = {
 #  dir menu entry, description, category)
 # texinfo_documents = [
 #     (master_doc,
-#      author, 'jzarr', 'One line description of project.',
+#      author, 'JZarr', 'One line description of project.',
 #      'Miscellaneous'),
 # ]
 
