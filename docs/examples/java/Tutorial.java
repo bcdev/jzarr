@@ -87,13 +87,14 @@ public class Tutorial {
 
         // example 3 code snippet 3 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
         ZarrArray opened = ZarrArray.open("docs/examples/output/example_3.zarr");
-        final int[] red = (int[]) opened.read(new int[]{7, 8}, new int[]{19, 20});
+        int[] redShape = {5, 6};
+        final int[] red = (int[]) opened.read(redShape, new int[]{20, 21});
         // example 3 code snippet 3 end
 
 
         createOutput(out -> {
             DataBuffer buffer = Nd4j.createBuffer(red);
-            out.println(Nd4j.create(buffer).reshape('c', 7, 8));
+            out.println(Nd4j.create(buffer).reshape('c', redShape));
         });
     }
 

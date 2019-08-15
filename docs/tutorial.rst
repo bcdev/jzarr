@@ -104,6 +104,7 @@ Write some data to the created persistent array.
   :dedent: 8
 
 .. Note::
+
 There is no need to close an array. Ddata are automatically flushed to disk, and files are automatically
 closed whenever an array is modified.
 
@@ -135,8 +136,9 @@ Different compressors can be provided via the compressor keyword argument accept
   :dedent: 8
 
 .. note::
-In this very beginning phase we only implemented the `zlib` compressor.
-More compressors will be implemented in the future.
 
-Additionally, in the future, developers should be able to register their own Compressors in the CompressorFactory.
-A compressor must extend the abstract Compressor class.
+   In this very beginning phase we only implemented the `zlib` compressor.
+   More compressors will be implemented in the future.
+   
+   Additionally, in the future, developers should be able to register their own Compressors in the CompressorFactory.
+   A compressor must extend the abstract Compressor class.
