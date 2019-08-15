@@ -157,6 +157,17 @@ public class ZarrArray {
         return _byteOrder;
     }
 
+    public void write(Number value) throws IOException, InvalidRangeException {
+        final int[] shape = getShape();
+        final int[] offset = new int[shape.length];
+        write(value, shape, offset);
+    }
+
+    public void write(Number value, int[] shape, int[] offset) throws IOException, InvalidRangeException {
+        final Object dataBuffer = ZarrUtils.createDataBufferFilledWith(value, getDataType(), shape);
+        write(dataBuffer, shape, offset);
+    }
+
     public void write(Object dataBuffer, int[] bufferShape, int[] to) throws IOException, InvalidRangeException {
         final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, bufferShape, to);
         final Array source = Array.factory(dataBuffer).reshapeNoCopy(bufferShape);
@@ -187,8 +198,12 @@ public class ZarrArray {
     }
 
     public Object read(int[] shape) throws IOException, InvalidRangeException {
+        return read(shape, new int[shape.length]);
+    }
+
+    public Object read(int[] shape, int[] offset) throws IOException, InvalidRangeException {
         final Object dataBuffer = ZarrUtils.createDataBuffer(getDataType(), shape);
-        read(dataBuffer, shape);
+        read(dataBuffer, shape, offset);
         return dataBuffer;
     }
 

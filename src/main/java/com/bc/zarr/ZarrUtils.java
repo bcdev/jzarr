@@ -17,8 +17,11 @@
 package com.bc.zarr;
 
 import com.bc.zarr.storage.Store;
+import com.bc.zarr.ucar.NetCDF_Util;
 import com.google.gson.*;
 import com.google.gson.stream.JsonWriter;
+import ucar.ma2.Array;
+import ucar.ma2.MAMath;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -181,6 +184,13 @@ public final class ZarrUtils {
         for (Path path : paths) {
             Files.delete(path);
         }
+    }
+
+    public static Object createDataBufferFilledWith(Number value, DataType dataType, int[] shape) {
+        final Object dataBuffer = createDataBuffer(dataType, shape);
+        Array array = Array.factory(dataBuffer);
+        MAMath.setDouble(array, value.doubleValue());
+        return array.getStorage();
     }
 
     public static Object createDataBuffer(DataType dataType, int[] shape) {

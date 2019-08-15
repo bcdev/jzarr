@@ -15,6 +15,7 @@ public class Tutorial {
     public static void main(String[] args) throws IOException, InvalidRangeException {
         example_1();
         example_2();
+        example_3();
     }
 
     /**
@@ -22,13 +23,13 @@ public class Tutorial {
      * chunks where each chunk has 1000 rows and 1000 columns (and so there will be 100 chunks in total).
      */
     private static void example_1() throws IOException {
-        ZarrArray z = ZarrArray.create(new ArrayParams()
+        ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .withShape(10000, 10000)
                 .withChunks(1000, 1000)
                 .withDataType(DataType.i4)
         );
 
-        createOutput(out -> out.println(z));
+        createOutput(out -> out.println(jZarray));
     }
 
     /**
@@ -39,7 +40,7 @@ public class Tutorial {
      * the data written before surrounded by the fill value <code>-1</code>.
      */
     private static void example_2() throws IOException, InvalidRangeException {
-        ZarrArray array = ZarrArray.create(new ArrayParams()
+        ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .withShape(5, 7)
                 .withDataType(DataType.i4) // integer data type
                 .withFillValue(-9999)
@@ -51,21 +52,39 @@ public class Tutorial {
                 21, 22, 23, 24, 25,
                 31, 32, 33, 34, 35
         };
-        final int[] withThisShape = {3, 5}; // define the shape
-        final int[] toThisPosition = {1, 1}; // and the place inside the array, where the data should be written
+        int[] withThisShape = {3, 5}; // define the shape
+        int[] toThisPosition = {1, 1}; // and the place inside the array, where the data should be written
 
         // write the data
-        array.write(dataWeWantToBeWriten, withThisShape, toThisPosition);
+        jZarray.write(dataWeWantToBeWriten, withThisShape, toThisPosition);
 
         // read entire data
-        final int[] entireData = (int[]) array.read();
+        int[] entireData = (int[]) jZarray.read();
 
         // Finally we can instantiate for example an org.nd4j.linalg.api.ndarray.INDArray and print out the data
-        final OutputHelper.Writer writer = out -> {
-            final DataBuffer buffer = Nd4j.createBuffer(entireData);
-            out.println(Nd4j.create(buffer).reshape('c', array.getShape()));
+        OutputHelper.Writer writer = out -> {
+            DataBuffer buffer = Nd4j.createBuffer(entireData);
+            out.println(Nd4j.create(buffer).reshape('c', jZarray.getShape()));
         };
 
         createOutput(writer);
+    }
+
+    /**
+     * Creates an array in a local file store.
+     */
+    public static void example_3() throws IOException, InvalidRangeException {
+        ZarrArray created = ZarrArray.create("docs/examples/output/example_3.zarr", new ArrayParams()
+                .withShape(1000, 1000).withChunks(250, 250).withDataType(DataType.i4).withFillValue(-9999)
+        );
+        created.write(42, new int[]{3, 4}, new int[]{21, 22});
+
+        ZarrArray opened = ZarrArray.open("docs/examples/output/example_3.zarr");
+        final int[] red = (int[]) opened.read(new int[]{7, 8}, new int[]{19, 20});
+
+        createOutput(out -> {
+            DataBuffer buffer = Nd4j.createBuffer(red);
+            out.println(Nd4j.create(buffer).reshape('c', 7, 8));
+        });
     }
 }

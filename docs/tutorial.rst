@@ -40,17 +40,17 @@ divided into chunks where each chunk has 1000 rows and 1000 columns (and so ther
 
 For a complete list of array creation routines see the :ref:`array creation <array_creation>` module documentation.
 
-.. _write_read_data_to_from_array:
+.. _tutoral_writing_and_reading_data:
 
 Writing and reading data
 ------------------------
 This example shows how to write a region to an existing array.
 
-1. First creates an array with size 5 * 7 and with a fill value of :code:`-9999`.
-2. Then write data with the shape 3 * 5 into the center of the array.
-3. Read the data from the entire array (int[] with size 5 * 7)
-4. | Print out the entire data and we can see the data written before
-   | surrounded by the fill value :code:`-9999`.
+1. First creates an array with size [5, 7] and with a fill value of :code:`-9999`.
+2. Then write data with a shape of [3, 5] and an offset of [1, 1] to the center of the array.
+3. Read the entire data from the array (int[] with size 5 * 7)
+4. | Print out the red data and we can see the data written before
+   | is surrounded by the fill value :code:`-9999`.
 
 .. highlight:: java
 
@@ -68,3 +68,35 @@ Creates the following output
 
 | The output displays that the data is written (with an offset of [1, 1]) to the center of the array.
 | The written data is surrounded by a :code:`-9999` value border which is the fill value defined above.
+
+.. _tutoral_persistent_arrays:
+
+Persistent arrays
+-----------------
+In the examples above, compressed data (default compressor) for each chunk of the array was stored
+in main memory. JZarr arrays can also be stored on a file system, enabling persistence of data
+between sessions. For example:
+
+.. highlight:: java
+
+.. literalinclude:: ./examples/java/Tutorial.java
+  :caption: `example 3 from Tutorial.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial.java>`_
+  :start-after: void example_3
+  :end-before: createOutput
+  :dedent: 8
+
+.. highlight:: none
+
+The array above will store its configuration metadata (zarr header :code:`.zarray`) and all compressed chunk data in a
+directory called ‘docs/examples/output/example_3.zarr’ relative to the current working directory.
+
+Note that there is no need to close an array: data are automatically flushed to disk, and files are automatically
+closed whenever an array is modified.
+
+Creates the following output
+
+.. literalinclude:: ./examples/output/Tutorial_example_3.txt
+
+.. literalinclude:: ./examples/output/example_3.zarr/.zarray
+   :caption: `the zarr header written as JSON file <https://github.com/bcdev/jzarr/blob/master/docs/examples/output/example_3.zarr/.zarray>`_
+
