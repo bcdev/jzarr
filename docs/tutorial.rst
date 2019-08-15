@@ -170,3 +170,14 @@ Different compressors can be provided via the compressor keyword argument accept
    
    Additionally, in the future, developers should be able to register their own Compressors in the CompressorFactory.
    A compressor must extend the abstract Compressor class.
+
+Filters
+-------
+Currently not implemented.
+
+Groups
+------
+JZarr supports hierarchical organization of arrays via groups. As with arrays, groups can be stored in memory, on disk,
+or via other storage systems that support a similar interface.
+
+To create a group, use the zarr.group() function:

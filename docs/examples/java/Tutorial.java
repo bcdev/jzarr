@@ -1,15 +1,16 @@
 import com.bc.zarr.ArrayParams;
 import com.bc.zarr.CompressorFactory;
-import com.bc.zarr.DataType;
 import com.bc.zarr.ZarrArray;
+import com.bc.zarr.ZarrGroup;
+import com.bc.zarr.storage.InMemoryStore;
 import org.nd4j.linalg.api.buffer.DataBuffer;
-import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import ucar.ma2.InvalidRangeException;
 import utils.OutputHelper;
 
 import java.io.IOException;
 
+import static com.bc.zarr.DataType.i4;
 import static utils.OutputHelper.createOutput;
 
 public class Tutorial {
@@ -28,7 +29,7 @@ public class Tutorial {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .withShape(10000, 10000)
                 .withChunks(1000, 1000)
-                .withDataType(DataType.i4)
+                .withDataType(i4)
         );
 
         createOutput(out -> out.println(jZarray));
@@ -45,7 +46,7 @@ public class Tutorial {
         // example 2 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#writing-and-reading-data
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .withShape(5, 7)
-                .withDataType(DataType.i4) // integer data type
+                .withDataType(i4) // integer data type
                 .withFillValue(-9999)
         );
         // example 2 code snippet 1 end
@@ -88,7 +89,7 @@ public class Tutorial {
     public static void example_3() throws IOException, InvalidRangeException {
         // example 3 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
         ZarrArray created = ZarrArray.create("docs/examples/output/example_3.zarr", new ArrayParams()
-                .withShape(1000, 1000).withChunks(250, 250).withDataType(DataType.i4).withFillValue(-9999)
+                .withShape(1000, 1000).withChunks(250, 250).withDataType(i4).withFillValue(-9999)
         );
         // example 3 code snippet 1 end
 
@@ -117,5 +118,18 @@ public class Tutorial {
                 .withShape(243, 324, 742)  // three or more dimensions
                 .withCompressor(CompressorFactory.create("zlib", 8)) // 8 : compression level
         );
+    }
+
+    /**
+     * Create a groups
+     */
+    public static void example_5() throws IOException, InvalidRangeException {
+        ZarrGroup root = ZarrGroup.create(new InMemoryStore());
+        ZarrGroup foo = root.createSubGroup("foo");
+        ZarrGroup bar = foo.createSubGroup("bar");
+        ZarrArray z1 = bar.createArray("baz", new ArrayParams()
+                .withShape(1000, 1000).withChunks(100, 100).withDataType(i4)
+        );
+        createOutput(out -> out.println(z1));
     }
 }
