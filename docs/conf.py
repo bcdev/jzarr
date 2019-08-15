@@ -46,8 +46,7 @@
 #     'javasphinx',
 # ]
 extensions = [
-    'sphinx.ext.todo',
-    'javasphinx'
+    'sphinx.ext.todo'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
