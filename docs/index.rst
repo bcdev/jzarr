@@ -5,6 +5,10 @@
   :start-after: **intro start**
   :end-before: **intro end**
 
+.. include:: examples.rst
+  :start-after: **intro start**
+  :end-before: **intro end**
+
 .. toctree::
     :hidden:
     :maxdepth: 2

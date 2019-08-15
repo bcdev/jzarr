@@ -53,6 +53,7 @@ repository too.
 
 API Examples
 ------------
+.. **intro end**
 
 .. include:: examples.rst
   :start-after: **intro start**
@@ -69,4 +70,3 @@ API Examples
 ..    array_params
 ..    datatype
 
-.. **intro end**
