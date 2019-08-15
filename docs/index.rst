@@ -55,8 +55,6 @@ repository too.
 Contents
 --------
 
-.. _license: https://github.com/bcdev/jzarr/blob/master/LICENSE
-
 .. toctree::
     :maxdepth: 2
 
@@ -66,7 +64,7 @@ Contents
     spec
     release
     contributing
-    license_
+    license
 
 API Examples
 ------------
