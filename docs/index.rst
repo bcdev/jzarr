@@ -28,12 +28,12 @@ the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
 
 Requirements
 ------------
-JZarr needs Java 8 or higher
+JZarr needs Java 8 or higher.
 
 Maven Dependency
 ----------------
 
-To use JZarr in you project integrate the following lines to your maven pom.xml::
+To use JZarr in you project integrate the following lines into your maven pom.xml::
 
  <dependency>
     <groupId>com.bc.zarr</groupId>
@@ -61,6 +61,7 @@ Contents
     spec
     release
     contributing
+    search
 
 Api Examples
 ------------
