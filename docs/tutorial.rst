@@ -82,7 +82,7 @@ between sessions. For example:
 .. literalinclude:: ./examples/java/Tutorial.java
   :caption: `example 3 from Tutorial.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial.java>`_
   :start-after: example 3 code snippet 1 begin
-  :end-before: example 3 code snippet 1 enc
+  :end-before: example 3 code snippet 1 end
   :dedent: 8
 
 The array above will store its configuration metadata (zarr header :code:`.zarray`) and all compressed chunk data in a
@@ -97,7 +97,7 @@ directory called ‘docs/examples/output/example_3.zarr’ relative to the curre
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :start-after: example 3 code snippet 2 begin
-  :end-before: example 3 code snippet 2 begin
+  :end-before: example 3 code snippet 2 end
   :dedent: 8
 
 Note that there is no need to close an array: data are automatically flushed to disk, and files are automatically
@@ -105,7 +105,7 @@ closed whenever an array is modified.
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :start-after: example 3 code snippet 3 begin
-  :end-before: example 3 code snippet 3 begin
+  :end-before: example 3 code snippet 3 end
   :dedent: 8
 
 .. highlight:: none
