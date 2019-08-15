@@ -61,7 +61,6 @@ Contents
     spec
     release
     contributing
-    search
 
 Api Examples
 ------------

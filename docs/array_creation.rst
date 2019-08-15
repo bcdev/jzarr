@@ -109,30 +109,4 @@ A :code:`System.out.println(array);` then creates the following output
 .. literalinclude:: ./examples/output/ArrayCreation_example_4.txt
 Chunk size now are user defined [400, 350] .
 
-.. _write_read_data_to_from_array:
-
-Write/Read data to and from array
----------------------------------
-1. First creates an array with size 5 * 7 and with a fill value of :code:`-1`.
-2. Then write data with the shape 3 * 5 into the center of the array.
-3. Read the data from the entire array (int[] with size 5 * 7)
-4. | Print out the entire data and we can see the data written before
-   | surrounded by the fill value :code:`-1`.
-
-.. highlight:: java
-
-.. literalinclude:: ./examples/java/ArrayCreation.java
-  :caption: `example 5 from ArrayCreation.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
-  :start-after: void example_5
-  :end-before: createOutput
-  :dedent: 8
-
-.. highlight:: none
-
-Creates the following output
-
-.. literalinclude:: ./examples/output/ArrayCreation_example_5.txt
-
-| The output displays that the data is written to the center of the array.
-| The written data is surrounded by a :code:`-1` value border which is the fill value defined above.
 

@@ -182,6 +182,16 @@ public class ZarrArray {
         }
     }
 
+    public Object read() throws IOException, InvalidRangeException {
+        return read(getShape());
+    }
+
+    public Object read(int[] shape) throws IOException, InvalidRangeException {
+        final Object dataBuffer = ZarrUtils.createDataBuffer(getDataType(), shape);
+        read(dataBuffer, shape);
+        return dataBuffer;
+    }
+
     public void read(Object targetBuffer, int[] bufferShape) throws IOException, InvalidRangeException {
         read(targetBuffer, bufferShape, new int[bufferShape.length]);
     }
