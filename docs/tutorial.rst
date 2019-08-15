@@ -78,8 +78,8 @@ Read the entire data from the array (int[] with size 5 * 7)
   :end-before: example 2 code snippet 4 end
   :dedent: 8
 
-| Print out the red data and we can see the data written before
-| is surrounded by the fill value :code:`-9999`.
+| Print out the data red.
+| We can see the data written before is surrounded by the fill value :code:`-9999`.
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :start-after: example 2 code snippet 5 begin
