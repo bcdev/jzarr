@@ -1,5 +1,6 @@
 .. _tutorial:
 .. _zarr package: https://zarr.readthedocs.io/en/stable/index.html
+.. _Nd4j: https://deeplearning4j.org/docs/latest/nd4j-overview
 
 Tutorial
 ========
@@ -9,7 +10,7 @@ If you are already familiar with the python `zarr package`_ then JZarr
 provide similar functionality, but without NumPy array behavior.
 
 If you need array objects which behave almost like NumPy arrays you can wrap the data
-using ND4J INDArray `from deeplearning4j.org <https://deeplearning4j.org/docs/latest/nd4j-overview>`_.
+using ND4J INDArray `from deeplearning4j.org <Nd4j>`_.
 You can find examples in the data writing and reading examples below.
 
 Alternatively you can use :code:`ucar.ma2.Array` from `netcdf-java Common Data Model
@@ -44,20 +45,45 @@ For a complete list of array creation routines see the :ref:`array creation <arr
 
 Writing and reading data
 ------------------------
-This example shows how to write a region to an existing array.
+This example shows how to write and read a region to an array.
 
-1. First creates an array with size [5, 7] and with a fill value of :code:`-9999`.
-2. Then write data with a shape of [3, 5] and an offset of [1, 1] to the center of the array.
-3. Read the entire data from the array (int[] with size 5 * 7)
-4. | Print out the red data and we can see the data written before
-   | is surrounded by the fill value :code:`-9999`.
+Creates an array with size (rows=5, cols=7), primitive datatype :code:`int` and with a fill value of :code:`-9999`.
 
 .. highlight:: java
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :caption: `example 2 from Tutorial.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial.java>`_
-  :start-after: void example_2
-  :end-before: createOutput
+  :start-after: example 2 code snippet 1 begin
+  :end-before: example 2 code snippet 1 end
+  :dedent: 8
+
+Prepare data which should be written with a shape of (3, 5) and an offset of (1, 1) to the center of the array.
+
+.. literalinclude:: ./examples/java/Tutorial.java
+  :start-after: example 2 code snippet 2 begin
+  :end-before: example 2 code snippet 2 end
+  :dedent: 8
+
+Write the data
+
+.. literalinclude:: ./examples/java/Tutorial.java
+  :start-after: example 2 code snippet 3 begin
+  :end-before: example 2 code snippet 3 end
+  :dedent: 8
+
+Read the entire data from the array (int[] with size 5 * 7)
+
+.. literalinclude:: ./examples/java/Tutorial.java
+  :start-after: example 2 code snippet 4 begin
+  :end-before: example 2 code snippet 4 end
+  :dedent: 8
+
+| Print out the red data and we can see the data written before
+| is surrounded by the fill value :code:`-9999`.
+
+.. literalinclude:: ./examples/java/Tutorial.java
+  :start-after: example 2 code snippet 5 begin
+  :end-before: example 2 code snippet 5 end
   :dedent: 8
 
 .. highlight:: none
@@ -68,6 +94,10 @@ Creates the following output
 
 | The output displays that the data is written (with an offset of [1, 1]) to the center of the array.
 | The written data is surrounded by a :code:`-9999` value border which is the fill value defined above.
+
+.. note::
+
+   `Nd4j <Nd4j>`_ is not part of the JZarr library. It is only used in this showcase to demonstrate how the data can be used.
 
 .. _tutoral_persistent_arrays:
 

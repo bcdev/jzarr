@@ -3,6 +3,7 @@ import com.bc.zarr.CompressorFactory;
 import com.bc.zarr.DataType;
 import com.bc.zarr.ZarrArray;
 import org.nd4j.linalg.api.buffer.DataBuffer;
+import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import ucar.ma2.InvalidRangeException;
 import utils.OutputHelper;
@@ -41,13 +42,16 @@ public class Tutorial {
      * the data written before surrounded by the fill value <code>-1</code>.
      */
     private static void example_2() throws IOException, InvalidRangeException {
+        // example 2 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#writing-and-reading-data
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .withShape(5, 7)
                 .withDataType(DataType.i4) // integer data type
                 .withFillValue(-9999)
         );
+        // example 2 code snippet 1 end
 
-        // define data to be written
+        // define the data which should to be written
+        // example 2 code snippet 2 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#writing-and-reading-data
         int[] dataWeWantToBeWriten = {
                 11, 12, 13, 14, 15,
                 21, 22, 23, 24, 25,
@@ -55,18 +59,25 @@ public class Tutorial {
         };
         int[] withThisShape = {3, 5}; // define the shape
         int[] toThisPosition = {1, 1}; // and the place inside the array, where the data should be written
+        // example 2 code snippet 2 end
 
         // write the data
+        // example 2 code snippet 3 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#writing-and-reading-data
         jZarray.write(dataWeWantToBeWriten, withThisShape, toThisPosition);
+        // example 2 code snippet 3 end
 
-        // read entire data
+        // read the entire data
+        // example 2 code snippet 4 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#writing-and-reading-data
         int[] entireData = (int[]) jZarray.read();
+        // example 2 code snippet 4 end
 
         // Finally we can instantiate for example an org.nd4j.linalg.api.ndarray.INDArray and print out the data
+        // example 2 code snippet 5 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#writing-and-reading-data
         OutputHelper.Writer writer = out -> {
             DataBuffer buffer = Nd4j.createBuffer(entireData);
             out.println(Nd4j.create(buffer).reshape('c', jZarray.getShape()));
         };
+        // example 2 code snippet 5 end
 
         createOutput(writer);
     }
