@@ -78,8 +78,7 @@ Read the entire data from the array (int[] with size 5 * 7)
   :end-before: example 2 code snippet 4 end
   :dedent: 8
 
-| Print out the data red.
-| We can see the data written before is surrounded by the fill value :code:`-9999`.
+Print out the data red.
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :start-after: example 2 code snippet 5 begin
@@ -92,8 +91,7 @@ Creates the following output
 
 .. literalinclude:: ./examples/output/Tutorial_example_2.txt
 
-| The output displays that the data is written (with an offset of [1, 1]) to the center of the array.
-| The written data is surrounded by a :code:`-9999` value border which is the fill value defined above.
+The output displays that the data written before (written with an offset of [1, 1]) is surrounded by the fill value :code:`-9999`.
 
 .. note::
 
