@@ -1,3 +1,5 @@
+.. **intro start**
+
 .. _zarr package: https://zarr.readthedocs.io/en/stable/index.html
 
 JZarr documentation
@@ -66,3 +68,5 @@ API Examples
 ..    array_creation
 ..    array_params
 ..    datatype
+
+.. **intro end**
