@@ -52,9 +52,6 @@ To use JZarr in you project integrate the following lines into your maven pom.xm
 It is planned to deploy the JZarr artifacts to the `maven central <https://mvnrepository.com/repos/central>`
 repository too.
 
-Contents
---------
-
 .. toctree::
     :hidden:
     :maxdepth: 2
