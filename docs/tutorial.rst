@@ -105,10 +105,10 @@ Write some data to the created persistent array.
 
 .. Note::
 
-There is no need to close an array. Ddata are automatically flushed to disk, and files are automatically
-closed whenever an array is modified.
+   There is no need to close an array. Ddata are automatically flushed to disk, and files are automatically
+   closed whenever an array is modified.
 
-Then you can reopen the array and read data
+Then we can reopen the array and read data
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :start-after: example 3 code snippet 3 begin
