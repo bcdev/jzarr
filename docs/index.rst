@@ -2,12 +2,12 @@
    sphinx-quickstart on Wen Aug  7 12:12:00 2019.
 
 .. include:: intro.rst
-  :start-after: **intro start**
-  :end-before: **intro end**
 
 .. include:: examples.rst
   :start-after: **intro start**
   :end-before: **intro end**
+
+:ref:`Read more ... <examples>`
 
 .. toctree::
     :hidden:

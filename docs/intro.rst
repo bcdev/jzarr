@@ -1,5 +1,3 @@
-.. **intro start**
-
 .. _zarr package: https://zarr.readthedocs.io/en/stable/index.html
 
 JZarr documentation
@@ -53,20 +51,10 @@ repository too.
 
 API Examples
 ------------
-.. **intro end**
 
 .. include:: examples.rst
   :start-after: **intro start**
   :end-before: **intro end**
 
 :ref:`Read more ... <examples>`
-
-.. .. toctree::
-..    :hidden:
-..    :maxdepth: 2
-..
-..    examples
-..    array_creation
-..    array_params
-..    datatype
 
