@@ -47,7 +47,7 @@ public class ZarrWriteRootTest_writeHeader {
                 .dataType(DataType.i4)
                 .shape(shape)
                 .chunks(chunks)
-                .withFillValue(fillValue).withCompressor(compressor);
+                .fillValue(fillValue).compressor(compressor);
 
         //execution
         zarrGroup.createArray(rastername, parameters, null);
@@ -81,8 +81,8 @@ public class ZarrWriteRootTest_writeHeader {
                 .dataType(DataType.i4)
                 .shape(shape)
                 .chunks(chunks)
-                .withFillValue(fillValue)
-                .withCompressor(null);
+                .fillValue(fillValue)
+                .compressor(null);
 
         //execution
         zarrGroup.createArray(rastername, parameters, attributes);

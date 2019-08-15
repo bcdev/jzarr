@@ -38,8 +38,8 @@ public class ZarrReadRootTest {
                 .dataType(DataType.f4)
                 .shape(101, 102)
                 .chunks(11, 12)
-                .withFillValue(4.2)
-                .withCompressor(compressor);
+                .fillValue(4.2)
+                .compressor(compressor);
         final ZarrArray arrayData = rootGrp.createArray("rastername", parameters, null);
 
         final String name = "relativePath";

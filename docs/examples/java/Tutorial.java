@@ -47,7 +47,7 @@ public class Tutorial {
         ZarrArray array = ZarrArray.create(new ArrayParams()
                 .shape(5, 7)
                 .dataType(i4) // integer data type
-                .withFillValue(-9999)
+                .fillValue(-9999)
         );
         // example 2 code snippet 1 end
 
@@ -89,7 +89,7 @@ public class Tutorial {
     public static void example_3() throws IOException, InvalidRangeException {
         // example 3 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
         ZarrArray created = ZarrArray.create("docs/examples/output/example_3.zarr", new ArrayParams()
-                .shape(1000, 1000).chunks(250, 250).dataType(i4).withFillValue(-9999)
+                .shape(1000, 1000).chunks(250, 250).dataType(i4).fillValue(-9999)
         );
         // example 3 code snippet 1 end
 
@@ -116,7 +116,7 @@ public class Tutorial {
     public static void example_4() throws IOException, InvalidRangeException {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .shape(243, 324, 742)  // three or more dimensions
-                .withCompressor(CompressorFactory.create("zlib", 8)) // 8 : compression level
+                .compressor(CompressorFactory.create("zlib", 8)) // 8 : compression level
         );
     }
 

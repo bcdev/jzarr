@@ -40,7 +40,7 @@ public class ArrayParams {
      * @param chunked the {@code chunked} to set
      * @return a reference to this Builder
      */
-    public ArrayParams withChunked(boolean chunked) {
+    public ArrayParams chunked(boolean chunked) {
         this.chunked = chunked;
         return this;
     }
@@ -62,7 +62,7 @@ public class ArrayParams {
      * @param byteOrder the {@code byteOrder} to set
      * @return a reference to this Builder
      */
-    public ArrayParams withByteOrder(ByteOrder byteOrder) {
+    public ArrayParams byteOrder(ByteOrder byteOrder) {
         this.byteOrder = byteOrder;
         return this;
     }
@@ -73,7 +73,7 @@ public class ArrayParams {
      * @param fillValue the {@code fillValue} to set
      * @return a reference to this Builder
      */
-    public ArrayParams withFillValue(Number fillValue) {
+    public ArrayParams fillValue(Number fillValue) {
         this.fillValue = fillValue;
         return this;
     }
@@ -84,7 +84,7 @@ public class ArrayParams {
      * @param compressor the {@code compressor} to set
      * @return a reference to this Builder
      */
-    public ArrayParams withCompressor(Compressor compressor) {
+    public ArrayParams compressor(Compressor compressor) {
         this.compressor = compressor;
         return this;
     }

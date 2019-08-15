@@ -169,9 +169,9 @@ public class FileSystemStoreTest {
                 .dataType(DataType.i1)
                 .shape(shape)
                 .chunks(chunks)
-                .withByteOrder(ByteOrder.LITTLE_ENDIAN)
-                .withFillValue(0)
-                .withCompressor(null);
+                .byteOrder(ByteOrder.LITTLE_ENDIAN)
+                .fillValue(0)
+                .compressor(null);
         final ZarrArray fooArray = rootGrp.createArray("foo", parameters, attributes);
 
         //verification
@@ -197,7 +197,7 @@ public class FileSystemStoreTest {
 
         final ArrayParams parameters = new ArrayParams()
                 .dataType(DataType.i1).shape(shape).chunks(chunks)
-                .withFillValue(0).withCompressor(null);
+                .fillValue(0).compressor(null);
 
         //execution
         final ZarrGroup rootGrp = ZarrGroup.create(store, null);

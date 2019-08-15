@@ -56,6 +56,7 @@ Contents
 --------
 
 .. toctree::
+    :hidden:
     :maxdepth: 2
 
     index

@@ -43,7 +43,7 @@ public class ArrayCreation {
     private static void example_3() throws IOException {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .shape(4000, 3500)
-                .withChunked(false)
+                .chunked(false)
         );
 
         createOutput(out -> out.println(jZarray));

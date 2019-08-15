@@ -15,9 +15,9 @@ public class ArrayParametersBuilderTest {
                 .shape(800, 1000)
                 .chunks(200, 100)
                 .dataType(DataType.i2)
-                .withByteOrder(ByteOrder.LITTLE_ENDIAN)
-                .withFillValue(42)
-                .withCompressor(CompressorFactory.nullCompressor)
+                .byteOrder(ByteOrder.LITTLE_ENDIAN)
+                .fillValue(42)
+                .compressor(CompressorFactory.nullCompressor)
                 .build();
 
         assertThat(parameters.getShape(), is(new int[]{800, 1000}));
@@ -34,10 +34,10 @@ public class ArrayParametersBuilderTest {
             //execution
             new ArrayParams()
                     .chunks(2, 3, 4)
-                    .withByteOrder(ByteOrder.LITTLE_ENDIAN)
+                    .byteOrder(ByteOrder.LITTLE_ENDIAN)
                     .dataType(DataType.i2)
-                    .withFillValue(23)
-                    .withCompressor(null)
+                    .fillValue(23)
+                    .compressor(null)
                     // .withShape(3,4,5) // suspended
                     .build();
             fail("IllegalArgumentException expected");
@@ -53,10 +53,10 @@ public class ArrayParametersBuilderTest {
             //execution
             new ArrayParams()
                     .chunks(2, 3, 4)
-                    .withByteOrder(ByteOrder.LITTLE_ENDIAN)
+                    .byteOrder(ByteOrder.LITTLE_ENDIAN)
                     .dataType(DataType.i2)
-                    .withFillValue(23)
-                    .withCompressor(null)
+                    .fillValue(23)
+                    .compressor(null)
                     .shape() // no values given
                     .build();
             fail("IllegalArgumentException expected");
@@ -86,7 +86,7 @@ public class ArrayParametersBuilderTest {
         //execution
         final ArrayParams.Params parameters = new ArrayParams()
                 .shape(1000, 1000)
-                .withChunked(false)
+                .chunked(false)
                 .build();
 
         //verification
@@ -118,9 +118,9 @@ public class ArrayParametersBuilderTest {
                 .shape(3800, 5000)
                 .chunks(12, 13)
                 .dataType(DataType.i2)
-                .withByteOrder(ByteOrder.LITTLE_ENDIAN)
-                .withFillValue(null)
-                .withCompressor(CompressorFactory.nullCompressor)
+                .byteOrder(ByteOrder.LITTLE_ENDIAN)
+                .fillValue(null)
+                .compressor(CompressorFactory.nullCompressor)
                 .build();
 
         //execution
