@@ -88,10 +88,13 @@ between sessions. For example:
 The array above will store its configuration metadata (zarr header :code:`.zarray`) and all compressed chunk data in a
 directory called ‘docs/examples/output/example_3.zarr’ relative to the current working directory.
 
+The created zarr header file `.zarray <https://github.com/bcdev/jzarr/blob/master/docs/examples/output/example_3.zarr/.zarray>`_ written in JSON format.
+
 .. highlight:: json
 
 .. literalinclude:: ./examples/output/example_3.zarr/.zarray
-   :caption: `the zarr header written as JSON file <https://github.com/bcdev/jzarr/blob/master/docs/examples/output/example_3.zarr/.zarray>`_
+
+Write some data to the created persistent array.
 
 .. highlight:: java
 
@@ -102,6 +105,8 @@ directory called ‘docs/examples/output/example_3.zarr’ relative to the curre
 
 Note that there is no need to close an array: data are automatically flushed to disk, and files are automatically
 closed whenever an array is modified.
+
+Then you can reopen the array and read data
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :start-after: example 3 code snippet 3 begin
