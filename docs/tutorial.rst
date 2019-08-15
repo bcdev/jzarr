@@ -81,22 +81,37 @@ between sessions. For example:
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :caption: `example 3 from Tutorial.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial.java>`_
-  :start-after: void example_3
-  :end-before: createOutput
+  :start-after: example 3 code snippet 1 begin
+  :end-before: example 3 code snippet 1 enc
   :dedent: 8
-
-.. highlight:: none
 
 The array above will store its configuration metadata (zarr header :code:`.zarray`) and all compressed chunk data in a
 directory called ‘docs/examples/output/example_3.zarr’ relative to the current working directory.
 
+.. highlight:: json
+
+.. literalinclude:: ./examples/output/example_3.zarr/.zarray
+   :caption: `the zarr header written as JSON file <https://github.com/bcdev/jzarr/blob/master/docs/examples/output/example_3.zarr/.zarray>`_
+
+.. highlight:: java
+
+.. literalinclude:: ./examples/java/Tutorial.java
+  :start-after: example 3 code snippet 2 begin
+  :end-before: example 3 code snippet 2 begin
+  :dedent: 8
+
 Note that there is no need to close an array: data are automatically flushed to disk, and files are automatically
 closed whenever an array is modified.
+
+.. literalinclude:: ./examples/java/Tutorial.java
+  :start-after: example 3 code snippet 3 begin
+  :end-before: example 3 code snippet 3 begin
+  :dedent: 8
+
+.. highlight:: none
 
 Creates the following output
 
 .. literalinclude:: ./examples/output/Tutorial_example_3.txt
 
-.. literalinclude:: ./examples/output/example_3.zarr/.zarray
-   :caption: `the zarr header written as JSON file <https://github.com/bcdev/jzarr/blob/master/docs/examples/output/example_3.zarr/.zarray>`_
 

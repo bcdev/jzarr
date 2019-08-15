@@ -74,13 +74,21 @@ public class Tutorial {
      * Creates an array in a local file store.
      */
     public static void example_3() throws IOException, InvalidRangeException {
+        // example 3 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
         ZarrArray created = ZarrArray.create("docs/examples/output/example_3.zarr", new ArrayParams()
                 .withShape(1000, 1000).withChunks(250, 250).withDataType(DataType.i4).withFillValue(-9999)
         );
-        created.write(42, new int[]{3, 4}, new int[]{21, 22});
+        // example 3 code snippet 1 end
 
+        // example 3 code snippet 2 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
+        created.write(42, new int[]{3, 4}, new int[]{21, 22});
+        // example 3 code snippet 2 end
+
+        // example 3 code snippet 3 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
         ZarrArray opened = ZarrArray.open("docs/examples/output/example_3.zarr");
         final int[] red = (int[]) opened.read(new int[]{7, 8}, new int[]{19, 20});
+        // example 3 code snippet 3 end
+
 
         createOutput(out -> {
             DataBuffer buffer = Nd4j.createBuffer(red);
