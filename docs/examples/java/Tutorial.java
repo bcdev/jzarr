@@ -1,4 +1,5 @@
 import com.bc.zarr.ArrayParams;
+import com.bc.zarr.CompressorFactory;
 import com.bc.zarr.DataType;
 import com.bc.zarr.ZarrArray;
 import org.nd4j.linalg.api.buffer.DataBuffer;
@@ -94,5 +95,15 @@ public class Tutorial {
             DataBuffer buffer = Nd4j.createBuffer(red);
             out.println(Nd4j.create(buffer).reshape('c', 7, 8));
         });
+    }
+
+    /**
+     * Create an array with an user defined compressor.
+     */
+    public static void example_4() throws IOException, InvalidRangeException {
+        ZarrArray jZarray = ZarrArray.create(new ArrayParams()
+                .withShape(243, 324, 742)  // three or more dimensions
+                .withCompressor(CompressorFactory.create("zlib", 8)) // 8 : compression level
+        );
     }
 }

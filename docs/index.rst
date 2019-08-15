@@ -1,4 +1,4 @@
-.. zarr documentation master file, created by
+.. JZarr documentation master file, created by
    sphinx-quickstart on Wen Aug  7 12:12:00 2019.
 
 .. _zarr package: https://zarr.readthedocs.io/en/stable/index.html

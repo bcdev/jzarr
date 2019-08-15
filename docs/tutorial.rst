@@ -103,7 +103,8 @@ Write some data to the created persistent array.
   :end-before: example 3 code snippet 2 end
   :dedent: 8
 
-Note that there is no need to close an array: data are automatically flushed to disk, and files are automatically
+.. Note::
+There is no need to close an array. Ddata are automatically flushed to disk, and files are automatically
 closed whenever an array is modified.
 
 Then you can reopen the array and read data
@@ -119,4 +120,23 @@ Creates the following output
 
 .. literalinclude:: ./examples/output/Tutorial_example_3.txt
 
+Resizing and appending
+----------------------
+Currently not implemented.
 
+Compressors
+-----------
+A number of different compressors can be used with JZarr.
+Different compressors can be provided via the compressor keyword argument accepted by all array creation functions. For example:
+
+.. literalinclude:: ./examples/java/Tutorial.java
+  :start-after: example_4
+  :end-before: }
+  :dedent: 8
+
+.. note::
+In this very beginning phase we only implemented the `zlib` compressor.
+More compressors will be implemented in the future.
+
+Additionally, in the future, developers should be able to register their own Compressors in the CompressorFactory.
+A compressor must extend the abstract Compressor class.
