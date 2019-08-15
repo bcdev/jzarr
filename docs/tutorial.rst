@@ -6,7 +6,14 @@ Tutorial
 ========
 JZarr provides classes and functions to handle N-dimensional arrays data
 whose data can be divided into chunks and each chunk can be compressed.
-If you are already familiar with the python `zarr package`_ then JZarr
+The JZarr data inputs and outputs are flattened data arrays.
+The shape then defines the N-Dimensionality of the zarr array itself.
+
+The zarr array offsets are zero-based (:code:`0`). If you need to write data
+to the upperleft corner of a 2 dimensional zarr array you have to use an offset
+of :code:`new int[]{0, 0}`.
+
+If you are already familiar with the Python `zarr package`_ then JZarr
 provide similar functionality, but without NumPy array behavior.
 
 If you need array objects which behave almost like NumPy arrays you can wrap the data
@@ -78,7 +85,7 @@ Read the entire data from the array.
   :end-before: example 2 code snippet 4 end
   :dedent: 8
 
-Print out the data red.
+Print out the data read.
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :start-after: example 2 code snippet 5 begin
@@ -133,10 +140,10 @@ Write some data to the created persistent array.
 
 .. Note::
 
-   There is no need to close an array. Ddata are automatically flushed to disk, and files are automatically
+   There is no need to close an array. Data are automatically flushed to disk, and files are automatically
    closed whenever an array is modified.
 
-Then we can reopen the array and read data
+Then we can reopen the array and read the data
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :start-after: example 3 code snippet 3 begin
@@ -145,7 +152,7 @@ Then we can reopen the array and read data
 
 .. highlight:: none
 
-Creates the following output
+Which now looks like:
 
 .. literalinclude:: ./examples/output/Tutorial_example_3.txt
 

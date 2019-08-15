@@ -166,9 +166,9 @@ public class FileSystemStoreTest {
         //execution
         final ZarrGroup rootGrp = ZarrGroup.create(store, null);
         final ArrayParams parameters = new ArrayParams()
-                .withDataType(DataType.i1)
-                .withShape(shape)
-                .withChunks(chunks)
+                .dataType(DataType.i1)
+                .shape(shape)
+                .chunks(chunks)
                 .withByteOrder(ByteOrder.LITTLE_ENDIAN)
                 .withFillValue(0)
                 .withCompressor(null);
@@ -196,7 +196,7 @@ public class FileSystemStoreTest {
         final Map<String, Object> attributes = TestUtils.createMap("data", new double[]{4, 5, 6, 7, 8});
 
         final ArrayParams parameters = new ArrayParams()
-                .withDataType(DataType.i1).withShape(shape).withChunks(chunks)
+                .dataType(DataType.i1).shape(shape).chunks(chunks)
                 .withFillValue(0).withCompressor(null);
 
         //execution

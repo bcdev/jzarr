@@ -50,8 +50,8 @@ public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
         final byte Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
         final ArrayParams parameters = new ArrayParams()
-                .withShape(shape).withChunks(chunkShape)
-                .withDataType(dataType).withFillValue(Fill)
+                .shape(shape).chunks(chunkShape)
+                .dataType(dataType).withFillValue(Fill)
                 .withCompressor(compressor);
 
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
@@ -121,8 +121,8 @@ public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
         final short Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
         final ArrayParams parameters = new ArrayParams()
-                .withShape(shape).withChunks(chunkShape)
-                .withDataType(dataType).withFillValue(Fill)
+                .shape(shape).chunks(chunkShape)
+                .dataType(dataType).withFillValue(Fill)
                 .withCompressor(compressor);
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
 
@@ -191,8 +191,8 @@ public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
         final int Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
         final ArrayParams parameters = new ArrayParams()
-                .withShape(shape).withChunks(chunkShape)
-                .withDataType(dataType).withFillValue(Fill)
+                .shape(shape).chunks(chunkShape)
+                .dataType(dataType).withFillValue(Fill)
                 .withCompressor(compressor);
 
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
@@ -262,8 +262,8 @@ public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
         final float Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
         final ArrayParams parameters = new ArrayParams()
-                .withShape(shape).withChunks(chunkShape)
-                .withDataType(dataType).withFillValue(Fill)
+                .shape(shape).chunks(chunkShape)
+                .dataType(dataType).withFillValue(Fill)
                 .withCompressor(compressor);
 
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);
@@ -333,8 +333,8 @@ public class ZarrArrayTest_2D_writeAndEvaluateWrittenChunks {
         final double Fill = -5;
         final Compressor compressor = CompressorFactory.nullCompressor;
         final ArrayParams parameters = new ArrayParams()
-                .withShape(shape).withChunks(chunkShape)
-                .withDataType(dataType).withFillValue(Fill)
+                .shape(shape).chunks(chunkShape)
+                .dataType(dataType).withFillValue(Fill)
                 .withCompressor(compressor);
 
         final ZarrArray array = ZarrArray.create(new ZarrPath(arrayName), store, parameters, null);

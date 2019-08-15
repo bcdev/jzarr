@@ -20,7 +20,7 @@ public class ArrayCreation {
      */
     private static void example_1() throws IOException {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
-                .withShape(10, 8)
+                .shape(10, 8)
         );
 
         createOutput(out -> out.println(jZarray));
@@ -31,7 +31,7 @@ public class ArrayCreation {
      */
     private static void example_2() throws IOException {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
-                .withShape(4000, 3500)
+                .shape(4000, 3500)
         );
 
         createOutput(out -> out.println(jZarray));
@@ -42,7 +42,7 @@ public class ArrayCreation {
      */
     private static void example_3() throws IOException {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
-                .withShape(4000, 3500)
+                .shape(4000, 3500)
                 .withChunked(false)
         );
 
@@ -54,8 +54,8 @@ public class ArrayCreation {
      */
     private static void example_4() throws IOException {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
-                .withShape(4000, 3500)
-                .withChunks(400, 350)
+                .shape(4000, 3500)
+                .chunks(400, 350)
         );
 
         createOutput(out -> out.println(jZarray));

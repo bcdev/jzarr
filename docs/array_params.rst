@@ -4,7 +4,7 @@ ArrayParams
 ===========
 .. **intro start**
 
-In python a function can be defined with default values for arguments.
+In Python a function can be defined with default values for arguments.
 
 .. **intro end**
 

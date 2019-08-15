@@ -44,9 +44,9 @@ public class ZarrWriteRootTest_writeHeader {
         final Number fillValue = 0;
         final Compressor compressor = CompressorFactory.create("zlib", 1);
         final ArrayParams parameters = new ArrayParams()
-                .withDataType(DataType.i4)
-                .withShape(shape)
-                .withChunks(chunks)
+                .dataType(DataType.i4)
+                .shape(shape)
+                .chunks(chunks)
                 .withFillValue(fillValue).withCompressor(compressor);
 
         //execution
@@ -78,9 +78,9 @@ public class ZarrWriteRootTest_writeHeader {
         attributes.put("with", "count");
         attributes.put("of", 3.0);
         final ArrayParams parameters = new ArrayParams()
-                .withDataType(DataType.i4)
-                .withShape(shape)
-                .withChunks(chunks)
+                .dataType(DataType.i4)
+                .shape(shape)
+                .chunks(chunks)
                 .withFillValue(fillValue)
                 .withCompressor(null);
 

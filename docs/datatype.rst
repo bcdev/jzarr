@@ -17,7 +17,7 @@ Name    Meaning
 ======  ========
 
 | This list of data types will be extended in the future.
-| Little by little they should match the ones defined in `python zarr <https://zarr.readthedocs.io/en/stable/>`_.
+| Little by little they should match the ones defined in `Python zarr <https://zarr.readthedocs.io/en/stable/>`_.
 
 .. ##################
 .. H1: document title

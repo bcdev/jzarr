@@ -35,9 +35,9 @@ public class ZarrReadRootTest {
         final ZarrGroup rootGrp = ZarrGroup.open(rootPath);
         final Compressor compressor = CompressorFactory.create("zlib", 1);
         final ArrayParams parameters = new ArrayParams()
-                .withDataType(DataType.f4)
-                .withShape(101, 102)
-                .withChunks(11, 12)
+                .dataType(DataType.f4)
+                .shape(101, 102)
+                .chunks(11, 12)
                 .withFillValue(4.2)
                 .withCompressor(compressor);
         final ZarrArray arrayData = rootGrp.createArray("rastername", parameters, null);

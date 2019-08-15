@@ -12,9 +12,9 @@ public class ArrayParametersBuilderTest {
     @Test
     public void buildWithAllMethodCalls() {
         final ArrayParams.Params parameters = new ArrayParams()
-                .withShape(800, 1000)
-                .withChunks(200, 100)
-                .withDataType(DataType.i2)
+                .shape(800, 1000)
+                .chunks(200, 100)
+                .dataType(DataType.i2)
                 .withByteOrder(ByteOrder.LITTLE_ENDIAN)
                 .withFillValue(42)
                 .withCompressor(CompressorFactory.nullCompressor)
@@ -33,9 +33,9 @@ public class ArrayParametersBuilderTest {
         try {
             //execution
             new ArrayParams()
-                    .withChunks(2, 3, 4)
+                    .chunks(2, 3, 4)
                     .withByteOrder(ByteOrder.LITTLE_ENDIAN)
-                    .withDataType(DataType.i2)
+                    .dataType(DataType.i2)
                     .withFillValue(23)
                     .withCompressor(null)
                     // .withShape(3,4,5) // suspended
@@ -52,12 +52,12 @@ public class ArrayParametersBuilderTest {
         try {
             //execution
             new ArrayParams()
-                    .withChunks(2, 3, 4)
+                    .chunks(2, 3, 4)
                     .withByteOrder(ByteOrder.LITTLE_ENDIAN)
-                    .withDataType(DataType.i2)
+                    .dataType(DataType.i2)
                     .withFillValue(23)
                     .withCompressor(null)
-                    .withShape() // no values given
+                    .shape() // no values given
                     .build();
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException expected) {
@@ -71,8 +71,8 @@ public class ArrayParametersBuilderTest {
         try {
             //execution
             new ArrayParams()
-                    .withShape(1000, 1000)
-                    .withChunks(10, 10, 100)
+                    .shape(1000, 1000)
+                    .chunks(10, 10, 100)
                     .build();
             fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException expected) {
@@ -85,7 +85,7 @@ public class ArrayParametersBuilderTest {
     public void Unchuncked() {
         //execution
         final ArrayParams.Params parameters = new ArrayParams()
-                .withShape(1000, 1000)
+                .shape(1000, 1000)
                 .withChunked(false)
                 .build();
 
@@ -97,7 +97,7 @@ public class ArrayParametersBuilderTest {
     public void DefaultValues() {
         //execution
         final ArrayParams.Params parameters = new ArrayParams()
-                .withShape(3800, 5000)
+                .shape(3800, 5000)
                 .build();
 
         //verification
@@ -115,9 +115,9 @@ public class ArrayParametersBuilderTest {
     public void Rebuild() {
         //preparation
         final ArrayParams.Params parameters = new ArrayParams()
-                .withShape(3800, 5000)
-                .withChunks(12, 13)
-                .withDataType(DataType.i2)
+                .shape(3800, 5000)
+                .chunks(12, 13)
+                .dataType(DataType.i2)
                 .withByteOrder(ByteOrder.LITTLE_ENDIAN)
                 .withFillValue(null)
                 .withCompressor(CompressorFactory.nullCompressor)
@@ -125,7 +125,7 @@ public class ArrayParametersBuilderTest {
 
         //execution
         final ArrayParams.Params newParams = parameters.toBuilder()
-                .withShape(123, 456)
+                .shape(123, 456)
                 .build();
 
         //verification

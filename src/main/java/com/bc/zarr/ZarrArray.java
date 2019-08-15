@@ -164,19 +164,19 @@ public class ZarrArray {
     }
 
     public void write(Number value, int[] shape, int[] offset) throws IOException, InvalidRangeException {
-        final Object dataBuffer = ZarrUtils.createDataBufferFilledWith(value, getDataType(), shape);
-        write(dataBuffer, shape, offset);
+        final Object data = ZarrUtils.createDataBufferFilledWith(value, getDataType(), shape);
+        write(data, shape, offset);
     }
 
-    public void write(Object dataBuffer, int[] bufferShape, int[] to) throws IOException, InvalidRangeException {
-        final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, bufferShape, to);
-        final Array source = Array.factory(dataBuffer).reshapeNoCopy(bufferShape);
+    public void write(Object data, int[] dataShape, int[] offset) throws IOException, InvalidRangeException {
+        final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, dataShape, offset);
+        final Array source = Array.factory(data).reshapeNoCopy(dataShape);
 
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
             final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
-            final int[] fromBufferPos = computeFrom(chunkIndex, to, false);
-            if (partialCopyingIsNotNeeded(bufferShape, fromBufferPos)) {
+            final int[] fromBufferPos = computeFrom(chunkIndex, offset, false);
+            if (partialCopyingIsNotNeeded(dataShape, fromBufferPos)) {
                 _chunkReaderWriter.write(chunkFilePath.storeKey, source);
             } else {
                 synchronized (_locks) {
@@ -202,35 +202,35 @@ public class ZarrArray {
     }
 
     public Object read(int[] shape, int[] offset) throws IOException, InvalidRangeException {
-        final Object dataBuffer = ZarrUtils.createDataBuffer(getDataType(), shape);
-        read(dataBuffer, shape, offset);
-        return dataBuffer;
+        final Object data = ZarrUtils.createDataBuffer(getDataType(), shape);
+        read(data, shape, offset);
+        return data;
     }
 
-    public void read(Object targetBuffer, int[] bufferShape) throws IOException, InvalidRangeException {
-        read(targetBuffer, bufferShape, new int[bufferShape.length]);
+    public void read(Object buffer, int[] bufferShape) throws IOException, InvalidRangeException {
+        read(buffer, bufferShape, new int[bufferShape.length]);
     }
 
-    public void read(Object targetBuffer, int[] bufferShape, int[] from) throws IOException, InvalidRangeException {
-        if (!targetBuffer.getClass().isArray()) {
+    public void read(Object buffer, int[] bufferShape, int[] offset) throws IOException, InvalidRangeException {
+        if (!buffer.getClass().isArray()) {
             throw new IOException("Target buffer object is not an array.");
         }
-        final int targetSize = java.lang.reflect.Array.getLength(targetBuffer);
+        final int targetSize = java.lang.reflect.Array.getLength(buffer);
         final long expectedSize = ZarrUtils.computeSize(bufferShape);
         if (targetSize != expectedSize) {
             throw new IOException("Expected target buffer size is " + expectedSize + " but was " + targetSize);
         }
-        final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, bufferShape, from);
+        final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, bufferShape, offset);
 
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
             final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
-            final int[] fromChunkPos = computeFrom(chunkIndex, from, true);
+            final int[] fromChunkPos = computeFrom(chunkIndex, offset, true);
             final Array sourceChunk = _chunkReaderWriter.read(chunkFilePath.storeKey);
             if (partialCopyingIsNotNeeded(bufferShape, fromChunkPos)) {
-                System.arraycopy(sourceChunk.getStorage(), 0, targetBuffer, 0, (int) sourceChunk.getSize());
+                System.arraycopy(sourceChunk.getStorage(), 0, buffer, 0, (int) sourceChunk.getSize());
             } else {
-                final Array target = NetCDF_Util.createArrayWithGivenStorage(targetBuffer, bufferShape);
+                final Array target = NetCDF_Util.createArrayWithGivenStorage(buffer, bufferShape);
                 PartialDataCopier.copy(fromChunkPos, sourceChunk, target);
             }
         }

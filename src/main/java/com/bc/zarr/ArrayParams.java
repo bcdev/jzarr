@@ -18,7 +18,7 @@ public class ArrayParams {
      * @param shape the {@code shape} to set
      * @return a reference to this Builder
      */
-    public ArrayParams withShape(int... shape) {
+    public ArrayParams shape(int... shape) {
         this.shape = shape;
         return this;
     }
@@ -29,7 +29,7 @@ public class ArrayParams {
      * @param chunks the {@code chunks} to set
      * @return a reference to this Builder
      */
-    public ArrayParams withChunks(int... chunks) {
+    public ArrayParams chunks(int... chunks) {
         this.chunks = chunks;
         return this;
     }
@@ -51,7 +51,7 @@ public class ArrayParams {
      * @param dataType the {@code dataType} to set
      * @return a reference to this Builder
      */
-    public ArrayParams withDataType(DataType dataType) {
+    public ArrayParams dataType(DataType dataType) {
         this.dataType = dataType;
         return this;
     }

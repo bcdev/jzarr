@@ -7,7 +7,7 @@ JZarr documentation
 ===================
 
 JZarr is a Java library providing an implementation of chunked,
-compressed, N-dimensional arrays close to the python `zarr package`_.
+compressed, N-dimensional arrays close to the Python `zarr package`_.
 
 Highlights
 ----------
@@ -55,16 +55,20 @@ repository too.
 Contents
 --------
 
+.. _license: https://github.com/bcdev/jzarr/blob/master/LICENSE
+
 .. toctree::
     :maxdepth: 2
 
+    index
     tutorial
     api
     spec
     release
     contributing
+    license_
 
-Api Examples
+API Examples
 ------------
 
 .. include:: examples.rst
