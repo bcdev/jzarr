@@ -30,23 +30,24 @@ Requirements
 ------------
 JZarr needs Java 8 or higher
 
-Maven integration:
-------------------
+Maven Dependency
+----------------
 
-::
-     <dependency>
-         <groupId>com.bc.zarr</groupId>
-         <artifactId>jzarr</artifactId>
-         <version>0.2-SNAPSHOT</version>
-     </dependency>
+To use JZarr in you project integrate the following lines to your maven pom.xml::
 
-    <repositories>
-        <repository>
-            <id>bc-nexus-repo</id>
-            <name>Brockmann-Consult Public Maven Repository</name>
-            <url>http://nexus.senbox.net/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
+ <dependency>
+    <groupId>com.bc.zarr</groupId>
+    <artifactId>jzarr</artifactId>
+    <version>0.2-SNAPSHOT</version>
+ </dependency>
+
+ <repositories>
+    <repository>
+       <id>bc-nexus-repo</id>
+       <name>Brockmann-Consult Public Maven Repository</name>
+       <url>http://nexus.senbox.net/nexus/content/groups/public/</url>
+    </repository>
+ </repositories>
 
 
 Contents
