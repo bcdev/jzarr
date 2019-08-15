@@ -3,12 +3,6 @@
 
 .. include:: intro.rst
 
-.. include:: examples.rst
-  :start-after: **intro start**
-  :end-before: **intro end**
-
-:ref:`Read more ... <examples>`
-
 .. toctree::
     :hidden:
     :maxdepth: 2
