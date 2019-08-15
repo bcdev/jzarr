@@ -57,7 +57,7 @@ Creates an array with size [5 rows, 7 columns], with data type :code:`int` and w
   :end-before: example 2 code snippet 1 end
   :dedent: 8
 
-Prepare data which should be written with a shape of [3, 5] and an offset of [1, 1] to the center of the array.
+Prepare the data which should be written to the array with a shape of [3, 5] and an offset of [1, 1].
 
 .. literalinclude:: ./examples/java/Tutorial.java
   :start-after: example 2 code snippet 2 begin
