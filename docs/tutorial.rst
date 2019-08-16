@@ -6,12 +6,16 @@ Tutorial
 ========
 JZarr provides classes and functions to handle N-dimensional arrays data
 whose data can be divided into chunks and each chunk can be compressed.
-The JZarr data inputs and outputs are flattened data arrays.
-The shape then defines the N-Dimensionality of the zarr array itself.
 
-The zarr array offsets are zero-based (:code:`0`). If you need to write data
-to the upperleft corner of a 2 dimensional zarr array you have to use an offset
-of :code:`new int[]{0, 0}`.
+The JZarr data inputs and outputs are flattened data arrays.
+The shape parameter then defines the N-Dimensionality of the zarr array itself.
+
+To read or write data portions to or from the array, a shape describing the portion
+and an offset is needed. The zarr array offsets are zero-based (:code:`0`).
+
+| **For Example:**
+| If you need to write data to the upperleft corner of a 2 dimensional zarr array you have to use an offset
+  of :code:`new int[]{0, 0}`.
 
 If you are already familiar with the Python `zarr package`_ then JZarr
 provide similar functionality, but without NumPy array behavior.

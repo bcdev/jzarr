@@ -1,7 +1,4 @@
-import com.bc.zarr.ArrayParams;
-import com.bc.zarr.CompressorFactory;
-import com.bc.zarr.ZarrArray;
-import com.bc.zarr.ZarrGroup;
+import com.bc.zarr.*;
 import com.bc.zarr.storage.InMemoryStore;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.factory.Nd4j;
@@ -10,7 +7,6 @@ import utils.OutputHelper;
 
 import java.io.IOException;
 
-import static com.bc.zarr.DataType.i4;
 import static utils.OutputHelper.createOutput;
 
 public class Tutorial {
@@ -29,7 +25,7 @@ public class Tutorial {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .shape(10000, 10000)
                 .chunks(1000, 1000)
-                .dataType(i4)
+                .dataType(DataType.i4)
         );
 
         createOutput(out -> out.println(jZarray));
@@ -46,7 +42,7 @@ public class Tutorial {
         // example 2 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#writing-and-reading-data
         ZarrArray array = ZarrArray.create(new ArrayParams()
                 .shape(5, 7)
-                .dataType(i4) // integer data type
+                .dataType(DataType.i4) // integer data type
                 .fillValue(-9999)
         );
         // example 2 code snippet 1 end
@@ -89,7 +85,7 @@ public class Tutorial {
     public static void example_3() throws IOException, InvalidRangeException {
         // example 3 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
         ZarrArray created = ZarrArray.create("docs/examples/output/example_3.zarr", new ArrayParams()
-                .shape(1000, 1000).chunks(250, 250).dataType(i4).fillValue(-9999)
+                .shape(1000, 1000).chunks(250, 250).dataType(DataType.i4).fillValue(-9999)
         );
         // example 3 code snippet 1 end
 
@@ -128,7 +124,7 @@ public class Tutorial {
         ZarrGroup foo = root.createSubGroup("foo");
         ZarrGroup bar = foo.createSubGroup("bar");
         ZarrArray z1 = bar.createArray("baz", new ArrayParams()
-                .shape(1000, 1000).chunks(100, 100).dataType(i4)
+                .shape(1000, 1000).chunks(100, 100).dataType(DataType.i4)
         );
         createOutput(out -> out.println(z1));
     }

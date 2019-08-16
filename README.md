@@ -1,27 +1,10 @@
-# jzarr
+# JZarr
 
 A Java version of the API offered by the wonderful Python [zarr](https://zarr.readthedocs.io/) package.
 
+## Documentation
+You can find detailed information at [JZarrs project documentation](https://jzarr.readthedocs.io) page.  
 
-## Tutorial
 
-Zarr provides classes and functions for working with N-dimensional array data.  
-The data can be divided into chunks (default) and each chunk can be saved compressed.  
-If you are already familiar with HDF5 then Zarr provide similar functionality, but
-with some additional flexibility.
+## Build Documentation
 
-### Creating an Array
-
-Zarr has several functions for creating arrays. For example:
-
-~~~
-ZarrArray array = ZarrArray.create(new ArrayParams()
-        .withShape(10000, 10000).withChunks(1000, 1000).withDataType(DataType.i4)
-);
-
-System.out.println(array);
-~~~
-creates the following output:
-~~~
-com.bc.zarr.ZarrArray{shape=[10000, 10000], chunks=[1000, 1000], dataType=i4, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
-~~~
