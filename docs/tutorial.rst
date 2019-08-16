@@ -7,14 +7,12 @@ Tutorial
 JZarr provides classes and functions to handle N-dimensional arrays data
 whose data can be divided into chunks and each chunk can be compressed.
 
-Gerneral Information
---------------------
+General Information
+-------------------
 In the JZarr API, data inputs and outputs are allways one-dimensional arrays of primitive
 Java types ``double``, ``float``, ``long``, ``int``, ``short``, ``byte``.
-Users are expecte to specify the N-dimensionality of the data by a shape parameter requested
+Users have to specify the N-dimensionality of the data by a shape parameter requested
 by many of the JZarr API operations.
-
-All data persisted using this API can be read in with the Python zarr API without limmitations.
 
 To read or write data portions to or from the array, a shape describing the portion
 and an offset is needed. The zarr array offsets are zero-based (:code:`0`).
@@ -22,6 +20,9 @@ and an offset is needed. The zarr array offsets are zero-based (:code:`0`).
 | **For Example:**
 | If you need to write data to the upper left corner of a 2 dimensional zarr array you have to use an offset
   of :code:`new int[]{0, 0}`.
+
+.. note::
+   All data persisted using this API can be read in with the Python zarr API without limmitations.
 
 If you are already familiar with the Python `zarr package`_ then JZarr
 provide similar functionality, but without NumPy array behavior.
@@ -111,7 +112,6 @@ Creates the following output
 The output displays that the data written before (written with an offset of [1, 1]) is surrounded by the fill value :code:`-9999`.
 
 .. note::
-
    `Nd4j <Nd4j>`_ is not part of the JZarr library. It is only used in this showcase to demonstrate how the data can be used.
 
 .. _tutoral_persistent_arrays:
@@ -181,7 +181,6 @@ Different compressors can be provided via the compressor keyword argument accept
   :dedent: 8
 
 .. note::
-
    In this very beginning phase we only implemented the `zlib` compressor.
    More compressors will be implemented in the future.
    
