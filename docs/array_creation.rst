@@ -19,7 +19,7 @@ Simple small array
 .. highlight:: java
 
 .. literalinclude:: ./examples/java/ArrayCreation.java
-  :caption: `snippet 1 from ArrayCreation.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
+  :caption: `example 1 from ArrayCreation.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/ArrayCreation.java>`_
   :start-after: void example_1
   :end-before: createOutput
   :dedent: 8

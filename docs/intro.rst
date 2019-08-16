@@ -46,7 +46,7 @@ To use JZarr in you project integrate the following lines into your maven pom.xm
     </repository>
  </repositories>
 
-It is planned to deploy the JZarr artifacts to the `maven central <https://mvnrepository.com/repos/central>`
+It is planned to deploy the JZarr artifacts to the `maven central <https://mvnrepository.com/repos/central>`_
 repository too.
 
 
