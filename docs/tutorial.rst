@@ -7,7 +7,8 @@ Tutorial
 JZarr provides classes and functions to handle N-dimensional arrays data
 whose data can be divided into chunks and each chunk can be compressed.
 
-The JZarr data inputs and outputs are flattened data arrays.
+The JZarr data inputs and outputs are allways one-dimensional arrays of primitive Java types
+``double``, ``float``, ``long``, ``int``, ``short``, ``byte``.
 The shape parameter then defines the N-Dimensionality of the zarr array itself.
 
 To read or write data portions to or from the array, a shape describing the portion
