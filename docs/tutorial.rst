@@ -7,9 +7,14 @@ Tutorial
 JZarr provides classes and functions to handle N-dimensional arrays data
 whose data can be divided into chunks and each chunk can be compressed.
 
-The JZarr data inputs and outputs are allways one-dimensional arrays of primitive Java types
-``double``, ``float``, ``long``, ``int``, ``short``, ``byte``.
-The shape parameter then defines the N-Dimensionality of the zarr array itself.
+Gerneral Information
+--------------------
+In the JZarr API, data inputs and outputs are allways one-dimensional arrays of primitive
+Java types ``double``, ``float``, ``long``, ``int``, ``short``, ``byte``.
+Users are expecte to specify the N-dimensionality of the data by a shape parameter requested
+by many of the JZarr API operations.
+
+All data persisted using this API can be read in with the Python zarr API without limmitations.
 
 To read or write data portions to or from the array, a shape describing the portion
 and an offset is needed. The zarr array offsets are zero-based (:code:`0`).
