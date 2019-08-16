@@ -6,7 +6,7 @@
 
     <groupId>com.bc.zarr</groupId>
     <artifactId>jzarr</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
 
     <properties>
         <!-- needed in test scope to show examples -->
