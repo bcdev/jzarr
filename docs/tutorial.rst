@@ -14,7 +14,7 @@ To read or write data portions to or from the array, a shape describing the port
 and an offset is needed. The zarr array offsets are zero-based (:code:`0`).
 
 | **For Example:**
-| If you need to write data to the upperleft corner of a 2 dimensional zarr array you have to use an offset
+| If you need to write data to the upper left corner of a 2 dimensional zarr array you have to use an offset
   of :code:`new int[]{0, 0}`.
 
 If you are already familiar with the Python `zarr package`_ then JZarr
