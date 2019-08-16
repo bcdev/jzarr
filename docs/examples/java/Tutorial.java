@@ -52,7 +52,7 @@ public class Tutorial {
         // example 2 code snippet 1 end
 
         // example 2 code snippet 2 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#writing-and-reading-data
-        // define the data which should to be written
+        // define the data which should be written
         int[] data = {
                 11, 12, 13, 14, 15,
                 21, 22, 23, 24, 25,
