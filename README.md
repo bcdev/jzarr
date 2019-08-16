@@ -7,3 +7,7 @@ You can find detailed information at [JZarrs project documentation](https://jzar
 
 
 ## Build Documentation
+The projects documentation is automatically generated and provided using "Read the Docs".
+Some files, needed to build the "read the docs" documentation must be generated to be up to
+date and along with the code. Rerun **`ExecuteForReadTheDocs.java`** to autogenerate these
+referenced files.

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import static utils.OutputHelper.createOutput;
 
-public class ArrayCreation {
+public class ArrayCreation_rtd {
 
     public static void main(String[] args) throws IOException, InvalidRangeException {
         example_1();

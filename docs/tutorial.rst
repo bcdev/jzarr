@@ -42,8 +42,8 @@ JZarr has several functions for creating arrays. For example:
 
 .. highlight:: java
 
-.. literalinclude:: ./examples/java/Tutorial.java
-  :caption: `example 1 from Tutorial.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial.java>`_
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 1 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: void example_1
   :end-before: createOutput
   :dedent: 8
@@ -52,7 +52,7 @@ JZarr has several functions for creating arrays. For example:
 
 A :code:`System.out.println(array);` then creates the following output
 
-.. literalinclude:: ./examples/output/Tutorial_example_1.txt
+.. literalinclude:: ./examples/output/Tutorial_rtd_example_1.txt
 
 The code above creates a 2-dimensional array of 32-bit integers with 10000 rows and 10000 columns,
 divided into chunks where each chunk has 1000 rows and 1000 columns (and so there will be 100 chunks in total).
@@ -69,36 +69,36 @@ Creates an array with size [5 rows, 7 columns], with data type :code:`int` and w
 
 .. highlight:: java
 
-.. literalinclude:: ./examples/java/Tutorial.java
-  :caption: `example 2 from Tutorial.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial.java>`_
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 2 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: example 2 code snippet 1 begin
   :end-before: example 2 code snippet 1 end
   :dedent: 8
 
 Prepare the data which should be written to the array with a shape of [3, 5] and an offset of [1, 1].
 
-.. literalinclude:: ./examples/java/Tutorial.java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 2 code snippet 2 begin
   :end-before: example 2 code snippet 2 end
   :dedent: 8
 
 Write the prepared data.
 
-.. literalinclude:: ./examples/java/Tutorial.java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 2 code snippet 3 begin
   :end-before: example 2 code snippet 3 end
   :dedent: 8
 
 Read the entire data from the array.
 
-.. literalinclude:: ./examples/java/Tutorial.java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 2 code snippet 4 begin
   :end-before: example 2 code snippet 4 end
   :dedent: 8
 
 Print out the data read.
 
-.. literalinclude:: ./examples/java/Tutorial.java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 2 code snippet 5 begin
   :end-before: example 2 code snippet 5 end
   :dedent: 8
@@ -107,7 +107,7 @@ Print out the data read.
 
 Creates the following output
 
-.. literalinclude:: ./examples/output/Tutorial_example_2.txt
+.. literalinclude:: ./examples/output/Tutorial_rtd_example_2.txt
 
 The output displays that the data written before (written with an offset of [1, 1]) is surrounded by the fill value :code:`-9999`.
 
@@ -124,8 +124,8 @@ between sessions. For example:
 
 .. highlight:: java
 
-.. literalinclude:: ./examples/java/Tutorial.java
-  :caption: `example 3 from Tutorial.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial.java>`_
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 3 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: example 3 code snippet 1 begin
   :end-before: example 3 code snippet 1 end
   :dedent: 8
@@ -143,7 +143,7 @@ Write some data to the created persistent array.
 
 .. highlight:: java
 
-.. literalinclude:: ./examples/java/Tutorial.java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 3 code snippet 2 begin
   :end-before: example 3 code snippet 2 end
   :dedent: 8
@@ -155,7 +155,7 @@ Write some data to the created persistent array.
 
 Then we can reopen the array and read the data
 
-.. literalinclude:: ./examples/java/Tutorial.java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 3 code snippet 3 begin
   :end-before: example 3 code snippet 3 end
   :dedent: 8
@@ -164,7 +164,7 @@ Then we can reopen the array and read the data
 
 Which now looks like:
 
-.. literalinclude:: ./examples/output/Tutorial_example_3.txt
+.. literalinclude:: ./examples/output/Tutorial_rtd_example_3.txt
 
 Resizing and appending
 ----------------------
@@ -175,7 +175,7 @@ Compressors
 A number of different compressors can be used with JZarr.
 Different compressors can be provided via the compressor keyword argument accepted by all array creation functions. For example:
 
-.. literalinclude:: ./examples/java/Tutorial.java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example_4
   :end-before: }
   :dedent: 8

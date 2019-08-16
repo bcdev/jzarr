@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import static utils.OutputHelper.createOutput;
 
-public class Tutorial {
+public class Tutorial_rtd {
 
     public static void main(String[] args) throws IOException, InvalidRangeException {
         example_1();
