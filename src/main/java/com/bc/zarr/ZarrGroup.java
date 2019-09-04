@@ -10,11 +10,14 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import static com.bc.zarr.ZarrConstants.*;
 
 public class ZarrGroup {
+
+    public static ZarrGroup create() throws IOException {
+        return create((String) null);
+    }
 
     public static ZarrGroup create(String path) throws IOException {
         return create(path, null);
@@ -51,27 +54,25 @@ public class ZarrGroup {
         return zarrGroup;
     }
 
-    public static ZarrGroup open() throws IOException {
-        return create(new InMemoryStore(), null);
-    }
-
     public static ZarrGroup open(String path) throws IOException {
         if (path == null) {
-            return open();
+            return create();
         }
         return open(Paths.get(path));
     }
 
     public static ZarrGroup open(Path fileSystemPath) throws IOException {
         if (fileSystemPath == null) {
-            return open();
+            return create();
         }
         ZarrUtils.ensureDirectory(fileSystemPath);
         return open(new FileSystemStore(fileSystemPath));
     }
 
     public static ZarrGroup open(Store store) throws IOException {
-        if (store == null) return open();
+        if (store == null) {
+            return create();
+        }
         try (InputStream is = store.getInputStream(FILENAME_DOT_ZGROUP)) {
             if (is == null) {
                 throw new IOException("'" + FILENAME_DOT_ZGROUP + "' expected but is not readable or missing in store.");
@@ -97,6 +98,7 @@ public class ZarrGroup {
     public ZarrGroup createSubGroup(String subGroupName) throws IOException {
         return createSubGroup(subGroupName, null);
     }
+
     public ZarrGroup createSubGroup(String subGroupName, Map<String, Object> attributes) throws IOException {
         final ZarrPath relativePath = this.relativePath.resolve(subGroupName);
         final ZarrGroup group = new ZarrGroup(store, relativePath);
@@ -125,6 +127,7 @@ public class ZarrGroup {
     public ZarrArray createArray(String name, ArrayParams params) throws IOException {
         return createArray(name, params, null);
     }
+
     public ZarrArray createArray(String name, ArrayParams params, final Map<String, Object> attributes) throws IOException {
         final ZarrPath relativePath = this.relativePath.resolve(name);
         return ZarrArray.create(relativePath, store, params, attributes);

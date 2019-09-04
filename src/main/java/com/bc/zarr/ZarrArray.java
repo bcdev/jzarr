@@ -259,9 +259,9 @@ public class ZarrArray {
     @Override
     public String toString() {
         return getClass().getCanonicalName()+ "{" +
+                "'/" + relativePath.storeKey + "' "+
                 "shape=" + Arrays.toString(_shape) +
                 ", chunks=" + Arrays.toString(_chunks) +
-//                ", relativePath=" + relativePath.storeKey +
                 ", dataType=" + _dataType +
                 ", fillValue=" + _fillValue +
                 ", compressor=" + _compressor.getId() + "/level=" +_compressor.getLevel() +

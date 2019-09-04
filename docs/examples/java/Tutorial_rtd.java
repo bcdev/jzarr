@@ -15,6 +15,8 @@ public class Tutorial_rtd {
         example_1();
         example_2();
         example_3();
+        example_4();
+        example_5();
     }
 
     /**
@@ -120,7 +122,7 @@ public class Tutorial_rtd {
      * Create a groups
      */
     public static void example_5() throws IOException, InvalidRangeException {
-        ZarrGroup root = ZarrGroup.create(new InMemoryStore());
+        ZarrGroup root = ZarrGroup.create();          // creates an in memory group
         ZarrGroup foo = root.createSubGroup("foo");
         ZarrGroup bar = foo.createSubGroup("bar");
         ZarrArray z1 = bar.createArray("baz", new ArrayParams()

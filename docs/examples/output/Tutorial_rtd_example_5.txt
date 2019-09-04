@@ -1,0 +1,1 @@
+com.bc.zarr.ZarrArray{'/foo/bar/baz' shape=[1000, 1000], chunks=[100, 100], dataType=i4, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
