@@ -256,7 +256,18 @@ Partly reading writing
 JZarr ZarrArrays enable a subset of data items to be extracted or updated in an array without
 loading the entire array into memory.
 
-see :ref:`Persistent arrays <tutoral_persistent_arrays>`
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 7 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_7
+  :end-before: createOutput
+  :dedent: 8
 
-see `Persistent arrays`_
+The output shows the data written with the given shape to the offset position.
+
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :start-after: example_7_output_start
+   :end-before: __output_end__
+
+Already used in example above. See `Persistent arrays`_
 
