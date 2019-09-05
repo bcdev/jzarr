@@ -260,7 +260,7 @@ loading the entire array into memory.
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 7 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: void example_7
-  :end-after: });
+  :end-before: ///
   :dedent: 8
 
 The output shows the data is written with the given shape to the offset position.

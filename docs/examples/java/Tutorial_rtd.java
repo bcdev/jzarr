@@ -194,6 +194,7 @@ public class Tutorial_rtd {
             buffer.setData(data);
             out.println(Nd4j.create(buffer).reshape('c', arrayShape));
         });
+        ///
     }
 }
 
