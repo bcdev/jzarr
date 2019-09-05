@@ -215,3 +215,20 @@ In the following example you can see:
 A :code:`System.out.println(array);` then creates the following output
 
 .. literalinclude:: ./examples/output/Tutorial_rtd_example_5.txt
+
+User attributes
+---------------
+JZarr arrays and groups support custom key/value attributes, which can be useful for
+storing application-specific metadata. For example:
+
+.. highlight:: java
+
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 6 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_6
+  :end-before: createOutput
+  :dedent: 8
+
+You can easily print out the attributes content using :code:`System.out.println(ZarrUtils.toJson(attributes));`
+
+.. literalinclude:: ./examples/output/Tutorial_rtd_example_6.txt

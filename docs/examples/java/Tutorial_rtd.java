@@ -1,10 +1,14 @@
 import com.bc.zarr.*;
+import com.bc.zarr.storage.InMemoryStore;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.factory.Nd4j;
 import ucar.ma2.InvalidRangeException;
 import utils.OutputHelper;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static utils.OutputHelper.createOutput;
 
@@ -16,6 +20,7 @@ public class Tutorial_rtd {
         example_3();
         example_4();
         example_5();
+        example_6();
     }
 
     /**
@@ -128,5 +133,27 @@ public class Tutorial_rtd {
                 .shape(1000, 1000).chunks(100, 100).dataType(DataType.i4)
         );
         createOutput(out -> out.println(array));
+    }
+
+    /**
+     * Example to demonstrate how to work with user attributes
+     */
+    public static void example_6() throws IOException {
+        HashMap<String, Object> attrs;
+
+        attrs = new HashMap<>();
+        attrs.put("baz", 42);
+        attrs.put("qux", new int[]{1, 4, 7, 12});
+
+        // store user attributes at group creation time
+        ZarrGroup.create(new InMemoryStore(), attrs);  // creates an in memory group with attached user attributes
+
+        // store or restore user attributes after creation time
+        ZarrGroup group = ZarrGroup.create();   // creates an in memory group
+        group.writeAttributes(attrs);  // store user attributes
+
+        Map<String, Object> attributes = group.getAttributes();
+
+        createOutput(out -> out.println(ZarrUtils.toJson(attributes)));
     }
 }
