@@ -92,6 +92,10 @@ public class ZarrArray {
         return create(new InMemoryStore(), arrayParams);
     }
 
+    public static ZarrArray create(ArrayParams arrayParams, Map<String, Object> attributes) throws IOException {
+        return create(new InMemoryStore(), arrayParams, attributes);
+    }
+
     public static ZarrArray create(String path, ArrayParams params) throws IOException {
         return create(path, params, null);
     }
@@ -258,13 +262,13 @@ public class ZarrArray {
 
     @Override
     public String toString() {
-        return getClass().getCanonicalName()+ "{" +
-                "'/" + relativePath.storeKey + "' "+
+        return getClass().getCanonicalName() + "{" +
+                "'/" + relativePath.storeKey + "' " +
                 "shape=" + Arrays.toString(_shape) +
                 ", chunks=" + Arrays.toString(_chunks) +
                 ", dataType=" + _dataType +
                 ", fillValue=" + _fillValue +
-                ", compressor=" + _compressor.getId() + "/level=" +_compressor.getLevel() +
+                ", compressor=" + _compressor.getId() + "/level=" + _compressor.getLevel() +
                 ", store=" + _store.getClass().getSimpleName() +
                 ", byteOrder=" + _byteOrder +
                 '}';

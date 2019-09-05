@@ -139,21 +139,34 @@ public class Tutorial_rtd {
      * Example to demonstrate how to work with user attributes
      */
     public static void example_6() throws IOException {
-        HashMap<String, Object> attrs;
+        Map<String, Object> attrs;
+        Map<String, Object> attributes;
+        ZarrGroup group;
+        ZarrArray array;
 
         attrs = new HashMap<>();
         attrs.put("baz", 42);
         attrs.put("qux", new int[]{1, 4, 7, 12});
 
         // store user attributes at group creation time
-        ZarrGroup.create(new InMemoryStore(), attrs);  // creates an in memory group with attached user attributes
+        group = ZarrGroup.create(new InMemoryStore(), attrs);
+
+        // store user attributes at array creation time
+        array = ZarrArray.create(new ArrayParams().shape(10, 10), attrs);
+
+        // also at array creation time within a group
+        array = group.createArray("name", new ArrayParams().shape(10, 10), attrs);
 
         // store or restore user attributes after creation time
-        ZarrGroup group = ZarrGroup.create();   // creates an in memory group
-        group.writeAttributes(attrs);  // store user attributes
+        group.writeAttributes(attrs);
+        array.writeAttributes(attrs);
 
-        Map<String, Object> attributes = group.getAttributes();
+        // get attributes from group
+        attrs = group.getAttributes();
+        // similar from array
+        attributes = array.getAttributes();
 
         createOutput(out -> out.println(ZarrUtils.toJson(attributes, true)));
     }
 }
+

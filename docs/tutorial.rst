@@ -231,3 +231,7 @@ storing application-specific metadata. For example:
 You can easily print out the attributes content using :code:`System.out.println(ZarrUtils.toJson(attributes, true));`
 
 .. literalinclude:: ./examples/output/Tutorial_rtd_example_6.txt
+
+.. note::
+   If you take user attributes from a group or an array modifications (put, replace or remove) on
+   the attributes are not automatically stored.
