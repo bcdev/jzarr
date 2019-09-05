@@ -251,8 +251,10 @@ You can easily print out the attributes content using :code:`System.out.println(
 
 Internally JZarr uses JSON to store array attributes, so attribute values must be JSON serializable.
 
-Advanced indexing
------------------
-JZarr ZarrArrays supports advanced indexing, which enable a subset of data items to be extracted
-or updated in an array without loading the entire array into memory.
+Partly reading writing
+----------------------
+JZarr ZarrArrays enable a subset of data items to be extracted or updated in an array without
+loading the entire array into memory.
+
+see tutoral_persistent_arrays_
 

@@ -21,6 +21,7 @@ public class Tutorial_rtd {
         example_4();
         example_5();
         example_6();
+        example_7();
     }
 
     /**
@@ -169,8 +170,7 @@ public class Tutorial_rtd {
         createOutput(out -> out.println(ZarrUtils.toJson(attributes, true)));
     }
 
-    public static void example_7() throws IOException {
-
+    public static void example_7() throws IOException, InvalidRangeException {
     }
 }
 
