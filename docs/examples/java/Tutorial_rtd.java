@@ -168,5 +168,9 @@ public class Tutorial_rtd {
 
         createOutput(out -> out.println(ZarrUtils.toJson(attributes, true)));
     }
+
+    public static void example_7() throws IOException {
+
+    }
 }
 

@@ -52,7 +52,9 @@ JZarr has several functions for creating arrays. For example:
 
 A :code:`System.out.println(array);` then creates the following output
 
-.. literalinclude:: ./examples/output/Tutorial_rtd_example_1.txt
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :start-after: example_1_output_start
+   :end-before: __output_end__
 
 The code above creates a 2-dimensional array of 32-bit integers with 10000 rows and 10000 columns,
 divided into chunks where each chunk has 1000 rows and 1000 columns (and so there will be 100 chunks in total).
@@ -107,7 +109,10 @@ Print out the data read.
 
 Creates the following output
 
-.. literalinclude:: ./examples/output/Tutorial_rtd_example_2.txt
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :start-after: example_2_output_start
+   :end-before: __output_end__
+
 
 The output displays that the data written before (written with an offset of [1, 1]) is surrounded by the fill value :code:`-9999`.
 
@@ -164,7 +169,9 @@ Then we can reopen the array and read the data
 
 Which now looks like:
 
-.. literalinclude:: ./examples/output/Tutorial_rtd_example_3.txt
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :start-after: example_3_output_start
+   :end-before: __output_end__
 
 Resizing and appending
 ----------------------
@@ -214,7 +221,10 @@ In the following example you can see:
 
 A :code:`System.out.println(array);` then creates the following output
 
-.. literalinclude:: ./examples/output/Tutorial_rtd_example_5.txt
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :start-after: example_5_output_start
+   :end-before: __output_end__
+
 
 User attributes
 ---------------
@@ -230,8 +240,19 @@ storing application-specific metadata. For example:
 
 You can easily print out the attributes content using :code:`System.out.println(ZarrUtils.toJson(attributes, true));`
 
-.. literalinclude:: ./examples/output/Tutorial_rtd_example_6.txt
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :start-after: example_6_output_start
+   :end-before: __output_end__
 
 .. note::
    If you take user attributes from a group or an array modifications (put, replace or remove) on
-   the attributes are not automatically stored.
+   the attributes are not automatically stored. The :code:`writeAttributes()` from ZarrGroup or
+   ZarrArray must be used to restore the changed attributes.
+
+Internally JZarr uses JSON to store array attributes, so attribute values must be JSON serializable.
+
+Advanced indexing
+-----------------
+JZarr ZarrArrays supports advanced indexing, which enable a subset of data items to be extracted
+or updated in an array without loading the entire array into memory.
+

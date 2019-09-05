@@ -1,1 +1,0 @@
-com.bc.zarr.ZarrArray{'/' shape=[4000, 3500], chunks=[4000, 3500], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}

@@ -1,12 +1,15 @@
 package utils;
 
+import com.sun.nio.file.ExtendedOpenOption;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 
 public class OutputHelper {
@@ -56,12 +59,23 @@ public class OutputHelper {
 
     public static void createOutput(Writer writer) throws IOException {
         final String fileName = createOutputFilename();
+        String methodName = getOutputMethodName();
         final Path workDir = Paths.get(".");
         final Path outDir = workDir.resolve("docs").resolve("examples").resolve("output");
         Files.createDirectories(outDir);
         final Path filePath = outDir.resolve(fileName);
-        try (PrintStream printStream = new PrintStream(Files.newOutputStream(filePath))) {
+        if (!Files.exists(filePath)) {
+            OutputStream stream = Files.newOutputStream(filePath);
+            stream.close();
+        }
+        try (OutputStream outputStream = Files.newOutputStream(filePath, StandardOpenOption.APPEND);
+             PrintStream printStream = new PrintStream(outputStream)) {
+            printStream.println(methodName + "_output_start");
             writer.write(printStream);
+            printStream.println(methodName + "__output_end__");
+            printStream.println();
+            printStream.println("=====================================================================================");
+            printStream.println();
         }
     }
 
@@ -73,8 +87,14 @@ public class OutputHelper {
         if (className.contains(".")) {
             className = className.substring(className.lastIndexOf(".") + 1);
         }
-        final String methodName = element.getMethodName();
-        return className + "_" + methodName + ".txt";
+        return className + ".txt";
+    }
+
+    @NotNull
+    private static String getOutputMethodName() {
+        final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        final StackTraceElement element = stackTrace[3];
+        return element.getMethodName();
     }
 
     public interface Writer {

@@ -1,0 +1,24 @@
+example_1_output_start
+com.bc.zarr.ZarrArray{'/' shape=[10, 8], chunks=[10, 8], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+example_1_output_end
+
+=====================================================================================
+
+example_2_output_start
+com.bc.zarr.ZarrArray{'/' shape=[4000, 3500], chunks=[500, 500], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+example_2_output_end
+
+=====================================================================================
+
+example_3_output_start
+com.bc.zarr.ZarrArray{'/' shape=[4000, 3500], chunks=[4000, 3500], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+example_3_output_end
+
+=====================================================================================
+
+example_4_output_start
+com.bc.zarr.ZarrArray{'/' shape=[4000, 3500], chunks=[400, 350], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+example_4_output_end
+
+=====================================================================================
+
