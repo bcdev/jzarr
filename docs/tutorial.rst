@@ -220,9 +220,7 @@ User attributes
 ---------------
 JZarr arrays and groups support custom key/value attributes, which can be useful for
 storing application-specific metadata. For example:
-
 .. highlight:: java
-
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 6 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: void example_6
