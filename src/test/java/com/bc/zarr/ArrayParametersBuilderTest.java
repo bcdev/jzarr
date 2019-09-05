@@ -136,4 +136,45 @@ public class ArrayParametersBuilderTest {
         assertThat(newParams.getFillValue(), is(nullValue()));
         assertThat(newParams.getCompressor(), is(sameInstance(CompressorFactory.nullCompressor)));
     }
+
+    @Test
+    public void autoComputeChunks() {
+        //execution
+        final ArrayParams.Params parameters = new ArrayParams()
+                .shape(3800, 5000)
+                .build();
+
+        assertThat(parameters.getChunks(), is(equalTo(new int[]{475, 500})));
+    }
+
+    @Test
+    public void autoComputeChunks_widthIsNotDividableWithModuloZero() {
+        //execution
+        final ArrayParams.Params parameters = new ArrayParams()
+                .shape(3800, 4999)
+                .build();
+
+        assertThat(parameters.getChunks(), is(equalTo(new int[]{475, 500})));
+    }
+
+    @Test
+    public void autoComputeChunks_widthOneLittleDimension() {
+        //execution
+        final ArrayParams.Params parameters = new ArrayParams()
+                .shape(3800, 33)
+                .build();
+
+        assertThat(parameters.getChunks(), is(equalTo(new int[]{475, 33})));
+    }
+
+    @Test
+    public void replaceZeroOrNegativeChunkDimensionWithShapeDimensionSize() {
+        //execution
+        final ArrayParams.Params parameters = new ArrayParams()
+                .shape(3800, 5000)
+                .chunks(444, 0)
+                .build();
+
+        assertThat(parameters.getChunks(), is(equalTo(new int[]{444, 5000})));
+    }
 }

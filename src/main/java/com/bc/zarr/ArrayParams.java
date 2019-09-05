@@ -125,6 +125,14 @@ public class ArrayParams {
                     "Chunks must have the same number of dimensions as shape. " +
                             "Expected: " + shape.length + " but was " + chunks.length + " !");
         }
+
+        for (int i = 0; i < chunks.length; i++) {
+            int chunkDim = chunks[i];
+            if(chunkDim<1) {
+                chunks[i] = shape[i];
+            }
+        }
+
         return new Params(shape, chunks, dataType, byteOrder, fillValue, compressor);
     }
 
