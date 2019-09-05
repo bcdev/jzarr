@@ -256,5 +256,5 @@ Partly reading writing
 JZarr ZarrArrays enable a subset of data items to be extracted or updated in an array without
 loading the entire array into memory.
 
-see tutoral_persistent_arrays_
+see :ref:`Persistent arrays <tutoral_persistent_arrays>`
 
