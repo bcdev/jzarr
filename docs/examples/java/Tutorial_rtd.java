@@ -154,6 +154,6 @@ public class Tutorial_rtd {
 
         Map<String, Object> attributes = group.getAttributes();
 
-        createOutput(out -> out.println(ZarrUtils.toJson(attributes)));
+        createOutput(out -> out.println(ZarrUtils.toJson(attributes, true)));
     }
 }

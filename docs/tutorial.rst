@@ -229,6 +229,6 @@ storing application-specific metadata. For example:
   :end-before: createOutput
   :dedent: 8
 
-You can easily print out the attributes content using :code:`System.out.println(ZarrUtils.toJson(attributes));`
+You can easily print out the attributes content using :code:`System.out.println(ZarrUtils.toJson(attributes, true));`
 
 .. literalinclude:: ./examples/output/Tutorial_rtd_example_6.txt
