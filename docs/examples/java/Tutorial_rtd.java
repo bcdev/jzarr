@@ -1,6 +1,7 @@
 import com.bc.zarr.*;
 import com.bc.zarr.storage.InMemoryStore;
 import org.nd4j.linalg.api.buffer.DataBuffer;
+import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import ucar.ma2.InvalidRangeException;
 import utils.OutputHelper;
@@ -185,10 +186,12 @@ public class Tutorial_rtd {
         arr.write(value, shape, offset);
 
         // read entire array data
-        int[] data = (int[]) arr.read();
+        short[] data = (short[]) arr.read();
 
+        // wrap the data and create output
         createOutput(out -> {
-            DataBuffer buffer = Nd4j.createBuffer(data);
+            DataBuffer buffer = Nd4j.createBuffer(arrayShape, org.nd4j.linalg.api.buffer.DataType.SHORT);
+            buffer.setData(data);
             out.println(Nd4j.create(buffer).reshape('c', arrayShape));
         });
     }
