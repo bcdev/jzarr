@@ -1,5 +1,4 @@
 import com.bc.zarr.*;
-import com.bc.zarr.storage.InMemoryStore;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.factory.Nd4j;
 import ucar.ma2.InvalidRangeException;
@@ -111,7 +110,7 @@ public class Tutorial_rtd {
     /**
      * Create an array with an user defined compressor.
      */
-    public static void example_4() throws IOException, InvalidRangeException {
+    public static void example_4() throws IOException {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .shape(243, 324, 742)  // three or more dimensions
                 .compressor(CompressorFactory.create("zlib", 8)) // 8 : compression level
@@ -119,15 +118,15 @@ public class Tutorial_rtd {
     }
 
     /**
-     * Create a groups
+     * Create a group
      */
-    public static void example_5() throws IOException, InvalidRangeException {
+    public static void example_5() throws IOException {
         ZarrGroup root = ZarrGroup.create();          // creates an in memory group
         ZarrGroup foo = root.createSubGroup("foo");
         ZarrGroup bar = foo.createSubGroup("bar");
-        ZarrArray z1 = bar.createArray("baz", new ArrayParams()
+        ZarrArray array = bar.createArray("baz", new ArrayParams()
                 .shape(1000, 1000).chunks(100, 100).dataType(DataType.i4)
         );
-        createOutput(out -> out.println(z1));
+        createOutput(out -> out.println(array));
     }
 }

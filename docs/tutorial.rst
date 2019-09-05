@@ -196,4 +196,22 @@ Groups
 JZarr supports hierarchical organization of arrays via groups. As with arrays, groups can be stored in memory, on disk,
 or via other storage systems that support a similar interface.
 
-To create a group, use the zarr.group() function:
+To create a group, use the suitable static ZarrGruup.create() method.
+
+In the following example you can see:
+
+- how to create a group
+- how to create sub groups
+- how to create arrays within a group
+
+.. highlight:: java
+
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 5 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_5
+  :end-before: createOutput
+  :dedent: 8
+
+A :code:`System.out.println(array);` then creates the following output
+
+.. literalinclude:: ./examples/output/Tutorial_rtd_example_5.txt
