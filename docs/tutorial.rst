@@ -260,14 +260,19 @@ loading the entire array into memory.
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 7 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: void example_7
-  :end-before: });
+  :end-after: });
   :dedent: 8
 
-The output shows the data written with the given shape to the offset position.
+The output shows the data is written with the given shape to the offset position.
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :start-after: example_7_output_start
    :end-before: __output_end__
 
-Already used in example above. See `Persistent arrays`_
+Partly read and write is also used in examples above. See `Persistent arrays`_
+
+Chunk size an shape
+-------------------
+In general, chunks of at least 1 megabyte (1M) uncompressed size seem to provide good performance,
+at least when using compression too.
 
