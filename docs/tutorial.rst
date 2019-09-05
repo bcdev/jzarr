@@ -179,11 +179,11 @@ Currently not implemented.
 
 Compressors
 -----------
-A number of different compressors can be used with JZarr.
-Different compressors can be provided via the compressor keyword argument accepted by all array creation functions. For example:
+A number of different compressors can be used with JZarr. Different compressors can be provided
+via the compressor keyword argument accepted by all array creation functions. For example:
 
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
-  :start-after: example_4
+  :start-after: void example_4
   :end-before: }
   :dedent: 8
 
