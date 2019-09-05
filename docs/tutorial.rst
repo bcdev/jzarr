@@ -258,5 +258,5 @@ loading the entire array into memory.
 
 see :ref:`Persistent arrays <tutoral_persistent_arrays>`
 
-see `Persistent arrays <tutoral_persistent_arrays>`_
+see `Persistent arrays`_
 
