@@ -171,14 +171,22 @@ public class Tutorial_rtd {
     }
 
     public static void example_7() throws IOException, InvalidRangeException {
-        int height = 20;
-        int width = 10;
+        // create an array
+        int height = 10;
+        int width = 6;
         int[] arrayShape = {height, width};
-        ZarrArray arr = ZarrArray.create(new ArrayParams().shape(arrayShape).dataType(DataType.i4));
-        int[] shape = {14, 6};
-        int[] offset = {3, 2};
-        arr.write(333, shape, offset);
+        ZarrArray arr = ZarrArray.create(new ArrayParams()
+                .shape(arrayShape).dataType(DataType.i2));
+
+        // write a data part (value 33) to the offset position with the given shape
+        int value = 33;
+        int[] shape = {6, 4};   // the shape for the data to be written
+        int[] offset = {2, 1};  // y direction offset: 2   x direction offset: 1
+        arr.write(value, shape, offset);
+
+        // read entire array data
         int[] data = (int[]) arr.read();
+
         createOutput(out -> {
             DataBuffer buffer = Nd4j.createBuffer(data);
             out.println(Nd4j.create(buffer).reshape('c', arrayShape));
