@@ -53,6 +53,7 @@ JZarr has several functions for creating arrays. For example:
 A :code:`System.out.println(array);` then creates the following output
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
    :start-after: example_1_output_start
    :end-before: __output_end__
 
@@ -110,6 +111,7 @@ Print out the data read.
 Creates the following output
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
    :start-after: example_2_output_start
    :end-before: __output_end__
 
@@ -170,6 +172,7 @@ Then we can reopen the array and read the data
 Which now looks like:
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
    :start-after: example_3_output_start
    :end-before: __output_end__
 
@@ -222,6 +225,7 @@ In the following example you can see:
 A :code:`System.out.println(array);` then creates the following output
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
    :start-after: example_5_output_start
    :end-before: __output_end__
 
@@ -241,6 +245,7 @@ storing application-specific metadata. For example:
 You can easily print out the attributes content using :code:`System.out.println(ZarrUtils.toJson(attributes, true));`
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
    :start-after: example_6_output_start
    :end-before: __output_end__
 
@@ -266,6 +271,7 @@ loading the entire array into memory.
 The output shows the data is written with the given shape to the offset position.
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
    :start-after: example_7_output_start
    :end-before: __output_end__
 
@@ -291,6 +297,7 @@ dimenson. If you know you want to chunk across an entire dimension you can use :
 The output shows the automatically replaced :code:`0` with full size of the first dimension.
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
    :start-after: example_8_output_start
    :end-before: __output_end__
 
@@ -303,8 +310,10 @@ Alternatively, if you only ever take slices along the second dimension, then chu
   :end-before: createOutput
   :dedent: 8
 
+The output shows the automatically replaced :code:`0` with full size of the second dimension.
+
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
-   :caption: The output shows the automatically replaced :code:`0` with full size of the second dimension.
+   :caption: output
    :start-after: example_9_output_start
    :end-before: __output_end__
 
@@ -330,5 +339,5 @@ on simple heuristics and may be far from optimal. E.g.:
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
-   :start-after: example_9_output_start
+   :start-after: example_11_output_start
    :end-before: __output_end__

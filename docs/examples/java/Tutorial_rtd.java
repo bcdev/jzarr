@@ -226,6 +226,7 @@ public class Tutorial_rtd {
                 .shape(6200, 7500).chunked(true)
         );
         int[] chunks1 = zarray.getChunks();
+
         // array creation without chunked(true) leads to the same result, because true is the
         // default value for the parameter chunked
         zarray = ZarrArray.create(new ArrayParams()
