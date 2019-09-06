@@ -193,7 +193,7 @@ public class Tutorial_rtd {
      */
     private static void example_8() throws IOException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
-                .shape(8888, 7777).chunks(100, 0).dataType(DataType.i4)
+                .shape(8888, 7777).chunks(100, 0)
         );
         int[] chunks = zarray.getChunks();
         createOutput(out -> {
@@ -206,11 +206,35 @@ public class Tutorial_rtd {
      */
     private static void example_9() throws IOException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
-                .shape(8888, 7777).chunks(100, 0).dataType(DataType.i4)
+                .shape(8888, 7777).chunks(100, 0)
         );
         int[] chunks = zarray.getChunks();
         createOutput(out -> {
             out.println(Arrays.toString(chunks));
+        });
+    }
+
+    private static void example_10() throws IOException {
+        ZarrArray zarray = ZarrArray.create(new ArrayParams()
+                .shape(10000, 10000).chunks(1000, 1000)
+        );
+    }
+
+    private static void example_11() throws IOException {
+        ZarrArray zarray;
+        zarray = ZarrArray.create(new ArrayParams()
+                .shape(6200, 7500).chunked(true)
+        );
+        int[] chunks1 = zarray.getChunks();
+        // array creation without chunked(true) leads to the same result, because true is the
+        // default value for the parameter chunked
+        zarray = ZarrArray.create(new ArrayParams()
+                .shape(6200, 7500)
+        );
+        int[] chunks2 = zarray.getChunks();
+        createOutput(out -> {
+            out.println("chunks1 = " + Arrays.toString(chunks1));
+            out.println("chunks2 = " + Arrays.toString(chunks2));
         });
     }
 
@@ -224,6 +248,8 @@ public class Tutorial_rtd {
         example_7();
         example_8();
         example_9();
+        example_10();
+        example_11();
     }
 }
 

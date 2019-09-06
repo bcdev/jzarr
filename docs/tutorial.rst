@@ -44,7 +44,7 @@ JZarr has several functions for creating arrays. For example:
 
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 1 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
-  :start-after: void example_1
+  :start-after: void example_1(
   :end-before: createOutput
   :dedent: 8
 
@@ -183,7 +183,7 @@ A number of different compressors can be used with JZarr. Different compressors 
 via the compressor keyword argument accepted by all array creation functions. For example:
 
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
-  :start-after: void example_4
+  :start-after: void example_4(
   :end-before: }
   :dedent: 8
 
@@ -215,7 +215,7 @@ In the following example you can see:
 
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 5 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
-  :start-after: void example_5
+  :start-after: void example_5(
   :end-before: createOutput
   :dedent: 8
 
@@ -234,7 +234,7 @@ storing application-specific metadata. For example:
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 6 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
-  :start-after: void example_6
+  :start-after: void example_6(
   :end-before: createOutput
   :dedent: 8
 
@@ -259,7 +259,7 @@ loading the entire array into memory.
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 7 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
-  :start-after: void example_7
+  :start-after: void example_7(
   :end-before: ///
   :dedent: 8
 
@@ -284,7 +284,7 @@ dimenson. If you know you want to chunk across an entire dimension you can use :
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 8 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
-  :start-after: void example_8
+  :start-after: void example_8(
   :end-before: createOutput
   :dedent: 8
 
@@ -299,12 +299,36 @@ Alternatively, if you only ever take slices along the second dimension, then chu
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 9 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
-  :start-after: void example_9
+  :start-after: void example_9(
   :end-before: createOutput
   :dedent: 8
 
-The output shows the automatically replaced :code:`0` with full size of the second dimension.
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: The output shows the automatically replaced :code:`0` with full size of the second dimension.
+   :start-after: example_9_output_start
+   :end-before: __output_end__
+
+If you require reasonable performance for both access patterns then you need to find a compromise, e.g.:
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 10 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_10(
+  :end-before: createOutput
+  :dedent: 8
+
+If you are feeling lazy, you can let Zarr guess a chunk shape for your data by providing
+chunks=True, although please note that the algorithm for guessing a chunk shape is based
+on simple heuristics and may be far from optimal. E.g.:
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 11 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_11(
+  :end-before: createOutput
+  :dedent: 8
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
    :start-after: example_9_output_start
    :end-before: __output_end__
