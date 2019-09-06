@@ -1,8 +1,47 @@
 package com.bc.zarr;
 
+import com.bc.zarr.storage.Store;
+
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.Map;
 
+/**
+ * The class ArrayParams implements the Builder pattern. It is used on java side to imitate the pythonic default
+ * value feature for function arguments. So the recognition factor for users who are familiar with the python zarr
+ * framework should by high. E.g.: <br/>
+ * <br/>
+ * Python example:
+ * <pre>
+ *    za = zarr.create(
+ *        shape=(12, 10000, 5000),
+ *        chunks=(12, 200, 200),
+ *        dtype='>u4',
+ *        compressor=Zlib(level=1),
+ *        fill_value=-1)
+ * </pre>
+ * Java example:
+ * <pre>
+ *    ZarrArray za = ZarrArray.create(new ArrayParams()
+ *         .shape(12, 10000, 5000)
+ *         .chunks(12, 200, 200)
+ *         .dataType(DataType.u4)
+ *         .byteOrder(ByteOrder.BIG_ENDIAN)
+ *         .compressor(CompressorFactory.create("zlib", 1))
+ *         .fillValue(-1)
+ *    );
+ * </pre>
+ * Shape must be given!<br/>
+ * <br/>
+ * If not given ... parameter default values are:
+ * <pre>
+ *   boolean chunked = true;
+ *   DataType dataType = {@link DataType#f8};
+ *   ByteOrder byteOrder = {@link ByteOrder#BIG_ENDIAN};
+ *   Number fillValue = 0;
+ *   Compressor compressor = {@link CompressorFactory#create CompressorFactory.create("zlib", 1)};
+ * </pre>
+ */
 public class ArrayParams {
     private int[] shape;
     private int[] chunks;
@@ -13,7 +52,7 @@ public class ArrayParams {
     private Compressor compressor = CompressorFactory.create("zlib", 1);
 
     /**
-     * Sets the {@code shape} and returns a reference to this Builder so that the methods can be chained together.
+     * Sets the mandatory {@code shape} and returns a reference to this Builder so that the methods can be chained together.
      *
      * @param shape the {@code shape} to set
      * @return a reference to this Builder
@@ -24,9 +63,10 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the {@code chunks} and returns a reference to this Builder so that the methods can be chained together.
+     * Sets the optional {@code chunks} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * The number of dimensions must be equal to the number of dimensions of the shape.
      *
-     * @param chunks the {@code chunks} to set
+     * @param chunks the {@code chunks} to set.
      * @return a reference to this Builder
      */
     public ArrayParams chunks(int... chunks) {
@@ -35,7 +75,10 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the {@code chunked} and returns a reference to this Builder so that the methods can be chained together.
+     * Sets the optional {@code chunked} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * If no chunks is given and chunked is true, chunks will be calculated using an heuristic algorithm.<br/>
+     * If chunked is false und no chunks are set, only one chunk with the full array shape will be created.<br/>
+     * Default value: <code>true</code>
      *
      * @param chunked the {@code chunked} to set
      * @return a reference to this Builder
@@ -46,7 +89,8 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the {@code dataType} and returns a reference to this Builder so that the methods can be chained together.
+     * Sets the optional {@code dataType} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * Default value: {@link DataType#f8}
      *
      * @param dataType the {@code dataType} to set
      * @return a reference to this Builder
@@ -57,7 +101,8 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the {@code byteOrder} and returns a reference to this Builder so that the methods can be chained together.
+     * Sets the optional {@code byteOrder} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * Default value: {@link ByteOrder#BIG_ENDIAN}
      *
      * @param byteOrder the {@code byteOrder} to set
      * @return a reference to this Builder
@@ -68,7 +113,8 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the {@code fillValue} and returns a reference to this Builder so that the methods can be chained together.
+     * Sets the optional {@code fillValue} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * Default value: {@code 0}
      *
      * @param fillValue the {@code fillValue} to set
      * @return a reference to this Builder
@@ -79,7 +125,8 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the {@code compressor} and returns a reference to this Builder so that the methods can be chained together.
+     * Sets the optional {@code compressor} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * Default value: {@link CompressorFactory#create(String, int) CompressorFactory.create("zlib", 1)}
      *
      * @param compressor the {@code compressor} to set
      * @return a reference to this Builder
@@ -90,11 +137,13 @@ public class ArrayParams {
     }
 
     /**
-     * Returns a {@code ArrayParameters} built from the parameters previously set.
+     * Returns {@link Params} built from the parameters previously set.<br/>
+     * This method is package local and should  be used by framework itself only.<br/>
+     * It is used by {@link ZarrArray#create(ZarrPath, Store, ArrayParams, Map)}
      *
-     * @return a {@code ArrayParameters} built with parameters of this {@code ArrayParameters.Builder}
+     * @return {@link Params}
      */
-    public Params build() {
+    Params build() {
         if (shape == null || shape.length == 0) {
             throw new IllegalArgumentException("Shape must be given.");
         }
@@ -137,7 +186,7 @@ public class ArrayParams {
     }
 
     /**
-     * {@code ArrayParameters} builder static inner class.
+     * {@link ArrayParams} builder static inner class.
      */
     public static final class Params {
         private final int[] shape;

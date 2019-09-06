@@ -1,4 +1,5 @@
 import com.bc.zarr.*;
+import com.bc.zarr.storage.FileSystemStore;
 import com.bc.zarr.storage.InMemoryStore;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.factory.Nd4j;
@@ -7,6 +8,7 @@ import utils.OutputHelper;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -112,7 +114,7 @@ public class Tutorial_rtd {
         Compressor nullComp = CompressorFactory.create("null", 0);  // means no compression e.g. for analysis purposes
 
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
-                .shape(243, 324, 742)  // one or more dimensions
+                .shape(222, 333, 44)  // one or more dimensions
                 .compressor(nullComp)  // if you need uncompressed chunks e.g. for analysis purposes
         );
     }
@@ -260,9 +262,8 @@ public class Tutorial_rtd {
      */
     private static void example_13() throws IOException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
-                .shape(6200, 7500)
-                .byteOrder(ByteOrder.BIG_ENDIAN)
-                // or .byteOrder(ByteOrder.LITTLE_ENDIAN)
+                        .shape(6200, 7500)
+                        .byteOrder(ByteOrder.BIG_ENDIAN)
         );
         createOutput(out -> out.println(zarray));
     }

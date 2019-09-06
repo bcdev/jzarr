@@ -373,12 +373,6 @@ To use either :code:`ByteOrder.BIG_ENDIAN` or :code:`ByteOrder.LITTLE_ENDIAN` la
   :end-before: createOutput
   :dedent: 8
 
-.. highlight:: none
-.. literalinclude:: ./examples/output/Tutorial_rtd.txt
-   :caption: output
-   :start-after: example_13_output_start
-   :end-before: __output_end__
-
 These two layouts may provide different compression ratios, depending on the correlation structure within
 the data. Changing the order of bytes within chunks of an array may improve the compression ratio, depending
 on the structure of the data, the compression algorithm/level is used.
