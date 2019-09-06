@@ -378,7 +378,44 @@ the data. Changing the order of bytes within chunks of an array may improve the 
 on the structure of the data, the compression algorithm/level is used.
 
 .. note::
-    If Byteorder is not set, the default Byte order :code:`ByteOrder.BIG_ENDIAN` will be used.
+    If Byte order is not set, the default Byte order :code:`ByteOrder.BIG_ENDIAN` will be used.
 
 Parallel computing and synchronisation
 --------------------------------------
+JZarr arrays have been designed for use as the source or sink for data in parallel computations.
+By data source we mean that multiple concurrent read operations may occur. By data sink we mean
+that multiple concurrent write operations may occur, with each writer updating a different array.
+JZarr arrays have not been designed for situations where multiple readers and writers
+are concurrently operating on the same array.
+
+Both multi-threaded and multi-process parallelism are possible. The bottleneck for most storage
+and retrieval operations is compression/decompression.
+
+When using a JZarr array as a data sink, some synchronization (locking) may be required to avoid
+data loss, depending on how data are being updated. If each worker in a parallel computation is
+writing to a separate region of the array, and if region boundaries are perfectly aligned with
+chunk boundaries, then no synchronization is required. However, if region and chunk boundaries
+are not perfectly aligned, then synchronization is required to avoid two workers attempting
+to modify the same chunk at the same time, which could result in data loss.
+
+To give a simple example, consider a 1-dimensional array of length 60, z, divided into three
+chunks of 20 elements each. If three workers are running and each attempts to write to a 20
+element region (i.e., offset {0}, offset {20} and offset {40}) then each worker will be writing to a
+separate chunk and no synchronization is required.
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 14 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_14(
+  :end-before: createOutput
+  :dedent: 8
+.. highlight:: none
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
+   :start-after: example_14_output_start
+   :end-before: __output_end__
+
+However, if two workers are running and
+each attempts to write to a 30 element region (i.e., z[0:30] and z[30:60]) then it is possible
+both workers will attempt to modify the middle chunk at the same time, and synchronization is
+required to prevent data loss.

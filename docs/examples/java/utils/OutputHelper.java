@@ -2,6 +2,7 @@ package utils;
 
 import com.sun.nio.file.ExtendedOpenOption;
 import org.jetbrains.annotations.NotNull;
+import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -98,6 +99,6 @@ public class OutputHelper {
     }
 
     public interface Writer {
-        void write(PrintStream out);
+        void write(PrintStream out) throws IOException;
     }
 }

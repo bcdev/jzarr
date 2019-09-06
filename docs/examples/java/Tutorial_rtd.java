@@ -1,3 +1,4 @@
+import com.amazonaws.services.s3.transfer.internal.TransferManagerUtils;
 import com.bc.zarr.*;
 import com.bc.zarr.storage.FileSystemStore;
 import com.bc.zarr.storage.InMemoryStore;
@@ -12,6 +13,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static utils.OutputHelper.createOutput;
 
@@ -262,10 +265,36 @@ public class Tutorial_rtd {
      */
     private static void example_13() throws IOException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
-                        .shape(6200, 7500)
-                        .byteOrder(ByteOrder.BIG_ENDIAN)
+                .shape(6200, 7500)
+                .byteOrder(ByteOrder.BIG_ENDIAN)
         );
         createOutput(out -> out.println(zarray));
+    }
+
+    /**
+     * Thread synchronizing example
+     */
+    private static void example_14() throws IOException, InvalidRangeException {
+        ZarrArray z = ZarrArray.create(new ArrayParams().shape(60).chunks(20).dataType(DataType.i4));
+
+        int[] dataShape = {20};
+
+        int[] data1 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
+        int[] data2 = {30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49};
+        int[] data3 = {50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69};
+
+        int[] offset1 = {0};
+        int[] offset2 = {20};
+        int[] offset3 = {40};
+
+        z.write(data1, dataShape, offset1);
+        z.write(data2, dataShape, offset2);
+        z.write(data3, dataShape, offset3);
+
+        int[] data = (int[]) z.read();
+        createOutput(out -> {
+            out.println(Arrays.toString(data));
+        });
     }
 
     public static void main(String[] args) throws IOException, InvalidRangeException {
@@ -282,6 +311,7 @@ public class Tutorial_rtd {
         example_11();
         example_12();
         example_13();
+        example_14();
     }
 }
 
