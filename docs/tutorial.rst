@@ -327,7 +327,7 @@ If you require reasonable performance for both access patterns then you need to 
   :dedent: 8
 
 If you are feeling lazy, you can let JZarr guess a chunk shape for your data by providing
-chunked(True) E.g.:
+:code:`chunked(True)` E.g.:
 
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
@@ -344,8 +344,8 @@ chunked(True) E.g.:
 .. note::
     the algorithm for guessing a chunk shape is based on simple heuristics and may be far from optimal.
 
-If you know you are always going to be loading the entire array into memory, you can turn off chunks by providing
-chunked(false), in which case there will be one single chunk for the array:
+If you know you are always going to be loading the entire array into memory, you can turn off chunks by
+providing :code:`chunked(false)`, in which case there will be one single chunk for the array:
 
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
