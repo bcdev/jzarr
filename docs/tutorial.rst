@@ -276,3 +276,20 @@ Chunk size an shape
 In general, chunks of at least 1 megabyte (1M) uncompressed size seem to provide good performance,
 at least when using compression too.
 
+The optimal chunk shape will depend on how you want to access the data. E.g., for a 2-dimensional
+array, if you only ever take slices along the first dimension, then chunk across the second
+dimenson. If you know you want to chunk across an entire dimension you can use :code:`0` or
+:code:`negative value` within the chunks argument, e.g.:
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 8 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_8
+  :end-before: createOutput
+  :dedent: 8
+
+The output shows the data is written with the given shape to the offset position.
+
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :start-after: example_8_output_start
+   :end-before: __output_end__

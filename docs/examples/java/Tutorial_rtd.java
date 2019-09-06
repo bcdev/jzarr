@@ -1,13 +1,12 @@
 import com.bc.zarr.*;
 import com.bc.zarr.storage.InMemoryStore;
 import org.nd4j.linalg.api.buffer.DataBuffer;
-import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import ucar.ma2.InvalidRangeException;
 import utils.OutputHelper;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +22,7 @@ public class Tutorial_rtd {
         example_5();
         example_6();
         example_7();
+        example_8();
     }
 
     /**
@@ -195,6 +195,16 @@ public class Tutorial_rtd {
             out.println(Nd4j.create(buffer).reshape('c', arrayShape));
         });
         ///
+    }
+
+    private static void example_8() throws IOException {
+        ZarrArray zarray = ZarrArray.create(new ArrayParams()
+                .shape(10000, 10000).chunks(100, 0).dataType(DataType.i4)
+        );
+        int[] chunks = zarray.getChunks();
+        createOutput(out -> {
+            out.println(Arrays.toString(chunks));
+        });
     }
 }
 
