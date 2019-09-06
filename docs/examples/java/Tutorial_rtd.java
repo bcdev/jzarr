@@ -199,7 +199,7 @@ public class Tutorial_rtd {
 
     private static void example_8() throws IOException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
-                .shape(10000, 10000).chunks(100, 0).dataType(DataType.i4)
+                .shape(8888, 7777).chunks(100, 0).dataType(DataType.i4)
         );
         int[] chunks = zarray.getChunks();
         createOutput(out -> {

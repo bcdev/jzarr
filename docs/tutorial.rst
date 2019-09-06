@@ -288,7 +288,7 @@ dimenson. If you know you want to chunk across an entire dimension you can use :
   :end-before: createOutput
   :dedent: 8
 
-The output shows the data is written with the given shape to the offset position.
+The output shows the automatically replaced :code:`0` with full size of this dimension.
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :start-after: example_8_output_start
