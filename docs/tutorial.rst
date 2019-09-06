@@ -176,15 +176,18 @@ Currently not implemented.
 Compressors
 -----------
 A number of different compressors can be used with JZarr. Different compressors can be provided
-via the compressor keyword argument accepted by all array creation functions. For example:
+via the compressor parameter e.g.:
 
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 4 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: void example_4(
   :end-before: }
   :dedent: 8
 
 .. note::
-   In this very beginning phase we only implemented the `zlib` compressor.
+   In this very beginning phase we only implemented the **"zlib"** compressor and a **"null"** compressor.
+   If no compressor is set at array creation time, a **"zlib"** compressor with :code:`level 1` is used as
+   default compressor.
    More compressors will be implemented in the future.
    
    Additionally, in the future, developers should be able to register their own Compressors in the CompressorFactory.

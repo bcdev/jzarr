@@ -107,9 +107,13 @@ public class Tutorial_rtd {
      * Create an array with an user defined compressor.
      */
     private static void example_4() throws IOException {
+        // Currently available compressors
+        Compressor zlibComp = CompressorFactory.create("zlib", 8);  // 8 = compression level .. valid values 0 .. 9
+        Compressor nullComp = CompressorFactory.create("null", 0);  // means no compression e.g. for analysis purposes
+
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
-                .shape(243, 324, 742)  // three or more dimensions
-                .compressor(CompressorFactory.create("zlib", 8)) // 8 : compression level
+                .shape(243, 324, 742)  // one or more dimensions
+                .compressor(nullComp)  // if you need uncompressed chunks e.g. for analysis purposes
         );
     }
 
