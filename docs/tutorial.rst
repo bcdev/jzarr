@@ -41,17 +41,16 @@ Creating an array
 JZarr has several functions for creating arrays. For example:
 
 .. highlight:: java
-
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 1 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: void example_1(
   :end-before: createOutput
   :dedent: 8
 
-.. highlight:: none
 
 A :code:`System.out.println(array);` then creates the following output
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_1_output_start
@@ -71,7 +70,6 @@ This example shows how to write and read a region to an array.
 Creates an array with size [5 rows, 7 columns], with data type :code:`int` and with a fill value of :code:`-9999`.
 
 .. highlight:: java
-
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 2 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: example 2 code snippet 1 begin
@@ -106,10 +104,9 @@ Print out the data read.
   :end-before: example 2 code snippet 5 end
   :dedent: 8
 
-.. highlight:: none
-
 Creates the following output
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_2_output_start
@@ -130,7 +127,6 @@ in main memory. JZarr arrays can also be stored on a file system, enabling persi
 between sessions. For example:
 
 .. highlight:: java
-
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 3 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: example 3 code snippet 1 begin
@@ -143,13 +139,11 @@ directory called ‘docs/examples/output/example_3.zarr’ relative to the curre
 The created zarr header file `.zarray <https://github.com/bcdev/jzarr/blob/master/docs/examples/output/example_3.zarr/.zarray>`_ written in JSON format.
 
 .. highlight:: json
-
 .. literalinclude:: ./examples/output/example_3.zarr/.zarray
 
 Write some data to the created persistent array.
 
 .. highlight:: java
-
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 3 code snippet 2 begin
   :end-before: example 3 code snippet 2 end
@@ -167,10 +161,9 @@ Then we can reopen the array and read the data
   :end-before: example 3 code snippet 3 end
   :dedent: 8
 
-.. highlight:: none
-
 Which now looks like:
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_3_output_start
@@ -215,7 +208,6 @@ In the following example you can see:
 - how to create arrays within a group
 
 .. highlight:: java
-
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 5 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: void example_5(
@@ -224,6 +216,7 @@ In the following example you can see:
 
 A :code:`System.out.println(array);` then creates the following output
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_5_output_start
@@ -244,6 +237,7 @@ storing application-specific metadata. For example:
 
 You can easily print out the attributes content using :code:`System.out.println(ZarrUtils.toJson(attributes, true));`
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_6_output_start
@@ -270,6 +264,7 @@ loading the entire array into memory.
 
 The output shows the data is written with the given shape to the offset position.
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_7_output_start
@@ -296,6 +291,7 @@ dimenson. If you know you want to chunk across an entire dimension you can use :
 
 The output shows the automatically replaced :code:`0` with full size of the first dimension.
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_8_output_start
@@ -312,6 +308,7 @@ Alternatively, if you only ever take slices along the second dimension, then chu
 
 The output shows the automatically replaced :code:`0` with full size of the second dimension.
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_9_output_start
@@ -336,6 +333,7 @@ If you are feeling lazy, you can let JZarr guess a chunk shape for your data by 
   :end-before: createOutput
   :dedent: 8
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_11_output_start
@@ -354,6 +352,7 @@ providing :code:`chunked(false)`, in which case there will be one single chunk f
   :end-before: createOutput
   :dedent: 8
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_12_output_start
@@ -371,6 +370,7 @@ To use either :code:`ByteOrder.BIG_ENDIAN` or :code:`ByteOrder.LITTLE_ENDIAN` la
   :end-before: createOutput
   :dedent: 8
 
+.. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_13_output_start
