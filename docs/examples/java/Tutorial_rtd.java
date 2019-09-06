@@ -14,17 +14,6 @@ import static utils.OutputHelper.createOutput;
 
 public class Tutorial_rtd {
 
-    public static void main(String[] args) throws IOException, InvalidRangeException {
-        example_1();
-        example_2();
-        example_3();
-        example_4();
-        example_5();
-        example_6();
-        example_7();
-        example_8();
-    }
-
     /**
      * Creates a 2-dimensional array of 32-bit integers with 10000 rows and 10000 columns, divided into
      * chunks where each chunk has 1000 rows and 1000 columns (and so there will be 100 chunks in total).
@@ -90,7 +79,7 @@ public class Tutorial_rtd {
     /**
      * Creates an array in a local file store.
      */
-    public static void example_3() throws IOException, InvalidRangeException {
+    private static void example_3() throws IOException, InvalidRangeException {
         // example 3 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
         ZarrArray created = ZarrArray.create("docs/examples/output/example_3.zarr", new ArrayParams()
                 .shape(1000, 1000).chunks(250, 250).dataType(DataType.i4).fillValue(-9999)
@@ -107,7 +96,6 @@ public class Tutorial_rtd {
         final int[] data = (int[]) opened.read(redShape, new int[]{20, 21});
         // example 3 code snippet 3 end
 
-
         createOutput(out -> {
             DataBuffer buffer = Nd4j.createBuffer(data);
             out.println(Nd4j.create(buffer).reshape('c', redShape));
@@ -117,7 +105,7 @@ public class Tutorial_rtd {
     /**
      * Create an array with an user defined compressor.
      */
-    public static void example_4() throws IOException {
+    private static void example_4() throws IOException {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .shape(243, 324, 742)  // three or more dimensions
                 .compressor(CompressorFactory.create("zlib", 8)) // 8 : compression level
@@ -125,9 +113,9 @@ public class Tutorial_rtd {
     }
 
     /**
-     * Create a group
+     * Create a group and sub groups and an array in a subgroup
      */
-    public static void example_5() throws IOException {
+    private static void example_5() throws IOException {
         ZarrGroup root = ZarrGroup.create();          // creates an in memory group
         ZarrGroup foo = root.createSubGroup("foo");
         ZarrGroup bar = foo.createSubGroup("bar");
@@ -140,7 +128,7 @@ public class Tutorial_rtd {
     /**
      * Example to demonstrate how to work with user attributes
      */
-    public static void example_6() throws IOException {
+    private static void example_6() throws IOException {
         Map<String, Object> attrs;
         Map<String, Object> attributes;
         ZarrGroup group;
@@ -171,7 +159,10 @@ public class Tutorial_rtd {
         createOutput(out -> out.println(ZarrUtils.toJson(attributes, true)));
     }
 
-    public static void example_7() throws IOException, InvalidRangeException {
+    /**
+     * Example for partly modify data without loading the entire array
+     */
+    private static void example_7() throws IOException, InvalidRangeException {
         // create an array
         int height = 10;
         int width = 6;
@@ -197,6 +188,9 @@ public class Tutorial_rtd {
         ///
     }
 
+    /**
+     * Example prevent chunking at first dimension
+     */
     private static void example_8() throws IOException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
                 .shape(8888, 7777).chunks(100, 0).dataType(DataType.i4)
@@ -205,6 +199,31 @@ public class Tutorial_rtd {
         createOutput(out -> {
             out.println(Arrays.toString(chunks));
         });
+    }
+
+    /**
+     * Example prevent chunking at second dimension
+     */
+    private static void example_9() throws IOException {
+        ZarrArray zarray = ZarrArray.create(new ArrayParams()
+                .shape(8888, 7777).chunks(100, 0).dataType(DataType.i4)
+        );
+        int[] chunks = zarray.getChunks();
+        createOutput(out -> {
+            out.println(Arrays.toString(chunks));
+        });
+    }
+
+    public static void main(String[] args) throws IOException, InvalidRangeException {
+        example_1();
+        example_2();
+        example_3();
+        example_4();
+        example_5();
+        example_6();
+        example_7();
+        example_8();
+        example_9();
     }
 }
 

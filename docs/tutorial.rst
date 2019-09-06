@@ -288,8 +288,23 @@ dimenson. If you know you want to chunk across an entire dimension you can use :
   :end-before: createOutput
   :dedent: 8
 
-The output shows the automatically replaced :code:`0` with full size of this dimension.
+The output shows the automatically replaced :code:`0` with full size of the first dimension.
 
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :start-after: example_8_output_start
+   :end-before: __output_end__
+
+Alternatively, if you only ever take slices along the second dimension, then chunk across the first dimension, e.g.:
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 9 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_9
+  :end-before: createOutput
+  :dedent: 8
+
+The output shows the automatically replaced :code:`0` with full size of the second dimension.
+
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :start-after: example_9_output_start
    :end-before: __output_end__
