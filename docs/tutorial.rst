@@ -377,5 +377,8 @@ These two layouts may provide different compression ratios, depending on the cor
 the data. Changing the order of bytes within chunks of an array may improve the compression ratio, depending
 on the structure of the data, the compression algorithm/level is used.
 
+.. note::
+    If Byteorder is not set, the default Byte order :code:`ByteOrder.BIG_ENDIAN` will be used.
+
 Parallel computing and synchronisation
 --------------------------------------
