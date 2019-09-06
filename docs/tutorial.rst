@@ -326,9 +326,8 @@ If you require reasonable performance for both access patterns then you need to 
   :end-before: createOutput
   :dedent: 8
 
-If you are feeling lazy, you can let Zarr guess a chunk shape for your data by providing
-chunks=True, although please note that the algorithm for guessing a chunk shape is based
-on simple heuristics and may be far from optimal. E.g.:
+If you are feeling lazy, you can let JZarr guess a chunk shape for your data by providing
+chunked(True) E.g.:
 
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
@@ -340,4 +339,22 @@ on simple heuristics and may be far from optimal. E.g.:
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
    :caption: output
    :start-after: example_11_output_start
+   :end-before: __output_end__
+
+.. note::
+    the algorithm for guessing a chunk shape is based on simple heuristics and may be far from optimal.
+
+If you know you are always going to be loading the entire array into memory, you can turn off chunks by providing
+chunked(false), in which case there will be one single chunk for the array:
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 12 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_12(
+  :end-before: createOutput
+  :dedent: 8
+
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
+   :start-after: example_12_output_start
    :end-before: __output_end__

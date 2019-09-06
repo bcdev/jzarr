@@ -239,6 +239,17 @@ public class Tutorial_rtd {
         });
     }
 
+    /**
+     * array creation with disabled chunking
+     */
+    private static void example_12() throws IOException {
+        ZarrArray zarray = ZarrArray.create(new ArrayParams()
+                .shape(6200, 7500).chunked(false)
+        );
+        int[] chunks = zarray.getChunks();
+        createOutput(out -> out.println("chunks = " + Arrays.toString(chunks)));
+    }
+
     public static void main(String[] args) throws IOException, InvalidRangeException {
         example_1();
         example_2();
@@ -251,6 +262,7 @@ public class Tutorial_rtd {
         example_9();
         example_10();
         example_11();
+        example_12();
     }
 }
 
