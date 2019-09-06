@@ -415,6 +415,18 @@ separate chunk and no synchronization is required.
    :start-after: example_14_output_start
    :end-before: __output_end__
 
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 15 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_15(
+  :end-before: createOutput
+  :dedent: 8
+.. highlight:: none
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
+   :start-after: example_15_output_start
+   :end-before: __output_end__
+
 However, if two workers are running and
 each attempts to write to a 30 element region (i.e., z[0:30] and z[30:60]) then it is possible
 both workers will attempt to modify the middle chunk at the same time, and synchronization is
