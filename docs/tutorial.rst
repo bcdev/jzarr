@@ -342,7 +342,7 @@ If you are feeling lazy, you can let JZarr guess a chunk shape for your data by 
    :end-before: __output_end__
 
 .. note::
-    the algorithm for guessing a chunk shape is based on simple heuristics and may be far from optimal.
+    The algorithm for guessing a chunk shape is based on simple heuristics and may be far from optimal.
 
 If you know you are always going to be loading the entire array into memory, you can turn off chunks by
 providing :code:`chunked(false)`, in which case there will be one single chunk for the array:
@@ -358,3 +358,27 @@ providing :code:`chunked(false)`, in which case there will be one single chunk f
    :caption: output
    :start-after: example_12_output_start
    :end-before: __output_end__
+
+Chunk memory layout
+-------------------
+The order of bytes within chunks of an array can be changed via the :code:`byteOrder()` parameter.
+To use either :code:`ByteOrder.BIG_ENDIAN` or :code:`ByteOrder.LITTLE_ENDIAN` layout. E.g.:
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :caption: `example 13 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
+  :start-after: void example_13(
+  :end-before: createOutput
+  :dedent: 8
+
+.. literalinclude:: ./examples/output/Tutorial_rtd.txt
+   :caption: output
+   :start-after: example_13_output_start
+   :end-before: __output_end__
+
+These two layouts may provide different compression ratios, depending on the correlation structure within
+the data. Changing the order of bytes within chunks of an array may improve the compression ratio, depending
+on the structure of the data, the compression algorithm/level is used.
+
+Parallel computing and synchronisation
+--------------------------------------

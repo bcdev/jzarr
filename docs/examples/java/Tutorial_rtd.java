@@ -6,6 +6,7 @@ import ucar.ma2.InvalidRangeException;
 import utils.OutputHelper;
 
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -250,6 +251,18 @@ public class Tutorial_rtd {
         createOutput(out -> out.println("chunks = " + Arrays.toString(chunks)));
     }
 
+    /**
+     * Byte order example
+     */
+    private static void example_13() throws IOException {
+        ZarrArray zarray = ZarrArray.create(new ArrayParams()
+                .shape(6200, 7500)
+                .byteOrder(ByteOrder.BIG_ENDIAN)
+                // or .byteOrder(ByteOrder.LITTLE_ENDIAN)
+        );
+        createOutput(out -> out.println(zarray));
+    }
+
     public static void main(String[] args) throws IOException, InvalidRangeException {
         example_1();
         example_2();
@@ -263,6 +276,7 @@ public class Tutorial_rtd {
         example_10();
         example_11();
         example_12();
+        example_13();
     }
 }
 

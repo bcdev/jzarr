@@ -84,3 +84,9 @@ example_12__output_end__
 
 =====================================================================================
 
+example_13_output_start
+com.bc.zarr.ZarrArray{'/' shape=[6200, 7500], chunks=[477, 500], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+example_13__output_end__
+
+=====================================================================================
+
