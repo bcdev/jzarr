@@ -382,19 +382,16 @@ on the structure of the data, the compression algorithm/level is used.
 
 Parallel computing and synchronisation
 --------------------------------------
-JZarr arrays have been designed for use as the source or sink for data in parallel computations.
+Basically zarr arrays have been designed for use as the source or sink for data in parallel computations.
 By data source we mean that multiple concurrent read operations may occur. By data sink we mean
 that multiple concurrent write operations may occur, with each writer updating a different array.
 
-JZarr is thread save. This means, that if multiple write operations occur on the same array on
-the same chunk concurrently from different threads, this works without data loss.
+Additionally JZarr is thread save in cases if multiple write operations occur on the same array on
+the same chunk concurrently from within different threads. This works without data loss.
 
-JZarr is not process save. This means, that if multiple write operations occur on the same array on
-the same chunk concurrently from different processes, this can lead to data loss.
-
+Currently JZarr is not process save. This means, that if multiple write operations occur on the
+same array on the same chunk concurrently from within different processes, this can lead to data loss.
 Process synchronizing will be implemented in the future too.
-
-Then both multi-threaded and multi-process parallelism should be possible.
 
 When using a JZarr array as a data sink, some synchronization (locking) may be required to avoid
 data loss, depending on how data are being updated.
