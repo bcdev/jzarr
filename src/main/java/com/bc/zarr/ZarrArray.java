@@ -180,15 +180,15 @@ public class ZarrArray {
             final String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
             final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
             final int[] fromBufferPos = computeFrom(chunkIndex, offset, false);
-            if (partialCopyingIsNotNeeded(dataShape, fromBufferPos)) {
-                _chunkReaderWriter.write(chunkFilePath.storeKey, source);
-            } else {
-                synchronized (_locks) {
-                    if (!_locks.containsKey(chunkFilename)) {
-                        _locks.put(chunkFilename, chunkFilename);
-                    }
+            synchronized (_locks) {
+                if (!_locks.containsKey(chunkFilename)) {
+                    _locks.put(chunkFilename, chunkFilename);
                 }
-                synchronized (_locks.get(chunkFilename)) {
+            }
+            synchronized (_locks.get(chunkFilename)) {
+                if (partialCopyingIsNotNeeded(dataShape, fromBufferPos)) {
+                    _chunkReaderWriter.write(chunkFilePath.storeKey, source);
+                } else {
                     final Array targetChunk = _chunkReaderWriter.read(chunkFilePath.storeKey);
                     PartialDataCopier.copy(fromBufferPos, source, targetChunk);
                     _chunkReaderWriter.write(chunkFilePath.storeKey, targetChunk);
@@ -240,16 +240,16 @@ public class ZarrArray {
         }
     }
 
-    boolean partialCopyingIsNotNeeded(int[] bufferShape, int[] position) {
-        return isZeroOffset(position) && isBufferShapeEqualChunkShape(bufferShape);
+    boolean partialCopyingIsNotNeeded(int[] bufferShape, int[] offset) {
+        return isZeroOffset(offset) && isBufferShapeEqualChunkShape(bufferShape);
     }
 
     boolean isBufferShapeEqualChunkShape(int[] bufferShape) {
         return Arrays.equals(bufferShape, _chunks);
     }
 
-    boolean isZeroOffset(int[] position) {
-        return Arrays.equals(position, new int[position.length]);
+    boolean isZeroOffset(int[] offset) {
+        return Arrays.equals(offset, new int[offset.length]);
     }
 
     public void writeAttributes(Map<String, Object> attributes) throws IOException {

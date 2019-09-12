@@ -385,22 +385,29 @@ Parallel computing and synchronisation
 JZarr arrays have been designed for use as the source or sink for data in parallel computations.
 By data source we mean that multiple concurrent read operations may occur. By data sink we mean
 that multiple concurrent write operations may occur, with each writer updating a different array.
-JZarr arrays have not been designed for situations where multiple readers and writers
-are concurrently operating on the same array.
 
-Both multi-threaded and multi-process parallelism are possible. The bottleneck for most storage
-and retrieval operations is compression/decompression.
+JZarr is thread save. This means, that if multiple write operations occur on the same array on
+the same chunk concurrently from different threads, this works without data loss.
+
+JZarr is not process save. This means, that if multiple write operations occur on the same array on
+the same chunk concurrently from different processes, this can lead to data loss.
+
+Process synchronizing will be implemented in the future too.
+
+Then both multi-threaded and multi-process parallelism should be possible.
 
 When using a JZarr array as a data sink, some synchronization (locking) may be required to avoid
-data loss, depending on how data are being updated. If each worker in a parallel computation is
-writing to a separate region of the array, and if region boundaries are perfectly aligned with
-chunk boundaries, then no synchronization is required. However, if region and chunk boundaries
-are not perfectly aligned, then synchronization is required to avoid two workers attempting
-to modify the same chunk at the same time, which could result in data loss.
+data loss, depending on how data are being updated.
 
-To give a simple example, consider a 1-dimensional array of length 60, z, divided into three
-chunks of 20 elements each. If three workers are running and each attempts to write to a 20
-element region (i.e., offset {0}, offset {20} and offset {40}) then each worker will be writing to a
+If each worker in a parallel computation is writing to a separate region of the array, and if
+region boundaries are perfectly aligned with chunk boundaries, then no synchronization is required.
+However, if region and chunk boundaries are not perfectly aligned, then synchronization is required
+to avoid two workers attempting to modify the same chunk at the same time, which could result in
+data loss.
+
+To give a simple example, consider a 1-dimensional array of length 30, z, divided into three
+chunks of 10 elements each. If three worker processes are running and each attempts to write to a 10
+element region (i.e., offset {0}, offset {10} and offset {20}) then each worker will be writing to a
 separate chunk and no synchronization is required.
 
 .. highlight:: java
@@ -415,19 +422,3 @@ separate chunk and no synchronization is required.
    :start-after: example_14_output_start
    :end-before: __output_end__
 
-.. highlight:: java
-.. literalinclude:: ./examples/java/Tutorial_rtd.java
-  :caption: `example 15 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
-  :start-after: void example_15(
-  :end-before: createOutput
-  :dedent: 8
-.. highlight:: none
-.. literalinclude:: ./examples/output/Tutorial_rtd.txt
-   :caption: output
-   :start-after: example_15_output_start
-   :end-before: __output_end__
-
-However, if two workers are running and
-each attempts to write to a 30 element region (i.e., z[0:30] and z[30:60]) then it is possible
-both workers will attempt to modify the middle chunk at the same time, and synchronization is
-required to prevent data loss.

@@ -1,6 +1,4 @@
-import com.amazonaws.services.s3.transfer.internal.TransferManagerUtils;
 import com.bc.zarr.*;
-import com.bc.zarr.storage.FileSystemStore;
 import com.bc.zarr.storage.InMemoryStore;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.factory.Nd4j;
@@ -9,12 +7,11 @@ import utils.OutputHelper;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 
 import static utils.OutputHelper.createOutput;
 
@@ -275,21 +272,21 @@ public class Tutorial_rtd {
      * Thread synchronizing example
      */
     private static void example_14() throws IOException, InvalidRangeException {
-        ZarrArray z = ZarrArray.create(new ArrayParams().shape(60).chunks(20).dataType(DataType.i4));
+        ZarrArray z = ZarrArray.create(new ArrayParams().shape(30).chunks(10).dataType(DataType.i4));
 
-        int[] dataShape = {20};
+        int[] writeDataShape = {10};
 
-        int[] data1 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
-        int[] data2 = {30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49};
-        int[] data3 = {50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69};
+        int[] data1 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
+        int[] data2 = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
+        int[] data3 = {30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
 
         int[] offset1 = {0};
-        int[] offset2 = {20};
-        int[] offset3 = {40};
+        int[] offset2 = {10};
+        int[] offset3 = {20};
 
-        z.write(data1, dataShape, offset1);
-        z.write(data2, dataShape, offset2);
-        z.write(data3, dataShape, offset3);
+        z.write(data1, writeDataShape, offset1);
+        z.write(data2, writeDataShape, offset2);
+        z.write(data3, writeDataShape, offset3);
 
         int[] data = (int[]) z.read();
         createOutput(out -> {
@@ -300,27 +297,52 @@ public class Tutorial_rtd {
     /**
      * Thread synchronizing example
      */
-    private static void example_15() throws IOException, InvalidRangeException {
-        ZarrArray z = ZarrArray.create(new ArrayParams().shape(60).chunks(20).dataType(DataType.i4));
+    private static void example_15() throws IOException, InvalidRangeException, InterruptedException {
+        ZarrArray z = ZarrArray.create(new ArrayParams().shape(30).chunks(10).dataType(DataType.i4));
 
-        int[] dataShape = {30};
+        int[] dataShape = {15};
 
-        int[] data1 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
-        int[] data2 = {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69};
+        int[] data1 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24};
+        int[] data2 = {25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
 
         int[] offset1 = {0};
-        int[] offset2 = {30};
+        int[] offset2 = {15};
 
-        z.write(data1, dataShape, offset1);
-        z.write(data2, dataShape, offset2);
-
+        // If this two write operations are executed concurrently instead of sequentially
+        // this can lead to a data loss
+        VoidCallable task1 = new VoidCallable(() -> z.write(data1, dataShape, offset1));
+        VoidCallable task2 = new VoidCallable(() -> z.write(data2, dataShape, offset2));
+        ExecutorService es = Executors.newFixedThreadPool(2);
+        es.submit(task1);
+        es.submit(task2);
+        es.shutdown();
+        es.awaitTermination(500, TimeUnit.MILLISECONDS);
         int[] data = (int[]) z.read();
         createOutput(out -> {
             out.println(Arrays.toString(data));
         });
     }
 
-    public static void main(String[] args) throws IOException, InvalidRangeException {
+    static class VoidCallable implements Callable {
+        final Void _void;
+
+        VoidCallable(Void aVoid) {
+            _void = aVoid;
+        }
+
+        @Override
+        public Object call() throws Exception {
+            _void.call();
+            return null;
+        }
+
+        interface Void {
+            void call() throws Exception;
+        }
+    }
+
+
+    public static void main(String[] args) throws IOException, InvalidRangeException, InterruptedException {
         example_1();
         example_2();
         example_3();
