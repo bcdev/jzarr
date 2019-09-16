@@ -1,9 +1,5 @@
 package utils;
 
-import com.sun.nio.file.ExtendedOpenOption;
-import org.jetbrains.annotations.NotNull;
-import ucar.ma2.InvalidRangeException;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -80,7 +76,6 @@ public class OutputHelper {
         }
     }
 
-    @NotNull
     private static String createOutputFilename() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         final StackTraceElement element = stackTrace[3];
@@ -91,7 +86,6 @@ public class OutputHelper {
         return className + ".txt";
     }
 
-    @NotNull
     private static String getOutputMethodName() {
         final StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         final StackTraceElement element = stackTrace[3];
