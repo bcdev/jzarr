@@ -78,9 +78,9 @@ public class ZarrArray {
             final ZarrHeader.CompressorBean compressorBean = header.getCompressor();
             final Compressor compressor;
             if (compressorBean != null) {
-                final String compId = compressorBean.getId();
-                final int compLevel = compressorBean.getLevel();
-                compressor = compressorBean != null ? CompressorFactory.create(compId, compLevel) : nullCompressor;
+                final String id = compressorBean.getId();
+                final int level = compressorBean.getLevel();
+                compressor = CompressorFactory.create(id, level);
             } else {
                 compressor = nullCompressor;
             }
@@ -240,15 +240,15 @@ public class ZarrArray {
         }
     }
 
-    boolean partialCopyingIsNotNeeded(int[] bufferShape, int[] offset) {
+    private boolean partialCopyingIsNotNeeded(int[] bufferShape, int[] offset) {
         return isZeroOffset(offset) && isBufferShapeEqualChunkShape(bufferShape);
     }
 
-    boolean isBufferShapeEqualChunkShape(int[] bufferShape) {
+    private boolean isBufferShapeEqualChunkShape(int[] bufferShape) {
         return Arrays.equals(bufferShape, _chunks);
     }
 
-    boolean isZeroOffset(int[] offset) {
+    private boolean isZeroOffset(int[] offset) {
         return Arrays.equals(offset, new int[offset.length]);
     }
 
@@ -289,7 +289,7 @@ public class ZarrArray {
         return from;
     }
 
-    void writeZArrayHeader() throws IOException {
+    private void writeZArrayHeader() throws IOException {
         final ZarrHeader zarrHeader = new ZarrHeader(_shape, _chunks, _dataType.toString(), _byteOrder, _fillValue, _compressor);
         final ZarrPath zArray = relativePath.resolve(FILENAME_DOT_ZARRAY);
         try (

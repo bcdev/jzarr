@@ -34,8 +34,6 @@ public class PartialDataCopier {
      * @param offset - the displacement between source and target
      * @param source - the source array
      * @param target - the target array
-     * @return
-     * @throws InvalidRangeException
      */
     public static void copy(int[] offset, Array source, Array target) throws InvalidRangeException {
 

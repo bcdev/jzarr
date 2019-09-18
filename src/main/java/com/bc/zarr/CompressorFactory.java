@@ -45,7 +45,6 @@ public class CompressorFactory {
     }
 
     private static class ZlibCompressor extends Compressor {
-        private final String id = "zlib";
         private final int level;
 
         private ZlibCompressor(int level) {
@@ -54,7 +53,7 @@ public class CompressorFactory {
 
         @Override
         public String getId() {
-            return id;
+            return "zlib";
         }
 
         @Override

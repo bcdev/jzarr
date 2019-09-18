@@ -17,14 +17,11 @@
 package com.bc.zarr;
 
 import com.bc.zarr.storage.Store;
-import com.bc.zarr.ucar.NetCDF_Util;
 import com.google.gson.*;
-import com.google.gson.stream.JsonWriter;
 import ucar.ma2.Array;
 import ucar.ma2.MAMath;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -44,11 +41,11 @@ public final class ZarrUtils {
         return getGson(prettyPrinting).toJson(src);
     }
 
-    public static void toJson(Object o, Writer writer) throws IOException {
+    public static void toJson(Object o, Writer writer) {
         toJson(o, writer, false);
     }
 
-    public static void toJson(Object o, Appendable writer, boolean prettyPrinting) throws IOException {
+    public static void toJson(Object o, Appendable writer, boolean prettyPrinting) {
         getGson(prettyPrinting).toJson(o, writer);
     }
 
@@ -113,17 +110,6 @@ public final class ZarrUtils {
             count *= i;
         }
         return count;
-    }
-
-    private static Writer getWriter(JsonWriter jsonWriter) {
-        try {
-            final Field outField = jsonWriter.getClass().getDeclaredField("out");
-            outField.setAccessible(true);
-            return (Writer) outField.get(jsonWriter);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private static Gson getGson(boolean prettyPrinting) {
