@@ -24,8 +24,11 @@ with your s3 properties.
 .. literalinclude:: ./examples/resources/s3-template.properties
   :caption: `example properties <https://github.com/bcdev/jzarr/blob/master/docs/examples/resources/s3-template.properties>`_
 
+Below you can see code snippets for **connecting**, **writing** and **reading** to and from an s3 bucket.
+You can find the entire example code here: `S3Array_nio.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
 
-
+connect s3
+----------
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example for connecting the s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
@@ -33,6 +36,8 @@ with your s3 properties.
   :end-before: throw new
   :dedent: 8
 
+write to s3
+-----------
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example writing to an s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
@@ -40,6 +45,8 @@ with your s3 properties.
   :end-before: } ///
   :dedent: 8
 
+read from s3
+------------
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example reading from an s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
