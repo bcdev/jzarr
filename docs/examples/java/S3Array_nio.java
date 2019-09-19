@@ -22,30 +22,6 @@ public class S3Array_nio {
         readFromS3Bucket(groupPath);
     }
 
-    private static void readFromS3Bucket(Path groupPath) throws IOException, InvalidRangeException {
-        final ZarrGroup zarrGroup = ZarrGroup.open(groupPath);
-        final Set<String> arrayKeys = zarrGroup.getArrayKeys();
-        System.out.println("Array names:");
-        for (String arrayKey : arrayKeys) {
-            System.out.println("   : " + arrayKey);
-            ZarrArray array = zarrGroup.openArray(arrayKey);
-            byte[] bytes = (byte[]) array.read();
-            System.out.println("   : values = " + Arrays.toString(bytes));
-        }
-    }
-
-    private static void writeToS3Bucket(Path groupPath) throws IOException, InvalidRangeException {
-        ZarrGroup zgroup = ZarrGroup.create(groupPath);
-        ArrayParams arrayParams = new ArrayParams()
-                .shape(40, 30)
-                .dataType(DataType.i1)
-                // In this example data will be written without compression.
-                // So you can display the chunk file content in your amazon s3 console.
-                .compressor(CompressorFactory.nullCompressor);
-        ZarrArray a42 = zgroup.createArray("AnArray", arrayParams);
-        a42.write(42);
-    }
-
     private static Path getS3BucketNioPath() throws IOException {
         final Properties properties = new Properties();
         try (InputStream stream = S3Array_nio.class.getResourceAsStream("s3.properties")) {
@@ -66,5 +42,29 @@ public class S3Array_nio {
             }
         }
         throw new IllegalStateException("Bucket '" + s3BucketName + "' not available.");
+    }
+
+    private static void writeToS3Bucket(Path groupPath) throws IOException, InvalidRangeException {
+        ZarrGroup zgroup = ZarrGroup.create(groupPath);
+        ArrayParams arrayParams = new ArrayParams()
+                .shape(40, 30)
+                .dataType(DataType.i1)
+                // In this example data will be written without compression.
+                // So you can display the chunk file content in your amazon s3 console.
+                .compressor(CompressorFactory.nullCompressor);
+        ZarrArray a42 = zgroup.createArray("AnArray", arrayParams);
+        a42.write(42);
+    }
+
+    private static void readFromS3Bucket(Path groupPath) throws IOException, InvalidRangeException {
+        final ZarrGroup zarrGroup = ZarrGroup.open(groupPath);
+        final Set<String> arrayKeys = zarrGroup.getArrayKeys();
+        System.out.println("Array names:");
+        for (String arrayKey : arrayKeys) {
+            System.out.println("   : " + arrayKey);
+            ZarrArray array = zarrGroup.openArray(arrayKey);
+            byte[] bytes = (byte[]) array.read();
+            System.out.println("   : values = " + Arrays.toString(bytes));
+        }
     }
 }
