@@ -4,7 +4,7 @@ How to write/read to/from an amazon S3 bucket
 =============================================
 In general JZarr can work with :code:`java.nio.file.Path` objects. So if someone extends the abstract :code:`java.nio.file.FileSystem`
 (see `FileSystem <https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html>`_) to connect an AWS S3 bucket
-this can be used to read and write directly to such buckets.
+this can be used to read from and write directly to such buckets.
 
 In our example we use the `Amazon-S3-FileSystem-NIO2 <https://github.com/lasersonlab/Amazon-S3-FileSystem-NIO2>`_
 library which is forked several times by other implementors.
