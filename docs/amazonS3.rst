@@ -30,19 +30,22 @@ with your s3 properties.
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example for connecting the s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
   :start-after: Path getS3BucketNioPath(
-  :end-before: } ///
+  :end-before: throw new
+  :dedent: 8
 
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example writing to an s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
   :start-after: void writeToS3Bucket(
   :end-before: } ///
+  :dedent: 8
 
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example reading from an s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
   :start-after: void readFromS3Bucket(
   :end-before: } ///
+  :dedent: 8
 
 
 
