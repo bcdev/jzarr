@@ -17,14 +17,14 @@ If you want to try the following example, add this maven dependency to your pom:
      <version>2.2.3</version>
  </dependency>
 
-Also therefor the example works fine, you need a :code:`s3.properties` file filled
+Also in order for the example to work fine, you need a :code:`s3.properties` file filled
 with your s3 properties.
 
 .. highlight:: properties
 .. literalinclude:: ./examples/resources/s3-template.properties
   :caption: `example properties <https://github.com/bcdev/jzarr/blob/master/docs/examples/resources/s3-template.properties>`_
 
-Below you can see code snippets for **connecting**, **writing** and **reading** to and from an s3 bucket.
+Below you can see code snippets for **connecting** with, **writing** to and **reading** from an s3 bucket.
 You can find the entire example code here: `S3Array_nio.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
 
 connect an s3 bucket
