@@ -42,7 +42,7 @@ public class S3Array_nio {
             }
         }
         throw new IllegalStateException("Bucket '" + s3BucketName + "' not available.");
-    }
+    } /// end
 
     private static void writeToS3Bucket(Path groupPath) throws IOException, InvalidRangeException {
         ZarrGroup zgroup = ZarrGroup.create(groupPath);
@@ -54,7 +54,7 @@ public class S3Array_nio {
                 .compressor(CompressorFactory.nullCompressor);
         ZarrArray a42 = zgroup.createArray("AnArray", arrayParams);
         a42.write(42);
-    }
+    } /// end
 
     private static void readFromS3Bucket(Path groupPath) throws IOException, InvalidRangeException {
         final ZarrGroup zarrGroup = ZarrGroup.open(groupPath);
@@ -66,5 +66,5 @@ public class S3Array_nio {
             byte[] bytes = (byte[]) array.read();
             System.out.println("   : values = " + Arrays.toString(bytes));
         }
-    }
+    } /// end
 }

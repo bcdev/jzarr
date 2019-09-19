@@ -29,6 +29,21 @@ with your s3 properties.
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example S3Array_nio <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
+  :start-after: Path getS3BucketNioPath(
+  :end-before: } ///
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/S3Array_nio.java
+  :caption: `code example S3Array_nio <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
+  :start-after: void writeToS3Bucket(
+  :end-before: } ///
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/S3Array_nio.java
+  :caption: `code example S3Array_nio <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
+  :start-after: void readFromS3Bucket(
+  :end-before: } ///
+
 
 
 
