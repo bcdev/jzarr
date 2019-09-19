@@ -1,7 +1,7 @@
 .. _amazonS3:
 
-How to write/read to/from an amazon S3 bucket
-=============================================
+How to use JZarr with AWS S3
+============================
 In general JZarr can work with :code:`java.nio.file.Path` objects. So if someone extends the abstract :code:`java.nio.file.FileSystem`
 (see `FileSystem <https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html>`_) to connect an AWS S3 bucket
 this can be used to read from and write directly to such buckets.
