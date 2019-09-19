@@ -6,7 +6,7 @@ In general Jzarr can work with :code:`java.nio.file.Path` objects. So if someone
 (see `FileSystem <https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html>`_) to connect an AWS S3 bucket
 this can be used to read and write directly to such buckets.
 
-In our example we use the `Amazon-S3-FileSystem-NIO2 <https://github.com/Upplication/Amazon-S3-FileSystem-NIO2>`_
+In our example we use the `Amazon-S3-FileSystem-NIO2 <https://github.com/lasersonlab/Amazon-S3-FileSystem-NIO2>`_
 library which is forked several times by other implementors.
 
 If you want to try the following example, add this maven dependency to your pom::
