@@ -1,7 +1,7 @@
 .. _amazonS3:
 
-How to write to an amazon S3 bucket
-===================================
+How to write/read to/from an amazon S3 bucket
+=============================================
 In general Jzarr can work with :code:`java.nio.file.Path` objects. So if someone extends the abstract :code:`java.nio.file.FileSystem`
 (see `FileSystem <https://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html>`_) to connect an AWS S3 bucket
 this can be used to read and write directly to such buckets.
@@ -27,8 +27,8 @@ with your s3 properties.
 Below you can see code snippets for **connecting**, **writing** and **reading** to and from an s3 bucket.
 You can find the entire example code here: `S3Array_nio.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
 
-connect s3
-----------
+connect an s3 bucket
+--------------------
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example for connecting the s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
@@ -36,8 +36,8 @@ connect s3
   :end-before: throw new
   :dedent: 8
 
-write to s3
------------
+write to an s3 bucket
+---------------------
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example writing to an s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
@@ -45,8 +45,8 @@ write to s3
   :end-before: } ///
   :dedent: 8
 
-read from s3
-------------
+read from an s3 bucket
+----------------------
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example reading from an s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
