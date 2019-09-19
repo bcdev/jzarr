@@ -7,7 +7,7 @@ import java.net.URI;
 import java.nio.file.*;
 import java.util.*;
 
-public class S3Array_WithUpplication {
+public class S3Array_nio {
 
     private static final String S3FS_SERVER = "s3fs_server";
     private static final String S3FS_BUCKET_NAME = "s3fs_bucket_name";
@@ -15,7 +15,7 @@ public class S3Array_WithUpplication {
     public static void main(String[] args) throws IOException, InvalidRangeException {
         Path bucketNioPath = getS3BucketNioPath();
 
-        Path groupPath = bucketNioPath.resolve("GroupName2.zarr");
+        Path groupPath = bucketNioPath.resolve("GroupName.zarr");
 
         writeToS3Bucket(groupPath);
 
@@ -48,7 +48,7 @@ public class S3Array_WithUpplication {
 
     private static Path getS3BucketNioPath() throws IOException {
         final Properties properties = new Properties();
-        try (InputStream stream = S3Array_WithUpplication.class.getResourceAsStream("s3.properties")) {
+        try (InputStream stream = S3Array_nio.class.getResourceAsStream("s3.properties")) {
             properties.load(stream);
         }
 

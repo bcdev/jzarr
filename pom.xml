@@ -67,40 +67,12 @@
 <!--            <scope>test</scope>-->
 <!--        </dependency>-->
 
-
-
-<!--        <dependency>-->
-<!--            <groupId>org.esa.snap</groupId>-->
-<!--            <artifactId>snap-virtual-file-system</artifactId>-->
-<!--            <version>8.0.0-SNAPSHOT</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>software.amazon.awssdk</groupId>-->
-<!--            <artifactId>aws-sdk-java</artifactId>-->
-<!--            <version>2.8.3</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>software.amazon.awssdk</groupId>-->
-<!--            <artifactId>aws-http-nio-client-netty</artifactId>-->
-<!--            <version>2.0.0-preview-1</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
         <dependency>
-            <groupId>com.upplication</groupId>
+            <groupId>org.lasersonlab</groupId>
             <artifactId>s3fs</artifactId>
-            <version>2.2.2</version>
+            <version>2.2.3</version>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.lasersonlab</groupId>-->
-<!--            <artifactId>s3fs</artifactId>-->
-<!--            <version>2.2.3</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
     </dependencies>
 
     <repositories>
