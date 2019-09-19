@@ -11,6 +11,7 @@ Contents
 
     intro
     tutorial
+    amazonS3
     api
     spec
     release
