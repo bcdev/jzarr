@@ -30,3 +30,5 @@ target/
 /jzarr.iws
 /src/test/java/temp/
 /docs/examples/resources/s3.properties
+/docs/examples/java/S3Array_nio_amazon.java
+/docs/examples/java/S3Array_nio_telecom_cloud.java

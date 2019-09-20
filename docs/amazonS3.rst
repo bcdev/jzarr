@@ -17,23 +17,17 @@ If you want to try the following example, add this maven dependency to your pom:
      <version>2.2.3</version>
  </dependency>
 
-Also in order for the example to work fine, you need a :code:`s3.properties` file filled
-with your s3 properties.
-
-.. highlight:: properties
-.. literalinclude:: ./examples/resources/s3-template.properties
-  :caption: `example properties <https://github.com/bcdev/jzarr/blob/master/docs/examples/resources/s3-template.properties>`_
-
 Below you can see code snippets for **connecting** with, **writing** to and **reading** from an s3 bucket.
 You can find the entire example code here: `S3Array_nio.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
 
 connect an s3 bucket
 --------------------
+Fill in your credentials.
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example for connecting the s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
-  :start-after: Path getS3BucketNioPath(
-  :end-before: throw new
+  :start-after: Path connectToS3Bucket()
+  :end-before: return bucketPath
   :dedent: 8
 
 write to an s3 bucket
@@ -54,6 +48,6 @@ read from an s3 bucket
   :end-before: } ///
   :dedent: 8
 
+The System.out should produce the following output::
 
-
-
+ [11, 12, 13, 14, 15, 16, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48]
