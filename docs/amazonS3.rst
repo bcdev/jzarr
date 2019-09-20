@@ -23,6 +23,7 @@ You can find the entire example code here: `S3Array_nio.java <https://github.com
 connect an s3 bucket
 --------------------
 Fill in your credentials.
+
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example for connecting the s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
