@@ -32,12 +32,10 @@ public class S3Array_nio {
     }
 
     static void writeToS3Bucket(Path bucketPath) throws IOException, InvalidRangeException {
-        // In this example data will be written without compression.
-        // So you can display the chunk file content in your amazon s3 console.
         Path groupPath = bucketPath.resolve("GroupName.zarr");
         ZarrGroup group = ZarrGroup.create(groupPath);
         ZarrArray array = group.createArray("AnArray", new ArrayParams()
-                .shape(4, 8).dataType(DataType.i1).compressor(CompressorFactory.nullCompressor));
+                .shape(4, 8).chunks(2, 4).dataType(DataType.i1).compressor(CompressorFactory.nullCompressor));
         byte[] data = {
                 11, 12, 13, 14, 15, 16, 17, 18,
                 21, 22, 23, 24, 25, 26, 27, 28,

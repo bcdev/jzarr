@@ -33,6 +33,9 @@ Fill in your credentials.
 
 write to an s3 bucket
 ---------------------
+In this example data will be written without compression. So you can check the chunk file content
+e.g. with an hex file viewer.
+
 .. highlight:: java
 .. literalinclude:: ./examples/java/S3Array_nio.java
   :caption: `code example writing to an s3 bucket <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/S3Array_nio.java>`_
