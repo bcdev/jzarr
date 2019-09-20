@@ -33,7 +33,7 @@ Fill in your credentials.
 
 write to an s3 bucket
 ---------------------
-In this example data will be written without compression. So you can check the chunk file content
+In this example data will be written without compression. So you can easily check the chunk file content
 e.g. with an hex file viewer.
 
 .. highlight:: java
