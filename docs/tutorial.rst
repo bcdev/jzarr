@@ -76,7 +76,7 @@ Creates an array with size [5 rows, 7 columns], with data type :code:`int` and w
   :end-before: example 2 code snippet 1 end
   :dedent: 8
 
-Prepare the data which should be written to the array with a shape of [3, 5] and an offset of [1, 1].
+Prepare the data which should be written to the array with a shape of [3, 5] and an offset of [2, 0].
 
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 2 code snippet 2 begin
@@ -113,7 +113,7 @@ Creates the following output
    :end-before: __output_end__
 
 
-The output displays that the data written before (written with an offset of [1, 1]) is surrounded by the fill value :code:`-9999`.
+The output displays that the previously written data (written with an offset of [2, 0]) is where we expect it to be. Other positions contain the previously defined fill value :code:`-9999`.
 
 .. note::
    `Nd4j <Nd4j>`_ is not part of the JZarr library. It is only used in this showcase to demonstrate how the data can be used.
