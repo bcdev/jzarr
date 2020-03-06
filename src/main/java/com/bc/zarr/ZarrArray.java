@@ -14,7 +14,7 @@ import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -27,7 +27,7 @@ public class ZarrArray {
     private final int[] _chunks;
     private final ZarrPath relativePath;
     private final ChunkReaderWriter _chunkReaderWriter;
-    private final Map<Object, Object> _locks;
+    private final Map<int[], String> _chunkFilenames;
     private final DataType _dataType;
     private final Number _fillValue;
     private final Compressor _compressor;
@@ -47,7 +47,7 @@ public class ZarrArray {
         }
         _store = store;
         _chunkReaderWriter = ChunkReaderWriter.create(_compressor, _dataType, order, _chunks, _fillValue, _store);
-        _locks = Collections.synchronizedMap(new TreeMap<>());
+        _chunkFilenames = new TreeMap<>(Comparator.comparingInt(o -> Arrays.hashCode((int[]) o)));
         _byteOrder = order;
     }
 
@@ -177,15 +177,10 @@ public class ZarrArray {
         final Array source = Array.factory(data).reshapeNoCopy(dataShape);
 
         for (int[] chunkIndex : chunkIndices) {
-            final String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
+            final String chunkFilename = getChunkFilename(chunkIndex);
             final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
             final int[] fromBufferPos = computeFrom(chunkIndex, offset, false);
-            synchronized (_locks) {
-                if (!_locks.containsKey(chunkFilename)) {
-                    _locks.put(chunkFilename, chunkFilename);
-                }
-            }
-            synchronized (_locks.get(chunkFilename)) {
+            synchronized (chunkFilename) {
                 if (partialCopyingIsNotNeeded(dataShape, fromBufferPos)) {
                     _chunkReaderWriter.write(chunkFilePath.storeKey, source);
                 } else {
@@ -227,7 +222,7 @@ public class ZarrArray {
         final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, bufferShape, offset);
 
         for (int[] chunkIndex : chunkIndices) {
-            final String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
+            final String chunkFilename = getChunkFilename(chunkIndex);
             final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
             final int[] fromChunkPos = computeFrom(chunkIndex, offset, true);
             final Array sourceChunk = _chunkReaderWriter.read(chunkFilePath.storeKey);
@@ -238,6 +233,15 @@ public class ZarrArray {
                 PartialDataCopier.copy(fromChunkPos, sourceChunk, target);
             }
         }
+    }
+
+    private synchronized String getChunkFilename(int[] chunkIndex) {
+        if (_chunkFilenames.containsKey(chunkIndex)) {
+            return _chunkFilenames.get(chunkIndex);
+        }
+        String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
+        _chunkFilenames.put(chunkIndex, chunkFilename);
+        return chunkFilename;
     }
 
     private boolean partialCopyingIsNotNeeded(int[] bufferShape, int[] offset) {
@@ -263,15 +267,15 @@ public class ZarrArray {
     @Override
     public String toString() {
         return getClass().getCanonicalName() + "{" +
-                "'/" + relativePath.storeKey + "' " +
-                "shape=" + Arrays.toString(_shape) +
-                ", chunks=" + Arrays.toString(_chunks) +
-                ", dataType=" + _dataType +
-                ", fillValue=" + _fillValue +
-                ", compressor=" + _compressor.getId() + "/level=" + _compressor.getLevel() +
-                ", store=" + _store.getClass().getSimpleName() +
-                ", byteOrder=" + _byteOrder +
-                '}';
+               "'/" + relativePath.storeKey + "' " +
+               "shape=" + Arrays.toString(_shape) +
+               ", chunks=" + Arrays.toString(_chunks) +
+               ", dataType=" + _dataType +
+               ", fillValue=" + _fillValue +
+               ", compressor=" + _compressor.getId() + "/level=" + _compressor.getLevel() +
+               ", store=" + _store.getClass().getSimpleName() +
+               ", byteOrder=" + _byteOrder +
+               '}';
     }
 
     private int[] computeFrom(int[] chunkIndex, int[] to, boolean read) {
