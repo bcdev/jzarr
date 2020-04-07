@@ -20,11 +20,6 @@
         <!-- # scope production # -->
         <!-- #################### -->
 
-<!--        <dependency>-->
-<!--            <groupId>edu.ucar</groupId>-->
-<!--            <artifactId>cdm</artifactId>-->
-<!--            <version>4.6.11</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>edu.ucar</groupId>
             <artifactId>netcdf</artifactId>
@@ -59,7 +54,6 @@
             <version>1.1</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-api</artifactId>
@@ -72,7 +66,6 @@
 <!--            <version>${nd4j.version}</version>-->
 <!--            <scope>test</scope>-->
 <!--        </dependency>-->
-
         <dependency>
             <groupId>org.lasersonlab</groupId>
             <artifactId>s3fs</artifactId>
@@ -80,14 +73,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>unidata-all</id>
-            <name>Unidata All</name>
-            <url>https://artifacts.unidata.ucar.edu/repository/unidata-all/</url>
-        </repository>
-    </repositories>
 
     <distributionManagement>
         <repository>
@@ -157,10 +142,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <!--                <configuration>-->
-                <!--                    <source>1.8</source>-->
-                <!--                    <target>1.8</target>-->
-                <!--                </configuration>-->
             </plugin>
         </plugins>
 
