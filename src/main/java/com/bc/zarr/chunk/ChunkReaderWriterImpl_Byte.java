@@ -55,7 +55,7 @@ public class ChunkReaderWriterImpl_Byte extends ChunkReaderWriter {
                 final ByteArrayInputStream is = new ByteArrayInputStream(bytes);
                 final OutputStream os = store.getOutputStream(storeKey)
         ) {
-            compressor.compress(is, os);
+            compressor.compress(is, os, DataType.BYTE, bytes.length);
         }
     }
 }

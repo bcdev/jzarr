@@ -22,6 +22,7 @@ import ucar.ma2.Array;
 import ucar.ma2.MAMath;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -47,6 +48,19 @@ public final class ZarrUtils {
 
     public static void toJson(Object o, Appendable writer, boolean prettyPrinting) {
         getGson(prettyPrinting).toJson(o, writer);
+    }
+
+    private static class CompressorBeanSerializer implements JsonSerializer<ZarrHeader.CompressorBean> {
+        @Override
+        public JsonElement serialize(ZarrHeader.CompressorBean compressorBean, Type type, JsonSerializationContext jsonSerializationContext) {
+            JsonObject jsonCompressor = new JsonObject();
+            jsonCompressor.addProperty("id", compressorBean.getId());
+            if (compressorBean.getId().equals("blosc"))
+                jsonCompressor.addProperty("clevel", compressorBean.getLevel());
+            else
+                jsonCompressor.addProperty("level", compressorBean.getLevel());
+            return jsonCompressor;
+        }
     }
 
     public static int[][] computeChunkIndices(int[] shape, int[] chunks, int[] bufferShape, int[] to) {
@@ -126,6 +140,7 @@ public final class ZarrUtils {
                     .serializeNulls()
                     .disableHtmlEscaping()
                     .serializeSpecialFloatingPointValues()
+                    .registerTypeAdapter(ZarrHeader.CompressorBean.class, new CompressorBeanSerializer())
                     .create();
         }
         return gson;

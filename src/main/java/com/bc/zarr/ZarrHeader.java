@@ -16,6 +16,8 @@
  */
 package com.bc.zarr;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.nio.ByteOrder;
 
 public class ZarrHeader {
@@ -94,6 +96,7 @@ public class ZarrHeader {
     public static class CompressorBean {
 
         private final String id;
+        @SerializedName(value = "level", alternate = "clevel")
         private final int level;
 
         public CompressorBean(String id, int level) {

@@ -39,4 +39,28 @@ public class ZarrHeaderTest_CompressorBean {
         assertThat(zarrHeader.getCompressor(), is(equalTo(compressorBean)));
     }
 
+    @Test
+    public void createJsonFromCompressorBean() {
+        final Compressor nullCompressor = CompressorFactory.create("null", 1);
+        final ZarrHeader nullZarrHeader = new ZarrHeader(new int[]{1001, 1002}, new int[]{101, 102}, DataType.f4.name(),null, 4.2, nullCompressor);
+
+        String nullJson = ZarrUtils.toJson(nullZarrHeader);
+        String expectedNullJson = "{\"chunks\":[101,102],\"compressor\":null,\"dtype\":\"<f4\",\"fill_value\":4.2,\"filters\":null,\"order\":\"C\",\"shape\":[1001,1002],\"zarr_format\":2}";
+        assertThat(nullJson, is(equalTo(expectedNullJson)));
+
+        final Compressor zlibCompressor = CompressorFactory.create("zlib", 1);
+        final ZarrHeader zlibZarrHeader = new ZarrHeader(new int[]{1001, 1002}, new int[]{101, 102}, DataType.f4.name(),null, 4.2, zlibCompressor);
+
+        String zlibJson = ZarrUtils.toJson(zlibZarrHeader);
+        String expectedZlibJson = "{\"chunks\":[101,102],\"compressor\":{\"id\":\"zlib\",\"level\":1},\"dtype\":\"<f4\",\"fill_value\":4.2,\"filters\":null,\"order\":\"C\",\"shape\":[1001,1002],\"zarr_format\":2}";
+        assertThat(zlibJson, is(equalTo(expectedZlibJson)));
+
+        final Compressor bloscCompressor = CompressorFactory.create("blosc", 1);
+        final ZarrHeader bloscZarrHeader = new ZarrHeader(new int[]{1001, 1002}, new int[]{101, 102}, DataType.f4.name(), null, Float.NaN, bloscCompressor);
+
+        String bloscJson = ZarrUtils.toJson(bloscZarrHeader);
+        String expectedBloscJson = "{\"chunks\":[101,102],\"compressor\":{\"id\":\"blosc\",\"clevel\":1},\"dtype\":\"<f4\",\"fill_value\":NaN,\"filters\":null,\"order\":\"C\",\"shape\":[1001,1002],\"zarr_format\":2}";
+        assertThat(bloscJson, is(equalTo(expectedBloscJson)));
+    }
+
 }

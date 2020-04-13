@@ -71,7 +71,7 @@ public class ChunkReaderWriterImpl_Float extends ChunkReaderWriter {
             iis.setByteOrder(order);
             iis.writeFloats(floats, 0, floats.length);
             iis.seek(0);
-            compressor.compress(is, os);
+            compressor.compress(is, os, DataType.FLOAT, floats.length);
         }
     }
 }

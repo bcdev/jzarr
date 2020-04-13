@@ -22,14 +22,20 @@
 
         <dependency>
             <groupId>edu.ucar</groupId>
-            <artifactId>netcdf</artifactId>
-            <version>4.3.22</version>
+            <artifactId>netcdf4</artifactId>
+            <version>4.6.14</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.lasersonlab</groupId>
+            <artifactId>jblosc</artifactId>
+            <version>1.0.1</version>
         </dependency>
 
         <!-- ############## -->
@@ -88,6 +94,14 @@
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>unidata-all</id>
+            <name>Unidata All</name>
+            <url>https://artifacts.unidata.ucar.edu/repository/unidata-all/</url>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>

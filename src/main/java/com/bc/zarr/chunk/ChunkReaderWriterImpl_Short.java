@@ -71,7 +71,7 @@ public class ChunkReaderWriterImpl_Short extends ChunkReaderWriter {
             iis.setByteOrder(order);
             iis.writeShorts(shorts, 0, shorts.length);
             iis.seek(0);
-            compressor.compress(is, os);
+            compressor.compress(is, os, DataType.SHORT, shorts.length);
         }
     }
 }

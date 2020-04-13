@@ -71,7 +71,7 @@ public class ChunkReaderWriterImpl_Double extends ChunkReaderWriter {
             iis.setByteOrder(order);
             iis.writeDoubles(doubles, 0, doubles.length);
             iis.seek(0);
-            compressor.compress(is, os);
+            compressor.compress(is, os, DataType.DOUBLE, doubles.length);
         }
     }
 }

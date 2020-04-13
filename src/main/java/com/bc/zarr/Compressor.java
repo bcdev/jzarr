@@ -10,7 +10,14 @@ public abstract class Compressor {
 
     public abstract int getLevel();
 
-    public abstract void compress(InputStream is, OutputStream os) throws IOException;
+    /**
+     * Compresses data from InputStream is and writes to OutputStream os. DataType and chunkSize are used only in case of Blosc compressor
+     * @param   is  InputStream from which uncompressed data is read
+     * @param   os  OutputStream where compressed data is written to
+     * @param   dataType    data type to determine its size, used only in case of Blosc compressor
+     * @param   chunkSize   number of elements in the chunk to be compressed, used only in case of Blosc compressor
+     */
+    public abstract void compress(InputStream is, OutputStream os, ucar.ma2.DataType dataType, int chunkSize) throws IOException;
 
     public abstract void uncompress(InputStream is, OutputStream os) throws IOException;
 

@@ -71,7 +71,7 @@ public class ChunkReaderWriterImpl_Integer extends ChunkReaderWriter {
             iis.setByteOrder(order);
             iis.writeInts(ints, 0, ints.length);
             iis.seek(0);
-            compressor.compress(is, os);
+            compressor.compress(is, os, DataType.INT, ints.length);
         }
     }
 }
