@@ -3,6 +3,7 @@ package com.bc.zarr.ucar;
 import org.junit.Before;
 import org.junit.Test;
 import ucar.ma2.Array;
+import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 
 import static org.hamcrest.Matchers.*;
@@ -15,17 +16,17 @@ public class PartialDataCopierTest_2D {
 
     @Before
     public void setUp() {
-        source = Array.factory(new int[]{
+        source = Array.factory(DataType.INT, new int[]{4,5}, new int[]{
                 0, 1, 2, 3, 4,
                 5, 6, 7, 8, 9,
                 10, 11, 12, 13, 14,
                 15, 16, 17, 18, 19
-        }).reshape(new int[]{4, 5});
+        });
 
-        chunk = Array.factory(new int[]{
+        chunk = Array.factory(DataType.INT, new int[]{2, 3}, new int[]{
                 40, 40, 40,
                 40, 40, 40
-        }).reshape(new int[]{2, 3});
+        });
     }
 
     @Test

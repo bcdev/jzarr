@@ -52,7 +52,7 @@ public class ChunkReaderWriterImpl_Short extends ChunkReaderWriter {
                         iis.setByteOrder(order);
                         iis.readFully(shorts, 0, shorts.length);
                     }
-                    return Array.factory(shorts).reshape(chunkShape);
+                    return Array.factory(DataType.SHORT, chunkShape, shorts);
                 }
             } else {
                 return createFilled(DataType.SHORT);

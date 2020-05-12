@@ -52,7 +52,7 @@ public class ChunkReaderWriterImpl_Integer extends ChunkReaderWriter {
                         iis.setByteOrder(order);
                         iis.readFully(ints, 0, ints.length);
                     }
-                    return Array.factory(ints).reshape(chunkShape);
+                    return Array.factory(DataType.INT, chunkShape, ints);
                 }
             } else {
                 return createFilled(DataType.INT);

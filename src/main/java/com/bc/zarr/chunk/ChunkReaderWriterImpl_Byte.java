@@ -40,7 +40,7 @@ public class ChunkReaderWriterImpl_Byte extends ChunkReaderWriter {
                 ) {
                     compressor.uncompress(is, os);
                     final byte[] b = os.toByteArray();
-                    return Array.factory(b).reshape(chunkShape);
+                    return Array.factory(DataType.BYTE, chunkShape, b);
                 }
             } else {
                 return createFilled(DataType.BYTE);

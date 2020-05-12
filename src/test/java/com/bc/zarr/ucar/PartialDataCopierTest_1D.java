@@ -2,6 +2,7 @@ package com.bc.zarr.ucar;
 
 import org.junit.Test;
 import ucar.ma2.Array;
+import ucar.ma2.DataType;
 import ucar.ma2.InvalidRangeException;
 
 import static org.hamcrest.Matchers.*;
@@ -67,6 +68,6 @@ public class PartialDataCopierTest_1D {
     }
 
     private Array createArray(int[] shape, int[] storage) {
-        return Array.factory(storage).reshape(shape);
+        return Array.factory(DataType.INT, shape, storage);
     }
 }

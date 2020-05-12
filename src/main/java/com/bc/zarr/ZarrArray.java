@@ -174,7 +174,8 @@ public class ZarrArray {
 
     public void write(Object data, int[] dataShape, int[] offset) throws IOException, InvalidRangeException {
         final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, dataShape, offset);
-        final Array source = Array.factory(data).reshapeNoCopy(dataShape);
+        ucar.ma2.DataType dataType = ucar.ma2.DataType.getType(data.getClass().getComponentType(), false);
+        final Array source = Array.factory(dataType, dataShape, data);
 
         for (int[] chunkIndex : chunkIndices) {
             final String chunkFilename = getChunkFilename(chunkIndex);

@@ -52,7 +52,7 @@ public class ChunkReaderWriterImpl_Float extends ChunkReaderWriter {
                         iis.setByteOrder(order);
                         iis.readFully(floats, 0, floats.length);
                     }
-                    return Array.factory(floats).reshape(chunkShape);
+                    return Array.factory(DataType.FLOAT, chunkShape, floats);
                 }
             } else {
                 return createFilled(DataType.FLOAT);

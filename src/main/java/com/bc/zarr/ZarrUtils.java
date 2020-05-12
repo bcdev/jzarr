@@ -174,7 +174,8 @@ public final class ZarrUtils {
 
     public static Object createDataBufferFilledWith(Number value, DataType dataType, int[] shape) {
         final Object dataBuffer = createDataBuffer(dataType, shape);
-        Array array = Array.factory(dataBuffer);
+        ucar.ma2.DataType aType = ucar.ma2.DataType.getType(dataBuffer.getClass().getComponentType(), false);
+        Array array = Array.factory(aType, shape, dataBuffer);
         MAMath.setDouble(array, value.doubleValue());
         return array.getStorage();
     }

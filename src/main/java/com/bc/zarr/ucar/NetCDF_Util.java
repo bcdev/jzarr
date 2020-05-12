@@ -34,7 +34,7 @@ public class NetCDF_Util {
     public static Array createArrayWithGivenStorage(Object storage, int[] shape) {
         final Class<?> aClass = storage.getClass();
         if (aClass.isArray()) {
-            return Array.factory(storage.getClass().getComponentType(), shape, storage);
+            return Array.factory(ucar.ma2.DataType.getType(aClass.getComponentType(), false), shape, storage);
         }
         return null;
     }

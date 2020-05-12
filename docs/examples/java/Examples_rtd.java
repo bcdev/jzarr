@@ -43,7 +43,7 @@ public class Examples_rtd {
         final float[] allData = new float[20];
         array.read(allData, array.getShape());
 
-        final float[][] floatArrays = (float[][]) Array.factory(allData).reshape(array.getShape()).copyToNDJavaArray();
+        final float[][] floatArrays = (float[][]) Array.factory(ucar.ma2.DataType.FLOAT, array.getShape(), allData).copyToNDJavaArray();
         for (float[] floats : floatArrays) {
             System.out.println(Arrays.toString(floats));
         }

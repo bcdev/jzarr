@@ -52,7 +52,7 @@ public class ChunkReaderWriterImpl_Double extends ChunkReaderWriter {
                         iis.setByteOrder(order);
                         iis.readFully(doubles, 0, doubles.length);
                     }
-                    return Array.factory(doubles).reshape(chunkShape);
+                    return Array.factory(DataType.DOUBLE, chunkShape, doubles);
                 }
             } else {
                 return createFilled(DataType.DOUBLE);

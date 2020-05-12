@@ -178,7 +178,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution
-        readerWriter.write(chunkStoreKey, Array.factory(bytes).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.BYTE, shape, bytes));
 
         final InputStream inputStream = Files.newInputStream(jimfsChunkPath);
         final byte[] buffer = new byte[100];
@@ -222,7 +222,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(bytes).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.BYTE, shape, bytes));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(6L)));
@@ -245,7 +245,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(bytes).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.BYTE, shape, bytes));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(14L)));
@@ -271,7 +271,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i2, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.SHORT, shape, input));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(12L)));
@@ -294,7 +294,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i2, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(shorts).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.SHORT, shape, shorts));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(20L)));
@@ -320,7 +320,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i4, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.INT, shape, input));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(24L)));
@@ -343,7 +343,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i4, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(ints).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.INT, shape, ints));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(26L)));
@@ -369,7 +369,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.FLOAT, shape, input));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(24L)));
@@ -392,7 +392,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(floats).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.FLOAT, shape, floats));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(25L)));
@@ -418,7 +418,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f8, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(input).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.DOUBLE, shape, input));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(48L)));
@@ -441,7 +441,7 @@ public class ChunkReaderWriterTest_2D {
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f8, ByteOrder.BIG_ENDIAN, shape, 3, store);
 
         //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(doubles).reshape(shape));
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.DOUBLE, shape, doubles));
 
         //intermediate verification
         assertThat(Files.size(jimfsChunkPath), is(equalTo(28L)));
