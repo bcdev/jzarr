@@ -28,15 +28,35 @@ public class ZarrUtilsTest {
     @Test
     public void toJson() throws IOException {
         final StringWriter writer = new StringWriter();
+
         ZarrUtils.toJson(_zarrHeader, writer);
 
-        assertThat(strip(writer.toString()), is(equalToIgnoringWhiteSpace(expectedJson())));
+        boolean nullCompressor = false;
+        assertThat(strip(writer.toString()), is(equalToIgnoringWhiteSpace(expectedJson(nullCompressor))));
     }
 
     @Test
-    public void fromJson() {
+    public void toJson_withCompressorNull() throws IOException {
+        ZarrHeader zarrHeader = new ZarrHeader(_zarrHeader.getShape(),
+                                               _zarrHeader.getChunks(),
+                                               _zarrHeader.getRawDataType().toString(),
+                                               _zarrHeader.getByteOrder(),
+                                               _zarrHeader.getFill_value(),
+                                               CompressorFactory.nullCompressor);
+        final StringWriter writer = new StringWriter();
+
+        ZarrUtils.toJson(zarrHeader, writer);
+
+        boolean nullCompressor = true;
+        assertThat(strip(writer.toString()), is(equalToIgnoringWhiteSpace(expectedJson(nullCompressor))));
+    }
+
+    @Test
+    public void fromJson() throws IOException {
+        boolean nullCompressor = false;
+
         //execution
-        final ZarrHeader zarrHeader = ZarrUtils.fromJson(new StringReader(expectedJson()), ZarrHeader.class);
+        final ZarrHeader zarrHeader = ZarrUtils.fromJson(new StringReader(expectedJson(nullCompressor)), ZarrHeader.class);
 
         //verification
         assertNotNull(zarrHeader);
@@ -107,7 +127,7 @@ public class ZarrUtilsTest {
         assertEquals("1.2.3.42", ZarrUtils.createChunkFilename(new int[]{1, 2, 3, 42}));
     }
 
-    private String expectedJson() {
+    private String expectedJson(boolean nullCompressor) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
         pw.println("{");
@@ -115,10 +135,17 @@ public class ZarrUtilsTest {
         pw.println("        5,");
         pw.println("        6");
         pw.println("    ],");
-        pw.println("    \"compressor\": {");
-        pw.println("        \"id\": \"zlib\",");
-        pw.println("        \"level\": 1");
-        pw.println("    },");
+        if (nullCompressor) {
+            pw.println("    \"compressor\": null,");
+//            pw.println("    \"compressor\": {");
+//            pw.println("        null");
+//            pw.println("    },");
+        } else {
+            pw.println("    \"compressor\": {");
+            pw.println("        \"id\": \"zlib\",");
+            pw.println("        \"level\": 1");
+            pw.println("    },");
+        }
         pw.println("    \"dtype\": \">i4\",");
         pw.println("    \"fill_value\": 3.6,");
         pw.println("    \"filters\": null,");

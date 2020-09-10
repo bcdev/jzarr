@@ -1,5 +1,7 @@
 package utils;
 
+import com.bc.zarr.JZarrException;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -54,7 +56,7 @@ public class OutputHelper {
         return string.split("(?<!^)(?=[A-Z])");
     }
 
-    public static void createOutput(Writer writer) throws IOException {
+    public static void createOutput(Writer writer) throws IOException, JZarrException {
         final String fileName = createOutputFilename();
         String methodName = getOutputMethodName();
         final Path workDir = Paths.get(".");
@@ -93,6 +95,6 @@ public class OutputHelper {
     }
 
     public interface Writer {
-        void write(PrintStream out) throws IOException;
+        void write(PrintStream out) throws IOException, JZarrException;
     }
 }

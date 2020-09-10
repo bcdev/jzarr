@@ -51,6 +51,10 @@ public class NetCDF_Util {
                 while (iter.hasNext()) {
                     iter.setFloatNext(fill.floatValue());
                 }
+            } else if (ucar.ma2.DataType.LONG.equals(dataType)) {
+                while (iter.hasNext()) {
+                    iter.setLongNext(fill.longValue());
+                }
             } else if (ucar.ma2.DataType.INT.equals(dataType)) {
                 while (iter.hasNext()) {
                     iter.setIntNext(fill.intValue());
@@ -75,6 +79,8 @@ public class NetCDF_Util {
             return ucar.ma2.DataType.DOUBLE;
         } else if (dataType == DataType.f4) {
             return ucar.ma2.DataType.FLOAT;
+        } else if (dataType == DataType.i8 ) {
+            return ucar.ma2.DataType.LONG;
         } else if (dataType == DataType.i4 || dataType == DataType.u4) {
             return ucar.ma2.DataType.INT;
         } else if (dataType == DataType.i2 || dataType == DataType.u2) {

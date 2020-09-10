@@ -13,10 +13,7 @@ import java.io.*;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static com.bc.zarr.CompressorFactory.nullCompressor;
 import static com.bc.zarr.ZarrConstants.FILENAME_DOT_ZARRAY;
@@ -27,7 +24,7 @@ public class ZarrArray {
     private final int[] _chunks;
     private final ZarrPath relativePath;
     private final ChunkReaderWriter _chunkReaderWriter;
-    private final Map<int[], String> _chunkFilenames;
+    private final Map<String, String> _chunkFilenames;
     private final DataType _dataType;
     private final Number _fillValue;
     private final Compressor _compressor;
@@ -47,7 +44,7 @@ public class ZarrArray {
         }
         _store = store;
         _chunkReaderWriter = ChunkReaderWriter.create(_compressor, _dataType, order, _chunks, _fillValue, _store);
-        _chunkFilenames = new TreeMap<>(Comparator.comparingInt(o -> Arrays.hashCode((int[]) o)));
+        _chunkFilenames = new HashMap<>();
         _byteOrder = order;
     }
 
@@ -237,11 +234,11 @@ public class ZarrArray {
     }
 
     private synchronized String getChunkFilename(int[] chunkIndex) {
-        if (_chunkFilenames.containsKey(chunkIndex)) {
-            return _chunkFilenames.get(chunkIndex);
-        }
         String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
-        _chunkFilenames.put(chunkIndex, chunkFilename);
+        if (_chunkFilenames.containsKey(chunkFilename)) {
+            return _chunkFilenames.get(chunkFilename);
+        }
+        _chunkFilenames.put(chunkFilename, chunkFilename);
         return chunkFilename;
     }
 

@@ -138,7 +138,7 @@ public class FileSystemStoreTest {
     }
 
     @Test
-    public void createGroup() throws IOException, InvalidRangeException {
+    public void createGroup() throws IOException {
         //preparation
         final Map<String, Object> attributes = TestUtils.createMap("lsmf", 345, "menno", 23.23);
 
@@ -155,7 +155,7 @@ public class FileSystemStoreTest {
     }
 
     @Test
-    public void createArray() throws IOException, InvalidRangeException {
+    public void createArray() throws IOException, JZarrException {
         //preparation
         final int[] shape = {10, 10};
         final int[] chunks = {5, 5};
@@ -222,7 +222,7 @@ public class FileSystemStoreTest {
     }
 
     @Test
-    public void createSubGroup() throws IOException, InvalidRangeException {
+    public void createSubGroup() throws IOException {
         //preparation
         final Map<String, Object> attributes = TestUtils.createMap("aaaa", "pfrt", "y", 123);
 

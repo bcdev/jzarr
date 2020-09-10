@@ -56,6 +56,8 @@ public abstract class ChunkReaderWriter {
             return new ChunkReaderWriterImpl_Double(order, compressor, chunkShape, fill, store);
         } else if (dataType == DataType.f4) {
             return new ChunkReaderWriterImpl_Float(order, compressor, chunkShape, fill, store);
+        } else if (dataType == DataType.i8) {
+            return new ChunkReaderWriterImpl_Long(order, compressor, chunkShape, fill, store);
         } else if (dataType == DataType.i4 || dataType == DataType.u4) {
             return new ChunkReaderWriterImpl_Integer(order, compressor, chunkShape, fill, store);
         } else if (dataType == DataType.i2 || dataType == DataType.u2) {

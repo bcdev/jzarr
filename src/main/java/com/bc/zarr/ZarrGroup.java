@@ -107,8 +107,8 @@ public class ZarrGroup {
         return group;
     }
 
-    private final class ZarrFormat {
-        double zarr_format;
+    private final static class ZarrFormat {
+        public double zarr_format;
     }
 
     private final Store store;

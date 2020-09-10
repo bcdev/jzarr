@@ -23,7 +23,7 @@ public class ZarrUtilsTest_FromToJson {
     }
 
     @Test
-    public void createJsonString() throws IOException {
+    public void createJsonString() throws JZarrException {
         final HashMap<String, Object> map = new LinkedHashMap<>();
         map.put("i1", (byte) 2);
         map.put("i2", (short) 3);
@@ -37,20 +37,20 @@ public class ZarrUtilsTest_FromToJson {
     }
 
     @Test
-    public void parseJsonString_asMap_convertsAllNumbersToDoubles() {
+    public void parseJsonString_asMap_convertsAllNumbersToDoubles() throws IOException {
         final LinkedHashMap map = ZarrUtils.fromJson(new StringReader(expectedJson), LinkedHashMap.class);
         assertThat(map.size(), is(7));
-        assertThat(map.get("i1"), is(2.0)); // reading from json file converts numbers to doubles
-        assertThat(map.get("i2"), is(3.0)); // reading from json file converts numbers to doubles
-        assertThat(map.get("i4"), is(4.0)); // reading from json file converts numbers to doubles
-        assertThat(map.get("i8"), is(5.0)); // reading from json file converts numbers to doubles
+        assertThat(map.get("i1"), is(2)); // reading from json file converts numbers to doubles
+        assertThat(map.get("i2"), is(3)); // reading from json file converts numbers to doubles
+        assertThat(map.get("i4"), is(4)); // reading from json file converts numbers to doubles
+        assertThat(map.get("i8"), is(5)); // reading from json file converts numbers to doubles
         assertThat(map.get("f4"), is(2.4)); // reading from json file converts numbers to doubles
         assertThat(map.get("f8"), is(2.5)); // reading from json file converts numbers to doubles
         assertThat(map.get("str"), is("abc"));
     }
 
     @Test
-    public void parseJsonString_asOwnType() {
+    public void parseJsonString_asOwnType() throws IOException {
         final MyClass myClass = ZarrUtils.fromJson(new StringReader(expectedJson), MyClass.class);
         assertThat(myClass.i1, is((byte) 2));  // no conversion because the field type is known
         assertThat(myClass.i2, is((short) 3)); // no conversion because the field type is known
@@ -62,14 +62,14 @@ public class ZarrUtilsTest_FromToJson {
     }
 
     @Test
-    public void toJson_condensedAndPretty() {
+    public void toJson_condensedAndPretty() throws JZarrException, IOException {
         //expectations
         final String expected_1 = "{\"ints\":[3,4,5,6,7,8,9],\"floats\":[3.0,4.0,5.0,6.0,7.0,8.0,9.0]}";
 
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
         pw.println("{");
-        pw.println("  \"ints\": [");
+        pw.println("  \"ints\" : [");
         pw.println("    3,");
         pw.println("    4,");
         pw.println("    5,");
@@ -78,7 +78,7 @@ public class ZarrUtilsTest_FromToJson {
         pw.println("    8,");
         pw.println("    9");
         pw.println("  ],");
-        pw.println("  \"floats\": [");
+        pw.println("  \"floats\" : [");
         pw.println("    3.0,");
         pw.println("    4.0,");
         pw.println("    5.0,");
@@ -99,23 +99,23 @@ public class ZarrUtilsTest_FromToJson {
 
         //verification
         assertThat(toJson, is(equalTo(expected_1)));
-        assertThat(toPrettyJson, is(equalToIgnoringWhiteSpace(expected_2)));
+        assertThat(toPrettyJson, is(expected_2));
     }
 
     static class MyArrays {
-        int[] ints = new int[]{3, 4, 5, 6, 7, 8, 9};
-        float[] floats = new float[]{3, 4, 5, 6, 7, 8, 9};
+        public int[] ints = new int[]{3, 4, 5, 6, 7, 8, 9};
+        public float[] floats = new float[]{3, 4, 5, 6, 7, 8, 9};
     }
 
-    private class MyClass {
+    private static class MyClass {
 
-        private byte i1;
-        private short i2;
-        private int i4;
-        private long i8;
-        private float f4;
-        private double f8;
-        private String str;
+        public byte i1;
+        public short i2;
+        public int i4;
+        public long i8;
+        public float f4;
+        public double f8;
+        public String str;
     }
 
     private String strip(String s) {

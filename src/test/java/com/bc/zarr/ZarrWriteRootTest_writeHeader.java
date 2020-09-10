@@ -35,7 +35,7 @@ public class ZarrWriteRootTest_writeHeader {
     }
 
     @Test
-    public void testCreateHeaderFile() throws IOException {
+    public void testCreateHeaderFile() throws IOException, JZarrException {
         //preparation
         final String rastername = "Band4321";
         final String dataType = "i4";
@@ -65,7 +65,7 @@ public class ZarrWriteRootTest_writeHeader {
     }
 
     @Test
-    public void testCreateHeaderFileAndAttributes() throws IOException {
+    public void testCreateHeaderFileAndAttributes() throws IOException, JZarrException {
         //preparation
         final String rastername = "Band4321";
         final String dataType = "i4";

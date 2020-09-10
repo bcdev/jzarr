@@ -22,20 +22,27 @@
 
         <dependency>
             <groupId>edu.ucar</groupId>
-            <artifactId>netcdfAll</artifactId>
-            <version>5.3.1</version>
+            <artifactId>cdm-core</artifactId>
+<!--            <artifactId>netcdfAll</artifactId>-->
+            <version>5.3.3</version>
         </dependency>
 
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.5</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.10.3</version>
         </dependency>
 
         <!-- ############## -->
         <!-- # scope test # -->
         <!-- ############## -->
 
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
@@ -60,12 +67,12 @@
             <version>${nd4j.version}</version>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.nd4j</groupId>-->
-<!--            <artifactId>${nd4j.backend}</artifactId>-->
-<!--            <version>${nd4j.version}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>${nd4j.backend}</artifactId>
+            <version>${nd4j.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.lasersonlab</groupId>
             <artifactId>s3fs</artifactId>

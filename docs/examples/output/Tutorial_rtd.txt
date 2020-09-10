@@ -32,13 +32,13 @@ example_5__output_end__
 
 example_6_output_start
 {
-  "qux": [
-    1.0,
-    4.0,
-    7.0,
-    12.0
+  "qux" : [
+    1,
+    4,
+    7,
+    12
   ],
-  "baz": 42.0
+  "baz" : 42
 }
 example_6__output_end__
 

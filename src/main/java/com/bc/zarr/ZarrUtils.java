@@ -17,7 +17,11 @@
 package com.bc.zarr;
 
 import com.bc.zarr.storage.Store;
-import com.google.gson.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import ucar.ma2.Array;
 import ucar.ma2.MAMath;
 
@@ -31,22 +35,26 @@ import static com.bc.zarr.ZarrConstants.FILENAME_DOT_ZATTRS;
 
 public final class ZarrUtils {
 
-    private static Gson gson;
+    private static ObjectMapper objectMapper;
 
-    public static String toJson(Object src) {
+    public static String toJson(Object src) throws JZarrException {
         return toJson(src, false);
     }
 
-    public static String toJson(Object src, boolean prettyPrinting) {
-        return getGson(prettyPrinting).toJson(src);
+    public static String toJson(Object src, boolean prettyPrinting) throws JZarrException {
+        try {
+            return getObjectWriter(prettyPrinting).writeValueAsString(src);
+        } catch (JsonProcessingException e) {
+            throw new JZarrException("Unable to convert the source object to json.", e);
+        }
     }
 
-    public static void toJson(Object o, Writer writer) {
+    public static void toJson(Object o, Writer writer) throws IOException {
         toJson(o, writer, false);
     }
 
-    public static void toJson(Object o, Appendable writer, boolean prettyPrinting) {
-        getGson(prettyPrinting).toJson(o, writer);
+    public static void toJson(Object o, Writer writer, boolean prettyPrinting) throws IOException {
+        getObjectWriter(prettyPrinting).writeValue(writer,o);
     }
 
     public static int[][] computeChunkIndices(int[] shape, int[] chunks, int[] bufferShape, int[] to) {
@@ -91,9 +99,9 @@ public final class ZarrUtils {
         return sb.toString();
     }
 
-    public static <T> T fromJson(Reader reader, final Class<T> classOfType) {
-        final Gson gson = getGson();
-        return gson.fromJson(reader, classOfType);
+    public static <T> T fromJson(Reader reader, final Class<T> classOfType) throws IOException {
+        ObjectMapper objectMapper = getObjectMapper();
+        return objectMapper.readValue(reader, classOfType);
     }
 
     public static long computeSize(int[] ints) {
@@ -112,23 +120,21 @@ public final class ZarrUtils {
         return count;
     }
 
-    private static Gson getGson(boolean prettyPrinting) {
-        Gson gson = getGson();
+    static ObjectWriter getObjectWriter(boolean prettyPrinting) {
         if (prettyPrinting) {
-            gson = gson.newBuilder().setPrettyPrinting().create();
+            DefaultPrettyPrinter defaultPrettyPrinter = new DefaultPrettyPrinter();
+            defaultPrettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
+            return getObjectMapper().writer(defaultPrettyPrinter);
+//            return getObjectMapper().writer().withDefaultPrettyPrinter();
         }
-        return gson;
+        return getObjectMapper().writer();
     }
 
-    private static synchronized Gson getGson() {
-        if (gson == null) {
-            gson = new GsonBuilder()
-                    .serializeNulls()
-                    .disableHtmlEscaping()
-                    .serializeSpecialFloatingPointValues()
-                    .create();
+    static synchronized ObjectMapper getObjectMapper() {
+        if (objectMapper == null) {
+            objectMapper = new ObjectMapper();
         }
-        return gson;
+        return objectMapper;
     }
 
     public static void ensureFileExistAndIsReadable(Path dotZGroupPath) throws IOException {
@@ -148,7 +154,7 @@ public final class ZarrUtils {
             final ZarrPath attrPath = zarrPath.resolve(FILENAME_DOT_ZATTRS);
             try (
                     final OutputStream os = store.getOutputStream(attrPath.storeKey);
-                    final OutputStreamWriter writer = new OutputStreamWriter(os);
+                    final OutputStreamWriter writer = new OutputStreamWriter(os)
             ) {
                 toJson(attributes, writer, true);
             }
@@ -192,6 +198,8 @@ public final class ZarrUtils {
             case i4:
             case u4:
                 return new int[size];
+            case i8:
+                return new long[size];
             case f4:
                 return new float[size];
             case f8:

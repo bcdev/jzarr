@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -21,7 +20,7 @@ public class Tutorial_rtd {
      * Creates a 2-dimensional array of 32-bit integers with 10000 rows and 10000 columns, divided into
      * chunks where each chunk has 1000 rows and 1000 columns (and so there will be 100 chunks in total).
      */
-    private static void example_1() throws IOException {
+    private static void example_1() throws IOException, JZarrException {
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .shape(10000, 10000)
                 .chunks(1000, 1000)
@@ -38,7 +37,7 @@ public class Tutorial_rtd {
      * Finally read in the entire array data (int[] with size 5 * 7) and we can see
      * the data written before surrounded by the fill value <code>-1</code>.
      */
-    private static void example_2() throws IOException, InvalidRangeException {
+    private static void example_2() throws IOException, InvalidRangeException, JZarrException {
         // example 2 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#writing-and-reading-data
         ZarrArray array = ZarrArray.create(new ArrayParams()
                 .shape(5, 7)
@@ -82,7 +81,7 @@ public class Tutorial_rtd {
     /**
      * Creates an array in a local file store.
      */
-    private static void example_3() throws IOException, InvalidRangeException {
+    private static void example_3() throws IOException, InvalidRangeException, JZarrException {
         // example 3 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
         ZarrArray created = ZarrArray.create("docs/examples/output/example_3.zarr", new ArrayParams()
                 .shape(1000, 1000).chunks(250, 250).dataType(DataType.i4).fillValue(-9999)
@@ -122,7 +121,7 @@ public class Tutorial_rtd {
     /**
      * Create a group and sub groups and an array in a subgroup
      */
-    private static void example_5() throws IOException {
+    private static void example_5() throws IOException, JZarrException {
         ZarrGroup root = ZarrGroup.create();          // creates an in memory group
         ZarrGroup foo = root.createSubGroup("foo");
         ZarrGroup bar = foo.createSubGroup("bar");
@@ -135,7 +134,7 @@ public class Tutorial_rtd {
     /**
      * Example to demonstrate how to work with user attributes
      */
-    private static void example_6() throws IOException {
+    private static void example_6() throws IOException, JZarrException {
         Map<String, Object> attrs;
         Map<String, Object> attributes;
         ZarrGroup group;
@@ -169,7 +168,7 @@ public class Tutorial_rtd {
     /**
      * Example for partly modify data without loading the entire array
      */
-    private static void example_7() throws IOException, InvalidRangeException {
+    private static void example_7() throws IOException, InvalidRangeException, JZarrException {
         // create an array
         int height = 10;
         int width = 6;
@@ -198,7 +197,7 @@ public class Tutorial_rtd {
     /**
      * Example prevent chunking at first dimension
      */
-    private static void example_8() throws IOException {
+    private static void example_8() throws IOException, JZarrException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
                 .shape(8888, 7777).chunks(100, 0)
         );
@@ -211,7 +210,7 @@ public class Tutorial_rtd {
     /**
      * Example prevent chunking at second dimension
      */
-    private static void example_9() throws IOException {
+    private static void example_9() throws IOException, JZarrException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
                 .shape(8888, 7777).chunks(100, 0)
         );
@@ -227,7 +226,7 @@ public class Tutorial_rtd {
         );
     }
 
-    private static void example_11() throws IOException {
+    private static void example_11() throws IOException, JZarrException {
         ZarrArray zarray;
         zarray = ZarrArray.create(new ArrayParams()
                 .shape(6200, 7500).chunked(true)
@@ -249,7 +248,7 @@ public class Tutorial_rtd {
     /**
      * array creation with disabled chunking
      */
-    private static void example_12() throws IOException {
+    private static void example_12() throws IOException, JZarrException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
                 .shape(6200, 7500).chunked(false)
         );
@@ -260,7 +259,7 @@ public class Tutorial_rtd {
     /**
      * Byte order example
      */
-    private static void example_13() throws IOException {
+    private static void example_13() throws IOException, JZarrException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
                 .shape(6200, 7500)
                 .byteOrder(ByteOrder.BIG_ENDIAN)
@@ -271,7 +270,7 @@ public class Tutorial_rtd {
     /**
      * Thread synchronizing example
      */
-    private static void example_14() throws IOException, InvalidRangeException {
+    private static void example_14() throws IOException, InvalidRangeException, JZarrException {
         ZarrArray z = ZarrArray.create(new ArrayParams().shape(30).chunks(10).dataType(DataType.i4));
 
         int[] writeDataShape = {10};
@@ -297,7 +296,7 @@ public class Tutorial_rtd {
     /**
      * Thread synchronizing example
      */
-    private static void example_15() throws IOException, InvalidRangeException, InterruptedException {
+    private static void example_15() throws IOException, InvalidRangeException, InterruptedException, JZarrException {
         ZarrArray z = ZarrArray.create(new ArrayParams().shape(30).chunks(10).dataType(DataType.i4));
 
         int[] dataShape = {15};
@@ -342,7 +341,7 @@ public class Tutorial_rtd {
     }
 
 
-    public static void main(String[] args) throws IOException, InvalidRangeException, InterruptedException {
+    public static void main(String[] args) throws IOException, InvalidRangeException, InterruptedException, JZarrException {
         example_1();
         example_2();
         example_3();
