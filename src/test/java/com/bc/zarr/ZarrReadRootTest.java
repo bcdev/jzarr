@@ -14,7 +14,7 @@ import java.util.Collections;
 import static com.bc.zarr.ZarrConstants.FILENAME_DOT_ZGROUP;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.*;
 
 public class ZarrReadRootTest {
 
@@ -33,7 +33,7 @@ public class ZarrReadRootTest {
     @Test
     public void create() throws NoSuchFieldException, IllegalAccessException, IOException {
         final ZarrGroup rootGrp = ZarrGroup.open(rootPath);
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final ArrayParams parameters = new ArrayParams()
                 .dataType(DataType.f4)
                 .shape(101, 102)
@@ -50,7 +50,7 @@ public class ZarrReadRootTest {
         assertThat(store, is(instanceOf(FileSystemStore.class)));
         final Object root = TestUtils.getPrivateFieldObject(store, "root");
         assertThat(root, is(instanceOf(Path.class)));
-        assertThat(((Path)root).toString(), is("lsmf"));
+        assertThat(root.toString(), is("lsmf"));
     }
 
 }

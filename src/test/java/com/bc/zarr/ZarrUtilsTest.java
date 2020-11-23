@@ -1,7 +1,10 @@
 package com.bc.zarr;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.*;
 
@@ -16,13 +19,12 @@ public class ZarrUtilsTest {
     private ZarrHeader _zarrHeader;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         final int[] chunks = {5, 6};
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final String dtype = "i4";
         final int[] shape = {10, 15};
         _zarrHeader = new ZarrHeader(shape, chunks, dtype, ByteOrder.BIG_ENDIAN, 3.6d, compressor);
-
     }
 
     @Test
@@ -62,7 +64,7 @@ public class ZarrUtilsTest {
         assertNotNull(zarrHeader);
         assertThat(zarrHeader.getChunks(), is(equalTo(_zarrHeader.getChunks())));
         assertThat(zarrHeader.getDtype(), is(equalTo(_zarrHeader.getDtype())));
-        assertThat(zarrHeader.getCompressor(), is(equalTo(_zarrHeader.getCompressor())));
+        assertThat(zarrHeader.getCompressor().toString(), is(equalTo(_zarrHeader.getCompressor().toString())));
         assertThat(zarrHeader.getFill_value().doubleValue(), is(equalTo(_zarrHeader.getFill_value().doubleValue())));
         assertThat(zarrHeader.getShape(), is(equalTo(_zarrHeader.getShape())));
     }
@@ -137,13 +139,10 @@ public class ZarrUtilsTest {
         pw.println("    ],");
         if (nullCompressor) {
             pw.println("    \"compressor\": null,");
-//            pw.println("    \"compressor\": {");
-//            pw.println("        null");
-//            pw.println("    },");
         } else {
             pw.println("    \"compressor\": {");
-            pw.println("        \"id\": \"zlib\",");
-            pw.println("        \"level\": 1");
+            pw.println("        \"level\": 1,");
+            pw.println("        \"id\": \"zlib\"");
             pw.println("    },");
         }
         pw.println("    \"dtype\": \">i4\",");
@@ -172,6 +171,6 @@ public class ZarrUtilsTest {
         final int intSize = ZarrUtils.computeSizeInteger(new int[]{2, 3, 4});
         final long longSize = ZarrUtils.computeSize(new int[]{2, 3, 4});
         assertEquals(24, intSize);
-        assertEquals((long) intSize, longSize);
+        assertEquals(intSize, longSize);
     }
 }

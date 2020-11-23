@@ -39,7 +39,7 @@ import java.util.Map;
  *   DataType dataType = {@link DataType#f8};
  *   ByteOrder byteOrder = {@link ByteOrder#BIG_ENDIAN};
  *   Number fillValue = 0;
- *   Compressor compressor = {@link CompressorFactory#create CompressorFactory.create("zlib", 1)};
+ *   Compressor compressor = {@link CompressorFactory#createDefaultCompressor()};
  * </pre>
  */
 public class ArrayParams {
@@ -49,7 +49,7 @@ public class ArrayParams {
     private DataType dataType = DataType.f8;
     private ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
     private Number fillValue = 0;
-    private Compressor compressor = CompressorFactory.create("zlib", 1);
+    private Compressor compressor = CompressorFactory.createDefaultCompressor();
 
     /**
      * Sets the mandatory {@code shape} and returns a reference to this Builder so that the methods can be chained together.
@@ -126,12 +126,16 @@ public class ArrayParams {
 
     /**
      * Sets the optional {@code compressor} and returns a reference to this Builder so that the methods can be chained together.<br/>
-     * Default value: {@link CompressorFactory#create(String, int) CompressorFactory.create("zlib", 1)}
+     * An argument {@code null} will be converted to {@link CompressorFactory#nullCompressor}.<br/>
+     * Default value: {@link CompressorFactory#createDefaultCompressor()}
      *
-     * @param compressor the {@code compressor} to set
+     * @param compressor the {@link Compressor} to set or {@code null}
      * @return a reference to this Builder
      */
     public ArrayParams compressor(Compressor compressor) {
+        if (compressor == null) {
+            compressor = CompressorFactory.nullCompressor;
+        }
         this.compressor = compressor;
         return this;
     }
@@ -155,7 +159,7 @@ public class ArrayParams {
                     final int numChunks = (shapeDim / 512);
                     if (numChunks > 0) {
                         int chunkDim = shapeDim / (numChunks + 1);
-                        if(shapeDim % chunkDim == 0) {
+                        if (shapeDim % chunkDim == 0) {
                             chunks[i] = chunkDim;
                         } else {
                             chunks[i] = chunkDim + 1;
@@ -172,12 +176,12 @@ public class ArrayParams {
         if (shape.length != chunks.length) {
             throw new IllegalArgumentException(
                     "Chunks must have the same number of dimensions as shape. " +
-                            "Expected: " + shape.length + " but was " + chunks.length + " !");
+                    "Expected: " + shape.length + " but was " + chunks.length + " !");
         }
 
         for (int i = 0; i < chunks.length; i++) {
             int chunkDim = chunks[i];
-            if(chunkDim<1) {
+            if (chunkDim < 1) {
                 chunks[i] = shape[i];
             }
         }

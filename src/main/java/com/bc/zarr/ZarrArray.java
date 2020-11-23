@@ -72,13 +72,8 @@ public class ZarrArray {
             final DataType dataType = header.getRawDataType();
             final ByteOrder byteOrder = header.getByteOrder();
             final Number fillValue = header.getFill_value();
-            final ZarrHeader.CompressorBean compressorBean = header.getCompressor();
-            final Compressor compressor;
-            if (compressorBean != null) {
-                final String id = compressorBean.getId();
-                final int level = compressorBean.getLevel();
-                compressor = CompressorFactory.create(id, level);
-            } else {
+            Compressor compressor = header.getCompressor();
+            if (compressor == null) {
                 compressor = nullCompressor;
             }
             return new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, store);
@@ -270,7 +265,7 @@ public class ZarrArray {
                ", chunks=" + Arrays.toString(_chunks) +
                ", dataType=" + _dataType +
                ", fillValue=" + _fillValue +
-               ", compressor=" + _compressor.getId() + "/level=" + _compressor.getLevel() +
+               ", " + _compressor.toString() +
                ", store=" + _store.getClass().getSimpleName() +
                ", byteOrder=" + _byteOrder +
                '}';

@@ -13,8 +13,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+//import static org.junit.Assert.fail;
 
 public class ZarrArrayTest_saveMultithreading {
 
@@ -22,7 +23,7 @@ public class ZarrArrayTest_saveMultithreading {
     private FileSystemStore store;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         final FileSystem fileSystem = Jimfs.newFileSystem();
         arrayName = "output";
         Path rootPath = fileSystem.getPath("test");
@@ -32,7 +33,7 @@ public class ZarrArrayTest_saveMultithreading {
 
     @Test
     public void parallelWriting_toTheSameChunk_withCompression() throws IOException, InvalidRangeException {
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final ArrayParams parameters = new ArrayParams()
                 .shape(30, 30).chunks(10, 10)
                 .dataType(DataType.i4).fillValue(0).compressor(compressor);

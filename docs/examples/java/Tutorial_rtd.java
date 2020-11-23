@@ -109,8 +109,8 @@ public class Tutorial_rtd {
      */
     private static void example_4() throws IOException {
         // Currently available compressors
-        Compressor zlibComp = CompressorFactory.create("zlib", 8);  // 8 = compression level .. valid values 0 .. 9
-        Compressor nullComp = CompressorFactory.create("null", 0);  // means no compression e.g. for analysis purposes
+        Compressor zlibComp = CompressorFactory.create("zlib", "level", 8);  // 8 = compression level .. valid values 0 .. 9
+        Compressor nullComp = CompressorFactory.create("null");  // means no compression e.g. for analysis purposes
 
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .shape(222, 333, 44)  // one or more dimensions

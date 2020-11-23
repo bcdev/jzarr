@@ -1,8 +1,9 @@
 package com.bc.zarr.chunk;
 
 import static com.bc.zarr.ZarrUtils.computeSizeInteger;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import com.bc.zarr.Compressor;
 import com.bc.zarr.CompressorFactory;
@@ -61,14 +62,14 @@ public class ChunkReaderWriterTest_2D {
         assertThat(array.getShape(), is(equalTo(shape)));
         final byte[] expectedValues = new byte[6];
         Arrays.fill(expectedValues, fill.byteValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Byte.class))));
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.BYTE))));
     }
 
     @Test
     public void read_Bytes_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 7;
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
@@ -78,14 +79,14 @@ public class ChunkReaderWriterTest_2D {
         assertThat(array.getShape(), is(equalTo(shape)));
         final byte[] expectedValues = new byte[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.byteValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Byte.class))));
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.BYTE))));
     }
 
     @Test
     public void read_Short_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 8;
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i2, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
@@ -95,14 +96,14 @@ public class ChunkReaderWriterTest_2D {
         assertThat(array.getShape(), is(equalTo(shape)));
         final short[] expectedValues = new short[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.shortValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Short.class))));
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.SHORT))));
     }
 
     @Test
     public void read_Integer_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 8;
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i4, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
@@ -112,14 +113,14 @@ public class ChunkReaderWriterTest_2D {
         assertThat(array.getShape(), is(equalTo(shape)));
         final int[] expectedValues = new int[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.intValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Integer.class))));
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.INT))));
     }
 
     @Test
     public void read_Float_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 8;
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
@@ -129,14 +130,14 @@ public class ChunkReaderWriterTest_2D {
         assertThat(array.getShape(), is(equalTo(shape)));
         final float[] expectedValues = new float[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.floatValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Float.class))));
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.FLOAT))));
     }
 
     @Test
     public void read_Double_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
         final int[] shape = {2, 3};
         final Number fill = 8;
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f8, ByteOrder.BIG_ENDIAN, shape, fill, store);
 
         //execution
@@ -146,7 +147,7 @@ public class ChunkReaderWriterTest_2D {
         assertThat(array.getShape(), is(equalTo(shape)));
         final double[] expectedValues = new double[computeSizeInteger(shape)];
         Arrays.fill(expectedValues, fill.doubleValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(Double.class))));
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.DOUBLE))));
     }
 
     @Test
@@ -166,7 +167,7 @@ public class ChunkReaderWriterTest_2D {
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
-        assertThat(array.get1DJavaArray(Byte.class), is(equalTo(bytes)));
+        assertThat(array.get1DJavaArray(ucar.ma2.DataType.BYTE), is(equalTo(bytes)));
     }
 
     @Test
@@ -190,12 +191,13 @@ public class ChunkReaderWriterTest_2D {
 
     @Test
     public void read_Bytes_ZipCompressor_ChunkFileExist() throws IOException {
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final int level = 1;
+        final Compressor compressor = CompressorFactory.create("zlib", "level", level);
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
         try (final OutputStream outputStream = Files.newOutputStream(jimfsChunkPath)) {
-            final Deflater compresser = new Deflater(compressor.getLevel());
+            final Deflater compresser = new Deflater(level);
             compresser.setInput(bytes);
             compresser.finish();
             final byte[] buffer = new byte[100];
@@ -210,7 +212,7 @@ public class ChunkReaderWriterTest_2D {
 
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
-        assertThat(bytes, is(equalTo(array.get1DJavaArray(Byte.class))));
+        assertThat(bytes, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.BYTE))));
     }
 
     @Test
@@ -233,12 +235,12 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(bytes, is(equalTo(read.get1DJavaArray(Byte.class))));
+        assertThat(bytes, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.BYTE))));
     }
 
     @Test
     public void writeRead_Bytes_ZipCompressor() throws IOException {
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -256,7 +258,7 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(bytes, is(equalTo(read.get1DJavaArray(Byte.class))));
+        assertThat(bytes, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.BYTE))));
     }
 
     @Test
@@ -282,12 +284,12 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(input, is(equalTo(read.get1DJavaArray(Short.class))));
+        assertThat(input, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.SHORT))));
     }
 
     @Test
     public void writeRead_Short_ZipCompressor() throws IOException {
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final short[] shorts = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -305,7 +307,7 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(shorts, is(equalTo(read.get1DJavaArray(Short.class))));
+        assertThat(shorts, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.SHORT))));
     }
 
     @Test
@@ -331,12 +333,12 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(input, is(equalTo(read.get1DJavaArray(Integer.class))));
+        assertThat(input, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.INT))));
     }
 
     @Test
     public void writeRead_Integer_ZipCompressor() throws IOException {
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final int[] ints = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -354,7 +356,7 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(ints, is(equalTo(read.get1DJavaArray(Integer.class))));
+        assertThat(ints, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.INT))));
     }
 
     @Test
@@ -380,12 +382,12 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(input, is(equalTo(read.get1DJavaArray(Float.class))));
+        assertThat(input, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.FLOAT))));
     }
 
     @Test
     public void writeRead_Float_ZipCompressor() throws IOException {
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final float[] floats = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -403,7 +405,7 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(floats, is(equalTo(read.get1DJavaArray(Float.class))));
+        assertThat(floats, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.FLOAT))));
     }
 
     @Test
@@ -429,12 +431,12 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(input, is(equalTo(read.get1DJavaArray(Double.class))));
+        assertThat(input, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.DOUBLE))));
     }
 
     @Test
     public void writeRead_Double_ZipCompressor() throws IOException {
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final double[] doubles = {1, 2, 3, 4, 5, 6};
         final int[] shape = {2, 3};
 
@@ -452,6 +454,6 @@ public class ChunkReaderWriterTest_2D {
         //verification
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(doubles, is(equalTo(read.get1DJavaArray(Double.class))));
+        assertThat(doubles, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.DOUBLE))));
     }
 }

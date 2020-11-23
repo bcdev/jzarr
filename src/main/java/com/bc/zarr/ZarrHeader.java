@@ -28,12 +28,14 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 public class ZarrHeader {
 
     private final int[] chunks;
-    private final CompressorBean compressor;
+    private final Compressor compressor;
     private final String dtype;
     private final Number fill_value;
     private final String filters = null;
@@ -46,7 +48,7 @@ public class ZarrHeader {
         if (compressor == null || CompressorFactory.nullCompressor.equals(compressor)) {
             this.compressor = null;
         } else {
-            this.compressor = new CompressorBean(compressor.getId(), compressor.getLevel());
+            this.compressor = compressor;
         }
 
         this.dtype = translateByteOrder(byteOrder) + dtype;
@@ -58,7 +60,7 @@ public class ZarrHeader {
         return chunks;
     }
 
-    public CompressorBean getCompressor() {
+    public Compressor getCompressor() {
         return compressor;
     }
 
@@ -110,42 +112,6 @@ public class ZarrHeader {
         return shape;
     }
 
-    public static class CompressorBean {
-
-        private final String id;
-        private final int level;
-
-        public CompressorBean(String id, int level) {
-            this.id = id;
-            this.level = level;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public int getLevel() {
-            return level;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            CompressorBean that = (CompressorBean) o;
-
-            if (level != that.level) {
-                return false;
-            }
-            return id.equals(that.id);
-        }
-    }
-
     static class ZarrHeaderSerializer extends StdSerializer<ZarrHeader> {
 
         protected ZarrHeaderSerializer() {
@@ -175,7 +141,7 @@ public class ZarrHeader {
         }
 
         @Override
-        public ZarrHeader deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        public ZarrHeader deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             ObjectCodec codec = p.getCodec();
             TreeNode root = codec.readTree(p);
             int[] shape = StreamSupport.stream(((ArrayNode) root.path("shape")).spliterator(), false).mapToInt(JsonNode::asInt).toArray();
@@ -191,40 +157,23 @@ public class ZarrHeader {
                 fill = fillValueNode.asDouble();
             }
 
-            CompressorBean compBean = codec.readValue(root.path("compressor").traverse(codec), CompressorBean.class);
+            Map<String, Object> compBean = codec.readValue(root.path("compressor").traverse(codec), HashMap.class);
             Compressor compressor;
             if (compBean == null) {
                 compressor = CompressorFactory.nullCompressor;
             } else {
-                compressor = CompressorFactory.create(compBean.getId(), compBean.getLevel());
+                compressor = CompressorFactory.create(compBean);
             }
             return new ZarrHeader(shape, chunks, getRawDataType(dtype).toString(), getByteOrder(dtype), fill, compressor);
         }
 
     }
 
-    static class CompressorBeanDeSerializer extends StdDeserializer<CompressorBean> {
-
-        protected CompressorBeanDeSerializer() {
-            super(CompressorBean.class);
-        }
-
-        @Override
-        public CompressorBean deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-            TreeNode root = p.getCodec().readTree(p);
-            String id = ((JsonNode) root.path("id")).asText();
-            int level = ((JsonNode) root.path("level")).asInt();
-            return new CompressorBean(id, level);
-        }
-    }
-
-
     static {
         ObjectMapper objectMapper = ZarrUtils.getObjectMapper();
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(ZarrHeader.class, new ZarrHeaderSerializer());
         simpleModule.addDeserializer(ZarrHeader.class, new ZarrHeaderDeSerializer());
-        simpleModule.addDeserializer(CompressorBean.class, new CompressorBeanDeSerializer());
 
         objectMapper.registerModules(simpleModule);
     }

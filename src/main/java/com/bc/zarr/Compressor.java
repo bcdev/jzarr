@@ -8,7 +8,7 @@ public abstract class Compressor {
 
     public abstract String getId();
 
-    public abstract int getLevel();
+    public abstract String toString();
 
     public abstract void compress(InputStream is, OutputStream os) throws IOException;
 

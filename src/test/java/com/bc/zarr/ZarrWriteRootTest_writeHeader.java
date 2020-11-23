@@ -3,7 +3,8 @@ package com.bc.zarr;
 import static com.bc.zarr.ZarrUtils.*;
 import static com.bc.zarr.ZarrConstants.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.Assert.assertEquals;
 
 import com.bc.zarr.storage.FileSystemStore;
 import com.google.common.jimfs.Configuration;
@@ -42,12 +43,13 @@ public class ZarrWriteRootTest_writeHeader {
         final int[] shape = {10, 15};
         final int[] chunks = {6, 8};
         final Number fillValue = 0;
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final ArrayParams parameters = new ArrayParams()
                 .dataType(DataType.i4)
                 .shape(shape)
                 .chunks(chunks)
-                .fillValue(fillValue).compressor(compressor);
+                .fillValue(fillValue)
+                .compressor(compressor);
 
         //execution
         zarrGroup.createArray(rastername, parameters, null);

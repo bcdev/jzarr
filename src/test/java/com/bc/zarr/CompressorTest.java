@@ -1,7 +1,7 @@
 package com.bc.zarr;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.*;
 
@@ -42,7 +42,7 @@ public class CompressorTest {
 
     @Test
     public void writeRead_ZipCompressor() throws IOException {
-        final Compressor compressor = CompressorFactory.create("zlib", 1);
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final byte[] input = {
                 100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,
                 100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,

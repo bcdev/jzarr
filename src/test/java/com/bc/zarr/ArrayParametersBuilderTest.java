@@ -4,8 +4,9 @@ import org.junit.Test;
 
 import java.nio.ByteOrder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 public class ArrayParametersBuilderTest {
 
@@ -108,7 +109,7 @@ public class ArrayParametersBuilderTest {
         assertThat(parameters.getByteOrder(), is(ByteOrder.BIG_ENDIAN));
         assertThat(parameters.getFillValue(), is(0));
         assertThat(parameters.getCompressor().getId(), is("zlib"));
-        assertThat(parameters.getCompressor().getLevel(), is(1));
+        assertThat(parameters.getCompressor().toString(), is("compressor=zlib/level=1"));
     }
 
     @Test
