@@ -67,7 +67,7 @@ public class ChunkReaderWriterImpl_Double extends ChunkReaderWriter {
                 final InputStream is = new ZarrInputStreamAdapter(iis);
                 final OutputStream os = store.getOutputStream(storeKey)
         ) {
-            final double[] doubles = (double[]) array.get1DJavaArray(double.class);
+            final double[] doubles = (double[]) array.get1DJavaArray(DataType.DOUBLE);
             iis.setByteOrder(order);
             iis.writeDoubles(doubles, 0, doubles.length);
             iis.seek(0);

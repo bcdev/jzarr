@@ -127,7 +127,7 @@ public class ArrayParams {
     /**
      * Sets the optional {@code compressor} and returns a reference to this Builder so that the methods can be chained together.<br/>
      * An argument {@code null} will be converted to {@link CompressorFactory#nullCompressor}.<br/>
-     * Default value: {@link CompressorFactory#createDefaultCompressor()}
+     * If this method is not used, the default compressor {@link CompressorFactory#createDefaultCompressor()} remains unchanged.
      *
      * @param compressor the {@link Compressor} to set or {@code null}
      * @return a reference to this Builder

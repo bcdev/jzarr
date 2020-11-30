@@ -169,8 +169,7 @@ public class ZarrHeader {
 
     }
 
-    static {
-        ObjectMapper objectMapper = ZarrUtils.getObjectMapper();
+    static void register(ObjectMapper objectMapper) {
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(ZarrHeader.class, new ZarrHeaderSerializer());
         simpleModule.addDeserializer(ZarrHeader.class, new ZarrHeaderDeSerializer());

@@ -67,7 +67,7 @@ public class ChunkReaderWriterImpl_Long extends ChunkReaderWriter {
                 final InputStream is = new ZarrInputStreamAdapter(iis);
                 final OutputStream os = store.getOutputStream(storeKey)
         ) {
-            final long[] longs = (long[]) array.get1DJavaArray(long.class);
+            final long[] longs = (long[]) array.get1DJavaArray(DataType.LONG);
             iis.setByteOrder(order);
             iis.writeLongs(longs, 0, longs.length);
             iis.seek(0);

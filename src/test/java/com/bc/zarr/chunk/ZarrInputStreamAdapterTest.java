@@ -1,7 +1,8 @@
 package com.bc.zarr.chunk;
 
-import static org.junit.Assert.*;
+//import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import org.junit.*;
 
@@ -14,7 +15,8 @@ public class ZarrInputStreamAdapterTest {
 
     @Test
     public void read() throws IOException {
-        final MemoryCacheImageOutputStream stream = new MemoryCacheImageOutputStream(new ByteArrayOutputStream());
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final MemoryCacheImageOutputStream stream = new MemoryCacheImageOutputStream(baos);
         final byte i1 = -3;
         final short i2 = -43;
         final int i4 = -63;

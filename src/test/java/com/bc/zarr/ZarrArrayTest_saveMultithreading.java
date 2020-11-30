@@ -32,8 +32,16 @@ public class ZarrArrayTest_saveMultithreading {
     }
 
     @Test
-    public void parallelWriting_toTheSameChunk_withCompression() throws IOException, InvalidRangeException {
-        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
+    public void parallelWriting_toTheSameChunk_withCompression_zlib() throws IOException, InvalidRangeException {
+        multithreaded_write_read_roundtrip(CompressorFactory.create("zlib"));
+    }
+
+    @Test
+    public void parallelWriting_toTheSameChunk_withCompression_blosc() throws IOException, InvalidRangeException {
+        multithreaded_write_read_roundtrip(CompressorFactory.create("blosc"));
+    }
+
+    private void multithreaded_write_read_roundtrip(Compressor compressor) throws IOException, InvalidRangeException {
         final ArrayParams parameters = new ArrayParams()
                 .shape(30, 30).chunks(10, 10)
                 .dataType(DataType.i4).fillValue(0).compressor(compressor);

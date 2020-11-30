@@ -67,7 +67,7 @@ public class ChunkReaderWriterImpl_Short extends ChunkReaderWriter {
                 final InputStream is = new ZarrInputStreamAdapter(iis);
                 final OutputStream os = store.getOutputStream(storeKey)
         ) {
-            final short[] shorts = (short[]) array.get1DJavaArray(short.class);
+            final short[] shorts = (short[]) array.get1DJavaArray(DataType.SHORT);
             iis.setByteOrder(order);
             iis.writeShorts(shorts, 0, shorts.length);
             iis.seek(0);

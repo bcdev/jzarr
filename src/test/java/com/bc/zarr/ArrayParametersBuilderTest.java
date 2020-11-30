@@ -108,8 +108,8 @@ public class ArrayParametersBuilderTest {
         assertThat(parameters.getDataType(), is(DataType.f8));
         assertThat(parameters.getByteOrder(), is(ByteOrder.BIG_ENDIAN));
         assertThat(parameters.getFillValue(), is(0));
-        assertThat(parameters.getCompressor().getId(), is("zlib"));
-        assertThat(parameters.getCompressor().toString(), is("compressor=zlib/level=1"));
+        assertThat(parameters.getCompressor().getId(), is("blosc"));
+        assertThat(parameters.getCompressor().toString(), is("compressor=blosc/cname=lz4/clevel=5/blocksize=0/shuffle=1"));
     }
 
     @Test

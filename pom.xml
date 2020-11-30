@@ -23,7 +23,6 @@
         <dependency>
             <groupId>edu.ucar</groupId>
             <artifactId>cdm-core</artifactId>
-<!--            <artifactId>netcdfAll</artifactId>-->
             <version>5.3.3</version>
         </dependency>
 
@@ -32,6 +31,17 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.10.3</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.lasersonlab</groupId>
+            <artifactId>jblosc</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.blosc</groupId>-->
+<!--            <artifactId>jblosc</artifactId>-->
+<!--            <version>1.0.1-BC</version>-->
+<!--        </dependency>-->
 
         <!-- ############## -->
         <!-- # scope test # -->

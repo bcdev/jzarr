@@ -133,6 +133,7 @@ public final class ZarrUtils {
     static synchronized ObjectMapper getObjectMapper() {
         if (objectMapper == null) {
             objectMapper = new ObjectMapper();
+            ZarrHeader.register(objectMapper);
         }
         return objectMapper;
     }

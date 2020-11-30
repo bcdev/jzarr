@@ -16,11 +16,18 @@ public class CompressorFactoryTest {
     public void getDefaultCompressorProperties() {
         final Map<String, Object> map = CompressorFactory.getDefaultCompressorProperties();
         assertNotNull(map);
-        assertEquals(2, map.size());
+        assertEquals(5, map.size());
         assertThat(map.containsKey("id"), is(true));
-        assertThat(map.containsKey("level"), is(true));
-        assertThat(map.get("id"), is("zlib"));
-        assertThat(map.get("level"), is(1));
+        assertThat(map.containsKey("cname"), is(true));
+        assertThat(map.containsKey("clevel"), is(true));
+        assertThat(map.containsKey("blocksize"), is(true));
+        assertThat(map.containsKey("shuffle"), is(true));
+
+        assertThat(map.get("id"), is("blosc"));
+        assertThat(map.get("cname"), is("lz4"));
+        assertThat(map.get("clevel"), is(5));
+        assertThat(map.get("blocksize"), is(0));
+        assertThat(map.get("shuffle"), is(1));
     }
 
     @Test

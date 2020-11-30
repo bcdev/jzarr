@@ -67,7 +67,7 @@ public class ChunkReaderWriterImpl_Float extends ChunkReaderWriter {
                 final InputStream is = new ZarrInputStreamAdapter(iis);
                 final OutputStream os = store.getOutputStream(storeKey)
         ) {
-            final float[] floats = (float[]) array.get1DJavaArray(float.class);
+            final float[] floats = (float[]) array.get1DJavaArray(DataType.FLOAT);
             iis.setByteOrder(order);
             iis.writeFloats(floats, 0, floats.length);
             iis.seek(0);

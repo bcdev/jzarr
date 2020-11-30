@@ -50,7 +50,7 @@ public class ChunkReaderWriterImpl_Byte extends ChunkReaderWriter {
 
     @Override
     public void write(String storeKey, Array array) throws IOException {
-        final byte[] bytes = (byte[]) array.get1DJavaArray(byte.class);
+        final byte[] bytes = (byte[]) array.get1DJavaArray(DataType.BYTE);
         try (
                 final ByteArrayInputStream is = new ByteArrayInputStream(bytes);
                 final OutputStream os = store.getOutputStream(storeKey)
