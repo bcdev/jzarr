@@ -197,7 +197,7 @@ Valid values are: ::
   shuffle   ... -1 (AUTOSHUFFLE) / 0 (NOSHUFFLE) / 1 (BYTESHUFFLE=default) / 2 (BITSHUFFLE)
 
 zlib
-^^
+^^^^
 Default values are: ::
 
   level: 1
@@ -207,7 +207,7 @@ Valid values are: ::
   level ... level parameter must be between 0 and 9
 
 NULL
-^^
+^^^^
 The `null` compressor implements the Compressor interface, but does not apply any compression algorithm.
 If you want to easily verify exactly what data is being written while developing an application that uses
 JZarr, it can be helpful to use this compressor. The written data then can be easily verified with a hex editor.
