@@ -111,20 +111,28 @@ public class Tutorial_rtd {
         // Currently available compressors
 
         // zlib compressor
-        Compressor compZ;
-        compZ = CompressorFactory.create("zlib"); // creates a zlib compressor with standard compression level 1
-        compZ = CompressorFactory.create("zlib", "level", 8);  // 8 = compression level .. valid values 0 .. 9
+        // ===============
+        // creates a zlib compressor with standard compression level 1
+        CompressorFactory.create("zlib");
+
+        // creates a zlib compressor with compression level 8 ... valid values 0 .. 9
+        CompressorFactory.create("zlib", "level", 8);
 
         // blosc compressor
-        Compressor compB;
-        compB = CompressorFactory.create("blosc"); // creates a blosc compressor with standard values
-        // creates a blosc compressor with snappy algorithm with level 7
-        compB = CompressorFactory.create("blosc", "cname", "snappy", "clevel", 7);
-        // creates a blosc compressor with autoshuffle
-        compB = CompressorFactory.create("blosc", "shuffle", -1);
+        // ================
         // All permutations of cname, clevel, shuffle and blocksize are allowed
 
+        // creates a blosc compressor with standard values
+        CompressorFactory.create("blosc");
+
+        // creates a blosc compressor with snappy algorithm with level 7
+        CompressorFactory.create("blosc", "cname", "snappy", "clevel", 7);
+
+        // creates a blosc compressor with autoshuffle
+        CompressorFactory.create("blosc", "shuffle", -1);
+
         // null compressor
+        // ===============
         // Means no compression e.g. for analysis purposes
         // In this case values are written without compression as raw binaries
         Compressor compNull = CompressorFactory.create("null");
