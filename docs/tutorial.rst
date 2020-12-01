@@ -188,6 +188,7 @@ Default values are: ::
 
 The meaning of this values you can find at: `Official c-blosc API documentation <https://github.com/Blosc/c-blosc/blob/master/blosc/blosc.h#L143>`_
 
+.. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 4 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
   :start-after: void example_4(
