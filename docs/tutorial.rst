@@ -212,6 +212,9 @@ The `null` compressor implements the Compressor interface, but does not apply an
 If you want to easily verify exactly what data is being written while developing an application that uses
 JZarr, it can be helpful to use this compressor. The written data then can be easily verified with a hex editor.
 
+Examples
+^^^^^^^^
+
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 4 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
