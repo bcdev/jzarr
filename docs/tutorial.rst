@@ -178,15 +178,39 @@ Compressors
 A number of different compressors can be used with JZarr. Different compressors can be created and parameterized with
 the CompressorFactory.
 
-The default compressor is :code:`blosc`.
+blosc (the default compressor)
+^^^^^
 Default values are: ::
 
-  cname = "lz4"  // valid values: "zstd", "blosclz", "lz4", "lz4hc", "zlib", "snappy"
-  clevel: 5      // valid values: clevel parameter must be between 0 and 9
-  blocksize: 0   // valid values: see https://github.com/Blosc/c-blosc/blob/master/blosc/blosc.h#L202
-  shuffle: 1     // valid values: -1 (AUTOSHUFFLE) / 0 (NOSHUFFLE) / 1 (BYTESHUFFLE=default) / 2 (BITSHUFFLE)
+  cname = "lz4"
+  clevel: 5
+  blocksize: 0
+  shuffle: 1
 
 The meaning of this values you can find at: `Official c-blosc API documentation <https://github.com/Blosc/c-blosc/blob/master/blosc/blosc.h#L143>`_
+
+Valid values are: ::
+
+  cname ... "zstd", "blosclz", "lz4", "lz4hc", "zlib", "snappy"
+  clevel ... clevel parameter must be between 0 and 9
+  blocksize ... see https://github.com/Blosc/c-blosc/blob/master/blosc/blosc.h#L202
+  shuffle   ... -1 (AUTOSHUFFLE) / 0 (NOSHUFFLE) / 1 (BYTESHUFFLE=default) / 2 (BITSHUFFLE)
+
+zlib
+^^
+Default values are: ::
+
+  level: 1
+
+Valid values are: ::
+
+  level ... level parameter must be between 0 and 9
+
+NULL
+^^
+The `null` compressor implements the Compressor interface, but does not apply any compression algorithm.
+If you want to easily verify exactly what data is being written while developing an application that uses
+JZarr, it can be helpful to use this compressor. The written data then can be easily verified with a hex editor.
 
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
