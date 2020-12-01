@@ -1,19 +1,22 @@
 {
-  "chunks": [
+  "chunks" : [
     250,
     250
   ],
-  "compressor": {
-    "id": "zlib",
-    "level": 1
+  "compressor" : {
+    "clevel" : 5,
+    "blocksize" : 0,
+    "shuffle" : 1,
+    "cname" : "lz4",
+    "id" : "blosc"
   },
-  "dtype": ">i4",
-  "fill_value": -9999,
-  "filters": null,
-  "order": "C",
-  "shape": [
+  "dtype" : ">i4",
+  "fill_value" : -9999,
+  "filters" : null,
+  "order" : "C",
+  "shape" : [
     1000,
     1000
   ],
-  "zarr_format": 2
+  "zarr_format" : 2
 }
