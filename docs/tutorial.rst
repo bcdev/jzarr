@@ -183,10 +183,10 @@ Default values are: ::
 
   cname = "lz4"  // valid values: "zstd", "blosclz", "lz4", "lz4hc", "zlib", "snappy"
   clevel: 5      // valid values: clevel parameter must be between 0 and 9
-  blocksize: 0   // valid values: see `Official c-blosc API documentation <https://github.com/Blosc/c-blosc/blob/master/blosc/blosc.h#L143>`
+  blocksize: 0   // valid values: see https://github.com/Blosc/c-blosc/blob/master/blosc/blosc.h#L202
   shuffle: 1     // valid values: -1 (AUTOSHUFFLE) / 0 (NOSHUFFLE) / 1 (BYTESHUFFLE=default) / 2 (BITSHUFFLE)
 
-The meaning of this values you can find at: `Official c-blosc API documentation <https://github.com/Blosc/c-blosc/blob/master/blosc/blosc.h#L143>`
+The meaning of this values you can find at: `Official c-blosc API documentation <https://github.com/Blosc/c-blosc/blob/master/blosc/blosc.h#L143>`_
 
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :caption: `example 4 from Tutorial_rtd.java <https://github.com/bcdev/jzarr/blob/master/docs/examples/java/Tutorial_rtd.java>`_
