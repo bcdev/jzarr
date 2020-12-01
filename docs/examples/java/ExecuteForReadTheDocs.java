@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**
@@ -15,6 +16,9 @@ import java.util.stream.Collectors;
  */
 public class ExecuteForReadTheDocs {
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        final Properties properties = new Properties();
+        properties.load(Files.newBufferedReader(Paths.get("maven.properties")));
+        System.setProperty("jna.library.path", properties.getProperty("bloscJnaLibraryPath"));
 
         Path workingDir = Paths.get(".");
 

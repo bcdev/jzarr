@@ -37,11 +37,11 @@
             <artifactId>jblosc</artifactId>
             <version>1.0.1</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.blosc</groupId>-->
-<!--            <artifactId>jblosc</artifactId>-->
-<!--            <version>1.0.1-BC</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.blosc</groupId>-->
+        <!--            <artifactId>jblosc</artifactId>-->
+        <!--            <version>1.0.1-BC</version>-->
+        <!--        </dependency>-->
 
         <!-- ############## -->
         <!-- # scope test # -->
@@ -135,13 +135,40 @@
                         <encoding>UTF-8</encoding>
                         <excludes>
                             <exclude>.gitignore</exclude>
+                            <exclude>temp/**</exclude>
                         </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                    <configuration>
+                        <argLine>-Djna.library.path=${bloscJnaLibraryPath}</argLine>
                     </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${basedir}/maven.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -152,6 +179,11 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>temp.**</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
@@ -177,7 +209,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
         </plugins>
-
     </build>
 
 </project>

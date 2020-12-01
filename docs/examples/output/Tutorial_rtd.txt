@@ -1,5 +1,5 @@
 example_1_output_start
-com.bc.zarr.ZarrArray{'/' shape=[10000, 10000], chunks=[1000, 1000], dataType=i4, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+com.bc.zarr.ZarrArray{'/' shape=[10000, 10000], chunks=[1000, 1000], dataType=i4, fillValue=0, compressor=blosc/cname=lz4/clevel=5/blocksize=0/shuffle=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 example_1__output_end__
 
 =====================================================================================
@@ -25,7 +25,7 @@ example_3__output_end__
 =====================================================================================
 
 example_5_output_start
-com.bc.zarr.ZarrArray{'/foo/bar/baz' shape=[1000, 1000], chunks=[100, 100], dataType=i4, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+com.bc.zarr.ZarrArray{'/foo/bar/baz' shape=[1000, 1000], chunks=[100, 100], dataType=i4, fillValue=0, compressor=blosc/cname=lz4/clevel=5/blocksize=0/shuffle=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 example_5__output_end__
 
 =====================================================================================
@@ -85,7 +85,7 @@ example_12__output_end__
 =====================================================================================
 
 example_13_output_start
-com.bc.zarr.ZarrArray{'/' shape=[6200, 7500], chunks=[477, 500], dataType=f8, fillValue=0, compressor=zlib/level=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+com.bc.zarr.ZarrArray{'/' shape=[6200, 7500], chunks=[477, 500], dataType=f8, fillValue=0, compressor=blosc/cname=lz4/clevel=5/blocksize=0/shuffle=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
 example_13__output_end__
 
 =====================================================================================
