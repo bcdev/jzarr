@@ -109,12 +109,29 @@ public class Tutorial_rtd {
      */
     private static void example_4() throws IOException {
         // Currently available compressors
-        Compressor zlibComp = CompressorFactory.create("zlib", "level", 8);  // 8 = compression level .. valid values 0 .. 9
-        Compressor nullComp = CompressorFactory.create("null");  // means no compression e.g. for analysis purposes
+
+        // zlib compressor
+        Compressor compZ;
+        compZ = CompressorFactory.create("zlib"); // creates a zlib compressor with standard compression level 1
+        compZ = CompressorFactory.create("zlib", "level", 8);  // 8 = compression level .. valid values 0 .. 9
+
+        // blosc compressor
+        Compressor compB;
+        compB = CompressorFactory.create("blosc"); // creates a blosc compressor with standard values
+        // creates a blosc compressor with snappy algorithm with level 7
+        compB = CompressorFactory.create("blosc", "cname", "snappy", "clevel", 7);
+        // creates a blosc compressor with autoshuffle
+        compB = CompressorFactory.create("blosc", "shuffle", -1);
+        // All permutations of cname, clevel, shuffle and blocksize are allowed
+
+        // null compressor
+        // Means no compression e.g. for analysis purposes
+        // In this case values are written without compression as raw binaries
+        Compressor compNull = CompressorFactory.create("null");
 
         ZarrArray jZarray = ZarrArray.create(new ArrayParams()
                 .shape(222, 333, 44)  // one or more dimensions
-                .compressor(nullComp)  // if you need uncompressed chunks e.g. for analysis purposes
+                .compressor(compNull)  // if you need uncompressed chunks e.g. for analysis purposes
         );
     }
 
