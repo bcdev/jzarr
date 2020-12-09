@@ -80,21 +80,23 @@ public class ZarrArray {
 
     public static ZarrArray open(ZarrPath relativePath, Store store) throws IOException {
         final ZarrPath zarrHeaderPath = relativePath.resolve(FILENAME_DOT_ZARRAY);
-        try (
-                final InputStream storageStream = store.getInputStream(zarrHeaderPath.storeKey);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(storageStream))
-        ) {
-            final ZarrHeader header = ZarrUtils.fromJson(reader, ZarrHeader.class);
-            final int[] shape = header.getShape();
-            final int[] chunks = header.getChunks();
-            final DataType dataType = header.getRawDataType();
-            final ByteOrder byteOrder = header.getByteOrder();
-            final Number fillValue = header.getFill_value();
-            Compressor compressor = header.getCompressor();
-            if (compressor == null) {
-                compressor = nullCompressor;
+        try (final InputStream storageStream = store.getInputStream(zarrHeaderPath.storeKey)){
+            if(storageStream == null) {
+                throw new IOException("'" + FILENAME_DOT_ZARRAY + "' expected but is not readable or missing in store.");
             }
-            return new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, store);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(storageStream))) {
+                final ZarrHeader header = ZarrUtils.fromJson(reader, ZarrHeader.class);
+                final int[] shape = header.getShape();
+                final int[] chunks = header.getChunks();
+                final DataType dataType = header.getRawDataType();
+                final ByteOrder byteOrder = header.getByteOrder();
+                final Number fillValue = header.getFill_value();
+                Compressor compressor = header.getCompressor();
+                if (compressor == null) {
+                    compressor = nullCompressor;
+                }
+                return new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, store);
+            }
         }
     }
 
