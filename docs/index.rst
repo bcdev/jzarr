@@ -18,3 +18,5 @@ Contents
     contributing
     license
 
+.. role:: raw-html(raw)
+    :format: html

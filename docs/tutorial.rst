@@ -78,6 +78,7 @@ Creates an array with size [5 rows, 7 columns], with data type :code:`int` and w
 
 Prepare the data which should be written to the array with a shape of [3, 5] and an offset of [2, 0].
 
+.. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 2 code snippet 2 begin
   :end-before: example 2 code snippet 2 end
@@ -85,6 +86,7 @@ Prepare the data which should be written to the array with a shape of [3, 5] and
 
 Write the prepared data.
 
+.. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 2 code snippet 3 begin
   :end-before: example 2 code snippet 3 end
@@ -92,6 +94,7 @@ Write the prepared data.
 
 Read the entire data from the array.
 
+.. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 2 code snippet 4 begin
   :end-before: example 2 code snippet 4 end
@@ -99,6 +102,7 @@ Read the entire data from the array.
 
 Print out the data read.
 
+.. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
   :start-after: example 2 code snippet 5 begin
   :end-before: example 2 code snippet 5 end
@@ -122,9 +126,8 @@ The output displays that the previously written data (written with an offset of 
 
 Persistent arrays
 -----------------
-In the examples above, compressed data (default compressor) for each chunk of the array was stored
-in main memory. JZarr arrays can also be stored on a file system, enabling persistence of data
-between sessions. For example:
+In the examples above, the data of the arrays (chunked) were only stored in RAM. JZarr arrays can
+also be stored on a file system, which enables persistence of data between sessions.
 
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
@@ -173,12 +176,14 @@ Resizing and appending
 ----------------------
 Currently not implemented.
 
+.. _compressors:
+
 Compressors
 -----------
 A number of different compressors can be used with JZarr. Different compressors can be created and parameterized with
 the CompressorFactory.
 
-blosc (the default compressor)
+blosc :code:`default compressor`
 ^^^^^
 Default values are: ::
 

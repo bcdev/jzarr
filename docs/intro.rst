@@ -11,10 +11,10 @@ Highlights
 
 * Create N-dimensional arrays with java primitive data types. At the moment boolean and char type are not supported.
 * Chunk arrays along any dimension.
-* Compress and/or filter chunks.
+* Compress the chunks by using one of the :ref:`compressors <compressors>`
 * Store arrays in memory, on disk, (Future plans: inside a Zip file, on S3, ...)
 * Read an array concurrently from multiple threads or processes.
-* Write to an array concurrently from multiple threads or processes.
+* Write an array concurrently from multiple threads or processes.
 * Organize arrays into hierarchies via groups.
 
 Status
@@ -25,7 +25,20 @@ the `GitHub issue tracker <https://github.com/bcdev/jzarr/issues>`_.
 
 Requirements
 ------------
+Java
+^^^^
 JZarr needs Java 8 or higher.
+
+blosc
+^^^^^
+- This API also offers blosc compression. :raw-html:`<br>`
+  To use this compression, a compiled c-blosc distributed library must be available on the operating system.
+- If such a library is not available ... The C sourcecode and instructions to build the library can be
+  found at https://github.com/Blosc/c-blosc.
+- If you want to use the JZarr API and the integrated blosc compression, you have to start the Java Virtual Machine
+  with the following VM parameter: ::
+
+  -Djna.library.path=<path which contains the compiled c-blosc library>
 
 Maven Dependency
 ----------------

@@ -101,24 +101,33 @@ public class Tutorial_rtd {
      */
     private static void example_3() throws IOException, InvalidRangeException, JZarrException {
         // example 3 code snippet 1 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
-        ZarrArray created = ZarrArray.create("docs/examples/output/example_3.zarr", new ArrayParams()
-                .shape(1000, 1000).chunks(250, 250).dataType(DataType.i4).fillValue(-9999)
+        String path = "docs/examples/output/example_3.zarr";
+        ZarrArray createdArray = ZarrArray.create(path, new ArrayParams()
+                .shape(1000, 1000)
+                .chunks(250, 250)
+                .dataType(DataType.i4)
+                .fillValue(-9999)
         );
         // example 3 code snippet 1 end
 
         // example 3 code snippet 2 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
-        created.write(42, new int[]{3, 4}, new int[]{21, 22});
+        int value = 42;
+        int[] withShape = {3, 4};
+        int[] toPosition = {21, 22};
+        
+        createdArray.write(value, withShape, toPosition);
         // example 3 code snippet 2 end
 
         // example 3 code snippet 3 begin .. see https://jzarr.readthedocs.io/en/latest/tutorial.html#persistent-arrays
-        ZarrArray opened = ZarrArray.open("docs/examples/output/example_3.zarr");
-        int[] redShape = {5, 6};
-        final int[] data = (int[]) opened.read(redShape, new int[]{20, 21});
+        ZarrArray reopenedArray = ZarrArray.open("docs/examples/output/example_3.zarr");
+        int[] shape = {5, 6};
+        int[] fromPosition = {20, 21};
+        int[] data = (int[]) reopenedArray.read(shape, fromPosition);
         // example 3 code snippet 3 end
 
         createOutput(out -> {
             DataBuffer buffer = Nd4j.createBuffer(data);
-            out.println(Nd4j.create(buffer).reshape('c', redShape));
+            out.println(Nd4j.create(buffer).reshape('c', shape));
         });
     }
 
