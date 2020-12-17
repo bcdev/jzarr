@@ -228,9 +228,8 @@ Examples
   :dedent: 8
 
 .. note::
-   In this very beginning phase we only implemented the **"zlib"** compressor and a **"null"** compressor.
-   If no compressor is set at array creation time, a **"zlib"** compressor with :code:`level 1` is used as
-   default compressor.
+   In this very beginning phase we only implemented the **"blosc"**, the **"zlib"** and a **"null"** compressor.
+   If no compressor is specified at array creation time, a **"blosc"** compressor with default values is used.
    More compressors will be implemented in the future.
    
    Additionally, in the future, developers should be able to register their own Compressors in the CompressorFactory.
