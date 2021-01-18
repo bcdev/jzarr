@@ -57,6 +57,22 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
     }
 
     @Test
+    public void getCompressor() throws IOException {
+        final int[] shape = {1, 1};
+        final int[] chunkShape = {1, 1};
+        final DataType dataType = DataType.i1; // Byte
+        final Compressor compressor = CompressorFactory.nullCompressor;
+        final ArrayParams parameters = new ArrayParams()
+                .shape(shape).chunks(chunkShape)
+                .dataType(dataType)
+                .compressor(compressor);
+        final ZarrArray array = ZarrArray.create(
+                new ZarrPath(arrayName), store, parameters, null);
+        array.getCompressor();
+        assertEquals(compressor, array.getCompressor());
+    }
+
+    @Test
     public void writeAndRead_Byte_Full() throws IOException, InvalidRangeException {
         //preparation
         final int width = 7;
