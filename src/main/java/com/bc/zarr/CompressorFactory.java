@@ -207,6 +207,9 @@ public class CompressorFactory {
     }
 
     private static class BloscCompressor extends Compressor {
+
+        private static final int HEADER_SIZE = 16;
+
         private final int clevel;
         private final int blocksize;
         private final int shuffle;
@@ -312,10 +315,8 @@ public class CompressorFactory {
 
         @Override
         public void uncompress(InputStream is, OutputStream os) throws IOException {
-            while (is.available() >= 16) {
-                byte[] header = new byte[16];
-                is.read(header);
-
+            byte[] header = new byte[HEADER_SIZE];
+            while (is.read(header) == HEADER_SIZE) {
                 BufferSizes bs = cbufferSizes(ByteBuffer.wrap(header));
                 int chunkSize = (int) bs.getCbytes();
 
