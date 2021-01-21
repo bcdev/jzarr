@@ -36,6 +36,7 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.Arrays;
@@ -150,5 +151,75 @@ public class CompressorTest {
         final int[] uncompressed = new int[input.length];
         resultIis.readFully(uncompressed, 0, uncompressed.length);
         assertThat(input, is(equalTo(uncompressed)));
+    }
+
+    @Test
+    public void read_BloscCompressor_DefaultAvailable() throws IOException {
+        final Compressor compressor = CompressorFactory.create("blosc");
+        final ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
+        final int[] input = {
+            100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,
+            100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,
+            100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,
+            100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100,
+            100, 22, 100, 22, 22, 22, 100, 100, 100, 22, 100
+        };
+        final MemoryCacheImageOutputStream iis = new MemoryCacheImageOutputStream(new ByteArrayOutputStream());
+        iis.setByteOrder(byteOrder);
+        iis.writeInts(input, 0, input.length);
+        iis.seek(0);
+
+        ByteArrayOutputStream os;
+        InputStream is;
+
+        final byte[] intermediate = {2, 1, 33, 1, -36, 0, 0, 0, -36, 0, 0, 0, 73, 0, 0, 0, 20, 0, 0, 0, 49, 0, 0, 0, -5, 17, 0, 0, 0, 100, 0, 0, 0, 22, 0, 0, 0, 100, 0, 0, 0, 22, 0, 0, 0, 22, 0, 0, 0, 22, 0, 0, 0, 100, 0, 0, 0, 100, 32, 0, 0, 20, 0, 15, 44, 0, -111, 80, 22, 0, 0, 0, 100};
+
+        //write
+        os = new ByteArrayOutputStream();
+        compressor.compress(new ZarrInputStreamAdapter(iis), os);
+        final byte[] compressed = os.toByteArray();
+        assertThat(compressed, is(equalTo(intermediate)));
+
+        //read
+        is = new MockAWSChecksumValidatingInputStream(new ByteArrayInputStream(compressed));
+        os = new ByteArrayOutputStream();
+        compressor.uncompress(is, os);
+        final ByteArrayInputStream bais = new ByteArrayInputStream(os.toByteArray());
+        final MemoryCacheImageInputStream resultIis = new MemoryCacheImageInputStream(bais);
+        resultIis.setByteOrder(byteOrder);
+        final int[] uncompressed = new int[input.length];
+        resultIis.readFully(uncompressed, 0, uncompressed.length);
+        assertThat(input, is(equalTo(uncompressed)));
+    }
+
+    // Simulates a software.amazon.awssdk.services.s3.checksums.ChecksumValidatingInputStream which
+    // does not provide it's own implementation of available() and always returns 0
+    private static class MockAWSChecksumValidatingInputStream extends InputStream {
+
+        private final InputStream in;
+
+        public MockAWSChecksumValidatingInputStream(InputStream in) {
+            this.in = in;
+        }
+
+        @Override
+        public int read() throws IOException {
+            return in.read();
+        }
+
+        @Override
+        public int read(byte[] buf, int off, int len) throws IOException {
+            return in.read(buf, off, len);
+        }
+
+        @Override
+        public synchronized void reset() throws IOException {
+            in.reset();
+        }
+
+        @Override
+        public void close() throws IOException {
+            in.close();
+        }
     }
 }
