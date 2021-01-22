@@ -208,8 +208,6 @@ public class CompressorFactory {
 
     private static class BloscCompressor extends Compressor {
 
-        private static final int HEADER_SIZE = 16;
-
         private final int clevel;
         private final int blocksize;
         private final int shuffle;
@@ -315,19 +313,37 @@ public class CompressorFactory {
 
         @Override
         public void uncompress(InputStream is, OutputStream os) throws IOException {
-            byte[] header = new byte[HEADER_SIZE];
-            while (is.read(header) == HEADER_SIZE) {
-                BufferSizes bs = cbufferSizes(ByteBuffer.wrap(header));
-                int chunkSize = (int) bs.getCbytes();
 
-                byte[] inBytes = Arrays.copyOf(header, header.length + chunkSize);
-                is.read(inBytes, header.length, chunkSize);
-
-                ByteBuffer outBuffer = ByteBuffer.allocate((int) bs.getNbytes());
-                JBlosc.decompressCtx(ByteBuffer.wrap(inBytes), outBuffer, outBuffer.limit(), 1);
-
-                os.write(outBuffer.array());
+            byte[] header = new byte[JBlosc.OVERHEAD];
+            int lastHeaderRead = 0;
+            int headerSize = 0;
+            while(lastHeaderRead >= 0 && headerSize < header.length) {
+                lastHeaderRead = is.read(header, headerSize, header.length - headerSize);
+                headerSize += lastHeaderRead;
             }
+
+            if(headerSize == header.length) {
+
+                BufferSizes bs = cbufferSizes(ByteBuffer.wrap(header));
+                int compressedSize = (int) bs.getCbytes();
+                int uncompressedSize = (int) bs.getNbytes();
+
+                int lastRead = 0;
+                int totalRead = header.length;
+                byte[] inBytes = Arrays.copyOf(header, compressedSize);
+                while(lastRead >= 0 && totalRead < compressedSize) {
+                    lastRead = is.read(inBytes, totalRead, compressedSize - totalRead);
+                    totalRead += lastRead;
+                }
+
+                if(totalRead == compressedSize) {
+                    ByteBuffer outBuffer = ByteBuffer.allocate(uncompressedSize);
+                    JBlosc.decompressCtx(ByteBuffer.wrap(inBytes), outBuffer, outBuffer.limit(), 1);
+                    os.write(outBuffer.array());
+                }
+
+            }
+
         }
 
         private BufferSizes cbufferSizes(ByteBuffer cbuffer) {
