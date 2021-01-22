@@ -217,4 +217,15 @@ public final class ZarrUtils {
         }
         return null;
     }
+
+    public static void passThrough(InputStream is, OutputStream os) throws IOException {
+        final byte[] bytes = new byte[65536];
+        int read = is.read(bytes);
+        while (read >= 0) {
+            if (read > 0) {
+                os.write(bytes, 0, read);
+            }
+            read = is.read(bytes);
+        }
+    }
 }

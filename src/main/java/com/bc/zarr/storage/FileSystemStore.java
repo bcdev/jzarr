@@ -41,25 +41,31 @@ import java.util.stream.Collectors;
 
 public class FileSystemStore implements Store {
 
-    private Path root;
+    private final Path root;
+    private final InputStreamCreatorStrategy strategy;
 
     public FileSystemStore(String path, FileSystem fileSystem) {
-        if (fileSystem == null) {
-            root = Paths.get(path);
-        } else {
-            root = fileSystem.getPath(path);
-        }
+        this(fileSystem == null? Paths.get(path):fileSystem.getPath(path));
     }
 
     public FileSystemStore(Path rootPath) {
+        this(rootPath, null);
+    }
+
+    public FileSystemStore(Path rootPath, InputStreamCreatorStrategy strategy) {
         root = rootPath;
+        if (strategy != null) {
+            this.strategy = strategy;
+        } else {
+            this.strategy = Files::newInputStream;
+        }
     }
 
     @Override
     public InputStream getInputStream(String key) throws IOException {
         final Path path = root.resolve(key);
         if (Files.isReadable(path)) {
-            return Files.newInputStream(path);
+            return strategy.create(path);
         } else {
             return null;
         }
@@ -79,10 +85,10 @@ public class FileSystemStore implements Store {
         if (Files.isDirectory(toBeDeleted)) {
             ZarrUtils.deleteDirectoryTreeRecursively(toBeDeleted);
         }
-        if (Files.exists(toBeDeleted)){
+        if (Files.exists(toBeDeleted)) {
             Files.delete(toBeDeleted);
         }
-        if (Files.exists(toBeDeleted)|| Files.isDirectory(toBeDeleted)) {
+        if (Files.exists(toBeDeleted) || Files.isDirectory(toBeDeleted)) {
             throw new IOException("Unable to initialize " + toBeDeleted.toAbsolutePath().toString());
         }
     }
@@ -98,9 +104,13 @@ public class FileSystemStore implements Store {
     }
 
     private TreeSet<String> getKeysFor(String suffix) throws IOException {
-        return  Files.walk(root)
+        return Files.walk(root)
                 .filter(path -> path.getFileName().toString().endsWith(suffix))
                 .map(path -> root.relativize(path.getParent()).toString())
                 .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    public interface InputStreamCreatorStrategy {
+        InputStream create(Path path) throws IOException;
     }
 }

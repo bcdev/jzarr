@@ -24,13 +24,23 @@
  *
  */
 
-import com.bc.zarr.*;
+import com.bc.zarr.ArrayParams;
+import com.bc.zarr.CompressorFactory;
+import com.bc.zarr.DataType;
+import com.bc.zarr.ZarrArray;
+import com.bc.zarr.ZarrGroup;
+import com.bc.zarr.ZarrUtils;
+import com.bc.zarr.storage.FileSystemStore;
 import ucar.ma2.InvalidRangeException;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -75,7 +85,14 @@ public class S3Array_nio {
 
     static void readFromS3Bucket(Path bucketPath) throws IOException, InvalidRangeException {
         Path groupPath = bucketPath.resolve("GroupName.zarr");
-        final ZarrGroup group = ZarrGroup.open(groupPath);
+        final FileSystemStore.InputStreamCreatorStrategy strategy = path -> {
+            final InputStream is = Files.newInputStream(path);
+            final ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ZarrUtils.passThrough(is, os);
+            return new ByteArrayInputStream(os.toByteArray());
+        };
+        final FileSystemStore store = new FileSystemStore(groupPath, strategy);
+        final ZarrGroup group = ZarrGroup.open(store);
         ZarrArray array = group.openArray("AnArray");
         byte[] bytes = (byte[]) array.read();
         System.out.println(Arrays.toString(bytes));

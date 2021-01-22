@@ -42,6 +42,8 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import static com.bc.zarr.ZarrUtils.passThrough;
+
 public class CompressorFactory {
 
     public final static Compressor nullCompressor = new NullCompressor();
