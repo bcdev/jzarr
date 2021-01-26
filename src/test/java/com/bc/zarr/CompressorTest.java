@@ -30,7 +30,12 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
 import com.bc.zarr.chunk.ZarrInputStreamAdapter;
+
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Function;
+
 import org.junit.*;
 
 import javax.imageio.stream.MemoryCacheImageInputStream;
@@ -40,7 +45,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 
 public class CompressorTest {
 
@@ -197,7 +201,7 @@ public class CompressorTest {
         resultIis.setByteOrder(byteOrder);
         final int[] uncompressed = new int[input.length];
         resultIis.readFully(uncompressed, 0, uncompressed.length);
-        assertThat(input, is(equalTo(uncompressed)));
+        assertThat(uncompressed, is(equalTo(input)));
     }
 
     @Test
@@ -243,7 +247,56 @@ public class CompressorTest {
         resultIis.setByteOrder(byteOrder);
         final int[] uncompressed = new int[input.length];
         resultIis.readFully(uncompressed, 0, uncompressed.length);
-        assertThat(input, is(equalTo(uncompressed)));
+        assertThat(uncompressed, is(equalTo(input)));
+    }
+
+    @Test
+    public void testThatAllSupportedBloscCasesWorksWithAWS() throws IOException {
+        final int[] blocksizes = {0, 200, 2000};
+        for (String cname : CompressorFactory.BloscCompressor.supportedCnames) {
+            for (int cLevel = 0; cLevel < 10; cLevel++) {
+                for (int blocksize : blocksizes) {
+                    for (int shuffle = 0; shuffle < 3 ; shuffle++) {
+                        final Map<String, Object> bloscProperties = new LinkedHashMap<>();
+                        bloscProperties.put(CompressorFactory.BloscCompressor.keyCname, cname);
+                        bloscProperties.put(CompressorFactory.BloscCompressor.keyClevel, cLevel);
+                        bloscProperties.put(CompressorFactory.BloscCompressor.keyBlocksize, blocksize);
+                        bloscProperties.put(CompressorFactory.BloscCompressor.keyShuffle, shuffle);
+//                        System.out.println("bloscProperties = " + bloscProperties.toString());
+                        final Compressor compressor = CompressorFactory.create("blosc", bloscProperties);
+
+                        final ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
+                        final int[] input = new int[4321];
+                        for (int i = 0; i < input.length; i++) {
+                            input[i] = i;
+                        }
+                        final MemoryCacheImageOutputStream iis = new MemoryCacheImageOutputStream(new ByteArrayOutputStream());
+                        iis.setByteOrder(byteOrder);
+                        iis.writeInts(input, 0, input.length);
+                        iis.seek(0);
+
+                        ByteArrayOutputStream os;
+                        InputStream is;
+
+                        //write
+                        os = new ByteArrayOutputStream();
+                        compressor.compress(new ZarrInputStreamAdapter(iis), os);
+                        final byte[] compressed = os.toByteArray();
+
+                        //read
+                        is = new MockAWSChecksumValidatingInputStream(new ByteArrayInputStream(compressed), len -> len > 1 ? len - 1 : len);
+                        os = new ByteArrayOutputStream();
+                        compressor.uncompress(is, os);
+                        final ByteArrayInputStream bais = new ByteArrayInputStream(os.toByteArray());
+                        final MemoryCacheImageInputStream resultIis = new MemoryCacheImageInputStream(bais);
+                        resultIis.setByteOrder(byteOrder);
+                        final int[] uncompressed = new int[input.length];
+                        resultIis.readFully(uncompressed, 0, uncompressed.length);
+                        assertThat("Testcase: " + bloscProperties.toString(), uncompressed, is(equalTo(input)));
+                    }
+                }
+            }
+        }
     }
 
     // Simulates a software.amazon.awssdk.services.s3.checksums.ChecksumValidatingInputStream which
