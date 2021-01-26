@@ -27,14 +27,19 @@
 package com.bc.zarr;
 
 import com.sun.jna.ptr.NativeLongByReference;
-import org.blosc.*;
+import org.blosc.BufferSizes;
+import org.blosc.IBloscDll;
+import org.blosc.JBlosc;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.Deflater;
@@ -58,10 +63,7 @@ public class CompressorFactory {
 
         /* blosc defaults */
         map.put("id", "blosc");
-        map.put("cname", "lz4");
-        map.put("clevel", 5);
-        map.put("blocksize", 0);
-        map.put("shuffle", 1);
+        map.putAll(BloscCompressor.defaultProperties);
 
         return map;
     }
@@ -206,7 +208,31 @@ public class CompressorFactory {
         }
     }
 
-    private static class BloscCompressor extends Compressor {
+    static class BloscCompressor extends Compressor {
+
+        final static int AUTOSHUFFLE = -1;
+        final static int NOSHUFFLE = 0;
+        final static int BYTESHUFFLE = 1;
+        final static int BITSHUFFLE = 2;
+
+        public final static String keyCname = "cname";
+        public final static String defaultCname = "lz4";
+        public final static String keyClevel = "clevel";
+        public final static int defaultCLevel = 5;
+        public final static String keyShuffle = "shuffle";
+        public final static int defaultShuffle = BYTESHUFFLE;
+        public final static String keyBlocksize = "blocksize";
+        public final static int defaultBlocksize = 0;
+        public final static int[] supportedShuffle = new int[]{/*AUTOSHUFFLE, */NOSHUFFLE, BYTESHUFFLE, BITSHUFFLE};
+        public final static String[] supportedCnames = new String[]{"zstd", "blosclz", defaultCname, "lz4hc", "zlib"/*, "snappy"*/};
+
+        public final static Map<String, Object> defaultProperties = Collections
+                .unmodifiableMap(new HashMap<String, Object>() {{
+                    put(keyCname, defaultCname);
+                    put(keyClevel, defaultCLevel);
+                    put(keyShuffle, defaultShuffle);
+                    put(keyBlocksize, defaultBlocksize);
+                }});
 
         private final int clevel;
         private final int blocksize;
@@ -214,21 +240,20 @@ public class CompressorFactory {
         private final String cname;
 
         private BloscCompressor(Map<String, Object> map) {
-            final Object cnameObj = map.get("cname");
+            final Object cnameObj = map.get(keyCname);
             if (cnameObj == null) {
-                cname = "lz4"; //default value
+                cname = defaultCname;
             } else {
                 cname = (String) cnameObj;
             }
-            final String[] supportedNames = {"zstd", "blosclz", "lz4", "lz4hc", "zlib", "snappy"};
-            if (Arrays.stream(supportedNames).noneMatch(cname::equals)) {
+            if (Arrays.stream(supportedCnames).noneMatch(cname::equals)) {
                 throw new IllegalArgumentException(
-                        "blosc: compressor not supported: '" + cname + "'; expected one of " + Arrays.toString(supportedNames));
+                        "blosc: compressor not supported: '" + cname + "'; expected one of " + Arrays.toString(supportedCnames));
             }
 
-            final Object clevelObj = map.get("clevel");
+            final Object clevelObj = map.get(keyClevel);
             if (clevelObj == null) {
-                clevel = 5; //default value
+                clevel = defaultCLevel;
             } else if (clevelObj instanceof String) {
                 clevel = Integer.parseInt((String) clevelObj);
             } else {
@@ -238,29 +263,23 @@ public class CompressorFactory {
                 throw new IllegalArgumentException("blosc: clevel parameter must be between 0 and 9 but was: " + clevel);
             }
 
-            final int AUTOSHUFFLE = -1;
-            final int NOSHUFFLE = 0;
-            final int BYTESHUFFLE = 1;
-            final int BITSHUFFLE = 2;
-
-            final Object shuffleObj = map.get("shuffle");
+            final Object shuffleObj = map.get(keyShuffle);
             if (shuffleObj == null) {
-                this.shuffle = BYTESHUFFLE; //default value
+                this.shuffle = defaultShuffle;
             } else if (shuffleObj instanceof String) {
                 this.shuffle = Integer.parseInt((String) shuffleObj);
             } else {
                 this.shuffle = ((Number) shuffleObj).intValue();
             }
-            final int[] supportedShuffle = new int[]{AUTOSHUFFLE, NOSHUFFLE, BYTESHUFFLE, BITSHUFFLE};
-            final String[] supportedShuffleNames = new String[]{"-1 (AUTOSHUFFLE)", "0 (NOSHUFFLE)", "1 (BYTESHUFFLE)", "2 (BITSHUFFLE)"};
+            final String[] supportedShuffleNames = new String[]{/*"-1 (AUTOSHUFFLE)", */"0 (NOSHUFFLE)", "1 (BYTESHUFFLE)", "2 (BITSHUFFLE)"};
             if (Arrays.stream(supportedShuffle).noneMatch(value -> value == shuffle)) {
                 throw new IllegalArgumentException(
                         "blosc: shuffle type not supported: '" + shuffle + "'; expected one of " + Arrays.toString(supportedShuffleNames));
             }
 
-            final Object blocksizeObj = map.get("blocksize");
+            final Object blocksizeObj = map.get(keyBlocksize);
             if (blocksizeObj == null) {
-                this.blocksize = 0; //default value
+                this.blocksize = defaultBlocksize;
             } else if (blocksizeObj instanceof String) {
                 this.blocksize = Integer.parseInt((String) blocksizeObj);
             } else {
@@ -313,37 +332,17 @@ public class CompressorFactory {
 
         @Override
         public void uncompress(InputStream is, OutputStream os) throws IOException {
-
+            final DataInput di = new DataInputStream(is);
             byte[] header = new byte[JBlosc.OVERHEAD];
-            int lastHeaderRead = 0;
-            int headerSize = 0;
-            while(lastHeaderRead >= 0 && headerSize < header.length) {
-                lastHeaderRead = is.read(header, headerSize, header.length - headerSize);
-                headerSize += lastHeaderRead;
-            }
-
-            if(headerSize == header.length) {
-
-                BufferSizes bs = cbufferSizes(ByteBuffer.wrap(header));
-                int compressedSize = (int) bs.getCbytes();
-                int uncompressedSize = (int) bs.getNbytes();
-
-                int lastRead = 0;
-                int totalRead = header.length;
-                byte[] inBytes = Arrays.copyOf(header, compressedSize);
-                while(lastRead >= 0 && totalRead < compressedSize) {
-                    lastRead = is.read(inBytes, totalRead, compressedSize - totalRead);
-                    totalRead += lastRead;
-                }
-
-                if(totalRead == compressedSize) {
-                    ByteBuffer outBuffer = ByteBuffer.allocate(uncompressedSize);
-                    JBlosc.decompressCtx(ByteBuffer.wrap(inBytes), outBuffer, outBuffer.limit(), 1);
-                    os.write(outBuffer.array());
-                }
-
-            }
-
+            di.readFully(header);
+            BufferSizes bs = cbufferSizes(ByteBuffer.wrap(header));
+            int compressedSize = (int) bs.getCbytes();
+            int uncompressedSize = (int) bs.getNbytes();
+            byte[] inBytes = Arrays.copyOf(header, compressedSize);
+            di.readFully(inBytes, header.length, compressedSize - header.length);
+            ByteBuffer outBuffer = ByteBuffer.allocate(uncompressedSize);
+            JBlosc.decompressCtx(ByteBuffer.wrap(inBytes), outBuffer, outBuffer.limit(), 1);
+            os.write(outBuffer.array());
         }
 
         private BufferSizes cbufferSizes(ByteBuffer cbuffer) {
