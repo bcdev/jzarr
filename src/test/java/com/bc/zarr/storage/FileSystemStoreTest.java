@@ -32,6 +32,8 @@ import com.google.common.jimfs.Jimfs;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
@@ -48,6 +50,7 @@ import static org.junit.Assert.*;
 /**
  * Test along https://zarr.readthedocs.io/en/stable/api/storage.html#zarr.storage.DirectoryStore
  */
+@RunWith(Parameterized.class)
 public class FileSystemStoreTest {
 
     private String testDataStr;
@@ -57,9 +60,24 @@ public class FileSystemStoreTest {
     private Path rootPath;
     private Path testDataPath;
 
+    // Parameters
+    private final boolean nested;
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data(){
+        return Arrays.asList(new Object[][] {
+                {true},
+                {false}
+        });
+    }
+
+    public FileSystemStoreTest(boolean nested) {
+        this.nested = nested;
+    }
+
     @Before
     public void setUp() throws Exception {
-        testDataStr = "testData";
+        testDataStr = "testData_" + (nested ? "nested" : "flat");
         rootPathStr = "group.zarr";
 
         final int fileSystemAlternative = 1;
@@ -223,7 +241,7 @@ public class FileSystemStoreTest {
 
         final ArrayParams parameters = new ArrayParams()
                 .dataType(DataType.i1).shape(shape).chunks(chunks)
-                .fillValue(0).compressor(null);
+                .fillValue(0).compressor(null).nested(nested);
 
         //execution
         final ZarrGroup rootGrp = ZarrGroup.create(store, null);
@@ -233,10 +251,22 @@ public class FileSystemStoreTest {
         //verification
         final Path fooPath = rootPath.resolve("foo");
         assertThat(Files.isDirectory(fooPath), is(true));
-        assertThat(Files.list(fooPath).filter(
-                path -> !path.getFileName().toString().startsWith(".")
-        ).count(), is(4L));
-        final String[] chunkFileNames = {"0.0", "0.1", "1.0", "1.1"};
+
+        String[] chunkFileNames;
+        if (nested) {
+            List<Path> names = Files.list(fooPath).collect(Collectors.toList());
+            assertThat(names.toString(),
+                    Files.list(fooPath).filter(
+                    path -> !path.getFileName().toString().startsWith(".")
+            ).count(), is(2L));
+            chunkFileNames = new String[]{"0/0", "0/1", "1/0", "1/1"};
+        } else {
+            assertThat(Files.list(fooPath).filter(
+                    path -> !path.getFileName().toString().startsWith(".")
+            ).count(), is(4L));
+            chunkFileNames = new String[]{"0.0", "0.1", "1.0", "1.1"};
+        }
+
         final byte[] expectedBytes = new byte[25];
         Arrays.fill(expectedBytes, (byte) 42);
         for (String name : chunkFileNames) {
@@ -245,6 +275,12 @@ public class FileSystemStoreTest {
             assertThat(Files.size(chunkPath), is(5L * 5));
             assertThat(Files.readAllBytes(chunkPath), is(expectedBytes));
         }
+
+        // Reopen the array to check that nesting v. flatness is detected.
+        final ZarrGroup rootGrp2 = ZarrGroup.create(store, null);
+        final ZarrArray fooArray2 = rootGrp.openArray("foo");
+        assertEquals(nested, fooArray2.getNested());
+
     }
 
     @Test

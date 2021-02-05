@@ -98,11 +98,12 @@ public final class ZarrUtils {
         return chunkIndices;
     }
 
-    public static String createChunkFilename(int[] currentIdx) {
+    public static String createChunkFilename(int[] currentIdx, boolean nested) {
+        final char sep = nested ? '/' : '.';
         StringBuilder sb = new StringBuilder();
         for (int aCurrentIdx : currentIdx) {
             sb.append(aCurrentIdx);
-            sb.append(".");
+            sb.append(sep);
         }
         sb.setLength(sb.length() - 1);
         return sb.toString();

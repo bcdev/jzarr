@@ -152,7 +152,12 @@ public class ZarrUtilsTest {
 
     @Test
     public void computeChunkFilename() {
-        assertEquals("1.2.3.42", ZarrUtils.createChunkFilename(new int[]{1, 2, 3, 42}));
+        assertEquals("1.2.3.42", ZarrUtils.createChunkFilename(new int[]{1, 2, 3, 42}, false));
+    }
+
+    @Test
+    public void computeChunkFilename2() {
+        assertEquals("1/2/3/42", ZarrUtils.createChunkFilename(new int[]{1, 2, 3, 42}, true));
     }
 
     private String expectedJson(boolean nullCompressor) {

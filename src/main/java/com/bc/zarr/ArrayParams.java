@@ -76,6 +76,18 @@ public class ArrayParams {
     private ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
     private Number fillValue = 0;
     private Compressor compressor = CompressorFactory.createDefaultCompressor();
+    private boolean nested = false;
+
+    /**
+     * Sets the optional {@code nested} flag. True signifies "nested" storage with chunks in a directory tree rather
+     * than all in the same directory. False significes a "flat" layout with all chunks in a single directory
+     * with the chunk index separated by a ".". Returns a reference to this builder so that the methods
+     * can be chained together.
+     */
+    public ArrayParams nested(boolean nested) {
+        this.nested = nested;
+        return this;
+    }
 
     /**
      * Sets the mandatory {@code shape} and returns a reference to this Builder so that the methods can be chained together.
@@ -212,7 +224,7 @@ public class ArrayParams {
             }
         }
 
-        return new Params(shape, chunks, dataType, byteOrder, fillValue, compressor);
+        return new Params(shape, chunks, dataType, byteOrder, fillValue, compressor, nested);
     }
 
     /**
@@ -225,14 +237,16 @@ public class ArrayParams {
         private final ByteOrder byteOrder;
         private final Number fillValue;
         private final Compressor compressor;
+        private final boolean nested;
 
-        private Params(int[] shape, int[] chunks, DataType dataType, ByteOrder byteOrder, Number fillValue, Compressor compressor) {
+        private Params(int[] shape, int[] chunks, DataType dataType, ByteOrder byteOrder, Number fillValue, Compressor compressor, boolean nested) {
             this.shape = shape;
             this.chunks = chunks;
             this.dataType = dataType;
             this.byteOrder = byteOrder;
             this.fillValue = fillValue;
             this.compressor = compressor;
+            this.nested = nested;
         }
 
         public int[] getShape() {
@@ -263,6 +277,8 @@ public class ArrayParams {
             return compressor;
         }
 
+        public boolean getNested() { return nested; };
+
         public ArrayParams toBuilder() {
             ArrayParams builder = new ArrayParams();
             builder.shape = getShape();
@@ -272,6 +288,7 @@ public class ArrayParams {
             builder.byteOrder = getByteOrder();
             builder.fillValue = getFillValue();
             builder.compressor = getCompressor();
+            builder.nested = getNested();
             return builder;
         }
     }
