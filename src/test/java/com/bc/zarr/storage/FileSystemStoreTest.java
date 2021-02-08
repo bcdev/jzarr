@@ -61,23 +61,24 @@ public class FileSystemStoreTest {
     private Path testDataPath;
 
     // Parameters
-    private final boolean nested;
+    private final Boolean nested;
 
     @Parameterized.Parameters
     public static Collection<Object[]> data(){
         return Arrays.asList(new Object[][] {
                 {true},
-                {false}
+                {false},
+                {null}
         });
     }
 
-    public FileSystemStoreTest(boolean nested) {
+    public FileSystemStoreTest(Boolean nested) {
         this.nested = nested;
     }
 
     @Before
     public void setUp() throws Exception {
-        testDataStr = "testData_" + (nested ? "nested" : "flat");
+        testDataStr = String.format("testData_%s", nested);
         rootPathStr = "group.zarr";
 
         final int fileSystemAlternative = 1;
@@ -224,7 +225,7 @@ public class FileSystemStoreTest {
         assertThat(Files.list(fooPath).count(), is(2L));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZARRAY)), is(true));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZATTRS)), is(true));
-        final ZarrHeader header = new ZarrHeader(shape, chunks, DataType.i1.toString(), ByteOrder.LITTLE_ENDIAN, 0, null);
+        final ZarrHeader header = new ZarrHeader(shape, chunks, DataType.i1.toString(), ByteOrder.LITTLE_ENDIAN, 0, null, null);
         final String expected = strip(ZarrUtils.toJson(header, true));
         assertThat(strip(getZarrayContent(fooPath)), is(equalToIgnoringWhiteSpace(expected)));
         assertThat(strip(getZattrsContent(fooPath)), is("{\"data\":[4.0,5.0,6.0,7.0,8.0]}"));
@@ -253,7 +254,7 @@ public class FileSystemStoreTest {
         assertThat(Files.isDirectory(fooPath), is(true));
 
         String[] chunkFileNames;
-        if (nested) {
+        if (nested != null && nested) {
             List<Path> names = Files.list(fooPath).collect(Collectors.toList());
             assertThat(names.toString(),
                     Files.list(fooPath).filter(
@@ -279,7 +280,13 @@ public class FileSystemStoreTest {
         // Reopen the array to check that nesting v. flatness is detected.
         final ZarrGroup rootGrp2 = ZarrGroup.create(store, null);
         final ZarrArray fooArray2 = rootGrp.openArray("foo");
-        assertEquals(nested, fooArray2.getNested());
+        if (nested == null) {
+            // If any data is written, then the workaround check in ZarrArray.open
+            // to find the first chunk (either *.* or */*) will take precedence.
+            assertEquals(false, fooArray2.getNested());
+        } else {
+            assertEquals(nested, fooArray2.getNested());
+        }
 
     }
 

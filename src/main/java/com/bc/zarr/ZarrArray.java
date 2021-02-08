@@ -61,9 +61,9 @@ public class ZarrArray {
     private final Compressor _compressor;
     private final Store _store;
     private final ByteOrder _byteOrder;
-    private final boolean _nested;
+    private final Boolean _nested;
 
-    private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, DataType dataType, ByteOrder order, Number fillValue, Compressor compressor, Store store, boolean nested) {
+    private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, DataType dataType, ByteOrder order, Number fillValue, Compressor compressor, Store store, Boolean nested) {
         this.relativePath = relativePath;
         _shape = shape;
         _chunks = chunkShape;
@@ -82,7 +82,7 @@ public class ZarrArray {
     }
 
     private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, DataType dataType, ByteOrder order, Number fillValue, Compressor compressor, Store store) {
-        this(relativePath, shape, chunkShape, dataType, order, fillValue, compressor, store, DEFAULT_NESTED);
+        this(relativePath, shape, chunkShape, dataType, order, fillValue, compressor, store, null);
     }
     public static ZarrArray open(String path) throws IOException {
         return open(Paths.get(path));
@@ -125,52 +125,51 @@ public class ZarrArray {
         // file of the form \d.\d*, but since the chunks may be stored elsewhere, we're going
         // to loop through all possible chunks and check their existence in one of the two possible
         // locations. Once one is found, we will assume _all_ follow the same pattern.
-        Boolean nested = null;
+        Boolean nested = header.getNested();
+        if (nested == null) {
 
-        // Loop through all dimensions
-        int n = shape.length;
-        int[] ptr = new int[n];
-        long total = 1;
-        for (int i : shape) {
-            total *= i;
-        }
+            // Loop through all dimensions
+            int n = shape.length;
+            int[] ptr = new int[n];
+            long total = 1;
+            for (int i : shape) {
+                total *= i;
+            }
 
-        int attempts = 0;
+            int attempts = 0;
 
-        for (int ignore = 0; ignore < total; ignore++) { // essentially a while(true) for our known maximum.
-            int j;
-            for (j = 0; j < n; j++)
-            {
-                // This n-dim loops allows to walk through all possible values for all dimensions.
-                for (boolean test : Arrays.asList(true, false)) {
-                    attempts++;
-                    final String chunkFilename = ZarrUtils.createChunkFilename(ptr, test);
-                    final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
-                    try (final InputStream storageStream = store.getInputStream(chunkFilePath.storeKey)) {
-                        if (storageStream != null) { // TODO: test available() ?
-                            nested = test;
-                            break;
+            for (int ignore = 0; ignore < total; ignore++) { // essentially a while(true) for our known maximum.
+                int j;
+                for (j = 0; j < n; j++) {
+                    // This n-dim loops allows to walk through all possible values for all dimensions.
+                    for (boolean test : Arrays.asList(true, false)) {
+                        attempts++;
+                        final String chunkFilename = ZarrUtils.createChunkFilename(ptr, test);
+                        final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
+                        try (final InputStream storageStream = store.getInputStream(chunkFilePath.storeKey)) {
+                            if (storageStream != null) { // TODO: test available() ?
+                                nested = test;
+                                break;
+                            }
                         }
                     }
+
+                    // Increment and/or exit
+                    ptr[j]++;
+                    if (ptr[j] < shape[j]) break;
+                    ptr[j] = 0;
                 }
-
-                // Increment and/or exit
-                ptr[j]++;
-                if (ptr[j] < shape[j]) break;
-                ptr[j] = 0;
+                if (j == n) break;
             }
-            if (j == n) break;
-        }
 
-        if (nested == null) {
-            // In this case, *no* chunk was found. Something is almost certainly wrong.
-            // However, not throwing an exception since there is a possibility that a client
-            // created an array but did not yet write data. An alternative would be to store
-            // the nested boolean with the .zarray metadata. (TODO incl. logging)
-            nested = DEFAULT_NESTED;
+            if (nested == null) {
+                // In this case, *no* chunk was found. Something is almost certainly wrong.
+                // However, not throwing an exception since there is a possibility that a client
+                // created an array but did not yet write data.
+                // TODO: logging
+            }
         }
         return new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, store, nested);
-
     }
 
     public static ZarrArray create(ArrayParams arrayParams) throws IOException {
@@ -220,7 +219,7 @@ public class ZarrArray {
         final Number fillValue = params.getFillValue();
         final Compressor compressor = params.getCompressor();
         final ByteOrder byteOrder = params.getByteOrder();
-        final boolean nested = params.getNested();
+        final Boolean nested = params.getNested();
         final ZarrArray zarrArray = new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, store, nested);
         zarrArray.writeZArrayHeader();
         zarrArray.writeAttributes(attributes);
@@ -264,9 +263,10 @@ public class ZarrArray {
         final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, dataShape, offset);
         ucar.ma2.DataType dataType = ucar.ma2.DataType.getType(data.getClass().getComponentType(), false);
         final Array source = Array.factory(dataType, dataShape, data);
+        final boolean nested = _nested == null ? DEFAULT_NESTED : _nested;
 
         for (int[] chunkIndex : chunkIndices) {
-            final String chunkFilename = getChunkFilename(chunkIndex, _nested);
+            final String chunkFilename = getChunkFilename(chunkIndex, nested);
             final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
             final int[] fromBufferPos = computeFrom(chunkIndex, offset, false);
             synchronized (chunkFilename) {
@@ -305,13 +305,14 @@ public class ZarrArray {
         }
         final int targetSize = java.lang.reflect.Array.getLength(buffer);
         final long expectedSize = ZarrUtils.computeSize(bufferShape);
+        final boolean nested = _nested == null ? DEFAULT_NESTED : _nested;
         if (targetSize != expectedSize) {
             throw new IOException("Expected target buffer size is " + expectedSize + " but was " + targetSize);
         }
         final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, bufferShape, offset);
 
         for (int[] chunkIndex : chunkIndices) {
-            final String chunkFilename = getChunkFilename(chunkIndex, _nested);
+            final String chunkFilename = getChunkFilename(chunkIndex, nested);
             final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
             final int[] fromChunkPos = computeFrom(chunkIndex, offset, true);
             final Array sourceChunk = _chunkReaderWriter.read(chunkFilePath.storeKey);
@@ -383,7 +384,7 @@ public class ZarrArray {
     }
 
     private void writeZArrayHeader() throws IOException {
-        final ZarrHeader zarrHeader = new ZarrHeader(_shape, _chunks, _dataType.toString(), _byteOrder, _fillValue, _compressor);
+        final ZarrHeader zarrHeader = new ZarrHeader(_shape, _chunks, _dataType.toString(), _byteOrder, _fillValue, _compressor, _nested);
         final ZarrPath zArray = relativePath.resolve(FILENAME_DOT_ZARRAY);
         try (
                 OutputStream os = _store.getOutputStream(zArray.storeKey);

@@ -76,7 +76,7 @@ public class ArrayParams {
     private ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
     private Number fillValue = 0;
     private Compressor compressor = CompressorFactory.createDefaultCompressor();
-    private boolean nested = false;
+    private Boolean nested = null;
 
     /**
      * Sets the optional {@code nested} flag. True signifies "nested" storage with chunks in a directory tree rather
@@ -84,7 +84,7 @@ public class ArrayParams {
      * with the chunk index separated by a ".". Returns a reference to this builder so that the methods
      * can be chained together.
      */
-    public ArrayParams nested(boolean nested) {
+    public ArrayParams nested(Boolean nested) {
         this.nested = nested;
         return this;
     }
@@ -237,9 +237,9 @@ public class ArrayParams {
         private final ByteOrder byteOrder;
         private final Number fillValue;
         private final Compressor compressor;
-        private final boolean nested;
+        private final Boolean nested;
 
-        private Params(int[] shape, int[] chunks, DataType dataType, ByteOrder byteOrder, Number fillValue, Compressor compressor, boolean nested) {
+        private Params(int[] shape, int[] chunks, DataType dataType, ByteOrder byteOrder, Number fillValue, Compressor compressor, Boolean nested) {
             this.shape = shape;
             this.chunks = chunks;
             this.dataType = dataType;
@@ -277,7 +277,7 @@ public class ArrayParams {
             return compressor;
         }
 
-        public boolean getNested() { return nested; };
+        public Boolean getNested() { return nested; };
 
         public ArrayParams toBuilder() {
             ArrayParams builder = new ArrayParams();

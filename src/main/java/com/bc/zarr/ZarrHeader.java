@@ -51,8 +51,13 @@ public class ZarrHeader {
     private final String order = "C";
     private final int[] shape;
     private final int zarr_format = 2;
+    private final Boolean nested;
 
     public ZarrHeader(int[] shape, int[] chunks, String dtype, ByteOrder byteOrder, Number fill_value, Compressor compressor) {
+        this(shape, chunks, dtype, byteOrder, fill_value, compressor, null);
+    }
+
+    public ZarrHeader(int[] shape, int[] chunks, String dtype, ByteOrder byteOrder, Number fill_value, Compressor compressor, Boolean nested) {
         this.chunks = chunks;
         if (compressor == null || CompressorFactory.nullCompressor.equals(compressor)) {
             this.compressor = null;
@@ -63,6 +68,7 @@ public class ZarrHeader {
         this.dtype = translateByteOrder(byteOrder) + dtype;
         this.fill_value = fill_value;
         this.shape = shape;
+        this.nested = nested;
     }
 
     public int[] getChunks() {
@@ -121,6 +127,10 @@ public class ZarrHeader {
         return shape;
     }
 
+    public Boolean getNested() {
+        return nested;
+    }
+
     static class ZarrHeaderSerializer extends StdSerializer<ZarrHeader> {
 
         protected ZarrHeaderSerializer() {
@@ -139,6 +149,9 @@ public class ZarrHeader {
             gen.writeObjectField("order", value.order);
             gen.writeObjectField("shape", value.getShape());
             gen.writeNumberField("zarr_format", value.zarr_format);
+            if (value.nested != null) {
+                gen.writeBooleanField("nested", value.nested);
+            }
             gen.writeEndObject();
         }
     }
@@ -173,7 +186,13 @@ public class ZarrHeader {
             } else {
                 compressor = CompressorFactory.create(compBean);
             }
-            return new ZarrHeader(shape, chunks, getRawDataType(dtype).toString(), getByteOrder(dtype), fill, compressor);
+
+            Boolean nested = null;
+            JsonNode nestedNode = (JsonNode) root.path("nested");
+            if (!nestedNode.isMissingNode()) {
+                nested = nestedNode.asBoolean();
+            }
+            return new ZarrHeader(shape, chunks, getRawDataType(dtype).toString(), getByteOrder(dtype), fill, compressor, nested);
         }
 
     }
