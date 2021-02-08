@@ -46,6 +46,11 @@ import static com.bc.zarr.ZarrConstants.FILENAME_DOT_ZARRAY;
 
 public class ZarrArray {
 
+    private final static boolean DEFAULT_NESTED;
+    static {
+        DEFAULT_NESTED = Boolean.parseBoolean(System.getProperty("jzarr.nested", "false"));
+    }
+
     private final int[] _shape;
     private final int[] _chunks;
     private final ZarrPath relativePath;
@@ -77,7 +82,7 @@ public class ZarrArray {
     }
 
     private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, DataType dataType, ByteOrder order, Number fillValue, Compressor compressor, Store store) {
-        this(relativePath, shape, chunkShape, dataType, order, fillValue, compressor, store, false);
+        this(relativePath, shape, chunkShape, dataType, order, fillValue, compressor, store, DEFAULT_NESTED);
     }
     public static ZarrArray open(String path) throws IOException {
         return open(Paths.get(path));
@@ -159,8 +164,10 @@ public class ZarrArray {
 
         if (nested == null) {
             // In this case, *no* chunk was found. Something is almost certainly wrong.
-            throw new IOException(String.format("Could find neither nested nor chunks (tried: %s)", attempts));
-
+            // However, not throwing an exception since there is a possibility that a client
+            // created an array but did not yet write data. An alternative would be to store
+            // the nested boolean with the .zarray metadata. (TODO incl. logging)
+            nested = DEFAULT_NESTED;
         }
         return new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, store, nested);
 
