@@ -46,7 +46,7 @@ public class S3Array_nio {
     }
 
     static Path connectToS3Bucket() throws IOException {
-        String s3AccessKey = "<your acceyy key>";
+        String s3AccessKey = "<your access key>";
         String s3SecretKey = "<your secret key>";
         String s3Server = "s3.eu-central-1.amazonaws.com"; // example server name
         String s3BucketName = "bucket-abcd"; // example bucket name
