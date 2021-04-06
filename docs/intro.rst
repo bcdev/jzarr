@@ -43,7 +43,7 @@ blosc
 Maven Dependency
 ----------------
 
-To use JZarr in you project integrate the following lines into your maven pom.xml::
+To use JZarr in your project integrate the following lines into your maven pom.xml::
 
  <dependency>
     <groupId>com.bc.zarr</groupId>

@@ -95,24 +95,8 @@ public class ZarrUtilsTest_FromToJson {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);
         pw.println("{");
-        pw.println("  \"ints\" : [");
-        pw.println("    3,");
-        pw.println("    4,");
-        pw.println("    5,");
-        pw.println("    6,");
-        pw.println("    7,");
-        pw.println("    8,");
-        pw.println("    9");
-        pw.println("  ],");
-        pw.println("  \"floats\" : [");
-        pw.println("    3.0,");
-        pw.println("    4.0,");
-        pw.println("    5.0,");
-        pw.println("    6.0,");
-        pw.println("    7.0,");
-        pw.println("    8.0,");
-        pw.println("    9.0");
-        pw.println("  ]");
+        pw.println("  \"ints\" : [ 3, 4, 5, 6, 7, 8, 9 ],");
+        pw.println("  \"floats\" : [ 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0 ]");
         pw.print("}");
         final String expected_2 = sw.toString();
 

@@ -27,7 +27,7 @@ package com.bc.zarr;
 
 import com.bc.zarr.storage.Store;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -63,7 +63,7 @@ public final class ZarrUtils {
     }
 
     public static void toJson(Object o, Writer writer, boolean prettyPrinting) throws IOException {
-        getObjectWriter(prettyPrinting).writeValue(writer,o);
+        getObjectWriter(prettyPrinting).writeValue(writer, o);
     }
 
     public static int[][] computeChunkIndices(int[] shape, int[] chunks, int[] bufferShape, int[] to) {
@@ -131,10 +131,8 @@ public final class ZarrUtils {
 
     static ObjectWriter getObjectWriter(boolean prettyPrinting) {
         if (prettyPrinting) {
-            DefaultPrettyPrinter defaultPrettyPrinter = new DefaultPrettyPrinter();
-            defaultPrettyPrinter.indentArraysWith(DefaultIndenter.SYSTEM_LINEFEED_INSTANCE);
-            return getObjectMapper().writer(defaultPrettyPrinter);
-//            return getObjectMapper().writer().withDefaultPrettyPrinter();
+            PrettyPrinter prettyPrinter = new DefaultPrettyPrinter().withArrayIndenter(DefaultPrettyPrinter.FixedSpaceIndenter.instance);
+            return getObjectMapper().writer(prettyPrinter);
         }
         return getObjectMapper().writer();
     }

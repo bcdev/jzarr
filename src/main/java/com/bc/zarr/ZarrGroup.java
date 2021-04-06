@@ -99,17 +99,20 @@ public class ZarrGroup {
         if (store == null) {
             return create();
         }
-        try (InputStream is = store.getInputStream(FILENAME_DOT_ZGROUP)) {
+        validateGroupToBeOpened(store, new ZarrPath(""));
+        return new ZarrGroup(store);
+    }
+
+    private static void validateGroupToBeOpened(Store store, ZarrPath relativePath) throws IOException {
+        try (InputStream is = store.getInputStream(relativePath.resolve(FILENAME_DOT_ZGROUP).storeKey)) {
             if (is == null) {
                 throw new IOException("'" + FILENAME_DOT_ZGROUP + "' expected but is not readable or missing in store.");
             }
             ensureZarrFormatIs2(is);
         }
-        return new ZarrGroup(store);
     }
 
     private static void ensureZarrFormatIs2(InputStream is) throws IOException {
-
         try (
                 final InputStreamReader in = new InputStreamReader(is);
                 BufferedReader reader = new BufferedReader(in)
@@ -131,6 +134,12 @@ public class ZarrGroup {
         group.createHeader();
         group.writeAttributes(attributes);
         return group;
+    }
+
+    public ZarrGroup openSubGroup(String subGroupName) throws IOException {
+        final ZarrPath relativePath = this.relativePath.resolve(subGroupName);
+        validateGroupToBeOpened(store, relativePath);
+        return new ZarrGroup(store, relativePath);
     }
 
     private final static class ZarrFormat {
@@ -181,6 +190,12 @@ public class ZarrGroup {
     public Map<String, Object> getAttributes() throws IOException {
         return ZarrUtils.readAttributes(relativePath, store);
     }
+
+    @Override
+    public String toString() {
+        return getClass().getCanonicalName() + "{'/" + relativePath.storeKey + "'}";
+    }
+
 
     private void createHeader() throws IOException {
         final Map<String, Integer> singletonMap = Collections.singletonMap(ZARR_FORMAT, 2);

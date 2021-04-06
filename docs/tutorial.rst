@@ -196,7 +196,7 @@ The meaning of this values you can find at: `Official c-blosc API documentation 
 
 Valid values are: ::
 
-  cname ... "zstd", "blosclz", "lz4", "lz4hc", "zlib", "snappy"
+  cname ... "zstd", "blosclz", "lz4", "lz4hc", "zlib"
   clevel ... clevel parameter must be between 0 and 9
   blocksize ... see https://github.com/Blosc/c-blosc/blob/master/blosc/blosc.h#L202
   shuffle   ... -1 (AUTOSHUFFLE) / 0 (NOSHUFFLE) / 1 (BYTESHUFFLE=default) / 2 (BITSHUFFLE)
@@ -251,6 +251,9 @@ In the following example you can see:
 - how to create a group
 - how to create sub groups
 - how to create arrays within a group
+- how to open existing groups
+- how to open existing subgroups
+- how to open existing arrays within a group or subgroup
 
 .. highlight:: java
 .. literalinclude:: ./examples/java/Tutorial_rtd.java
@@ -259,11 +262,18 @@ In the following example you can see:
   :end-before: createOutput
   :dedent: 8
 
-A :code:`System.out.println(array);` then creates the following output
+The following code snipped
+
+.. highlight:: java
+.. literalinclude:: ./examples/java/Tutorial_rtd.java
+  :start-after: example 5 code snippet 1 begin
+  :end-before: example 5 code snippet 1 end
+  :dedent: 8
+
+then creates the following output
 
 .. highlight:: none
 .. literalinclude:: ./examples/output/Tutorial_rtd.txt
-   :caption: output
    :start-after: example_5_output_start
    :end-before: __output_end__
 

@@ -25,19 +25,16 @@ example_3__output_end__
 =====================================================================================
 
 example_5_output_start
-com.bc.zarr.ZarrArray{'/foo/bar/baz' shape=[1000, 1000], chunks=[100, 100], dataType=i4, fillValue=0, compressor=blosc/cname=lz4/clevel=5/blocksize=0/shuffle=1, store=InMemoryStore, byteOrder=BIG_ENDIAN}
+com.bc.zarr.ZarrGroup{'/foo'}
+com.bc.zarr.ZarrGroup{'/foo/bar'}
+com.bc.zarr.ZarrArray{'/foo/bar/baz' shape=[1000, 1000], chunks=[100, 100], dataType=i4, fillValue=0.0, compressor=blosc/cname=lz4/clevel=5/blocksize=0/shuffle=1, store=FileSystemStore, byteOrder=BIG_ENDIAN}
 example_5__output_end__
 
 =====================================================================================
 
 example_6_output_start
 {
-  "qux" : [
-    1,
-    4,
-    7,
-    12
-  ],
+  "qux" : [ 1, 4, 7, 12 ],
   "baz" : 42
 }
 example_6__output_end__

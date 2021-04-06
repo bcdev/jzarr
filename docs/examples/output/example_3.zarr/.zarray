@@ -1,8 +1,5 @@
 {
-  "chunks" : [
-    250,
-    250
-  ],
+  "chunks" : [ 250, 250 ],
   "compressor" : {
     "clevel" : 5,
     "blocksize" : 0,
@@ -14,9 +11,6 @@
   "fill_value" : -9999,
   "filters" : null,
   "order" : "C",
-  "shape" : [
-    1000,
-    1000
-  ],
+  "shape" : [ 1000, 1000 ],
   "zarr_format" : 2
 }

@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -122,7 +123,7 @@ public class Tutorial_rtd {
         int value = 42;
         int[] withShape = {3, 4};
         int[] toPosition = {21, 22};
-        
+
         createdArray.write(value, withShape, toPosition);
         // example 3 code snippet 2 end
 
@@ -160,11 +161,11 @@ public class Tutorial_rtd {
         // creates a blosc compressor with standard values
         CompressorFactory.create("blosc");
 
-        // creates a blosc compressor with snappy algorithm with level 7
-        CompressorFactory.create("blosc", "cname", "snappy", "clevel", 7);
+        // creates a blosc compressor with lz4hc algorithm with level 7
+        CompressorFactory.create("blosc", "cname", "lz4hc", "clevel", 7);
 
-        // creates a blosc compressor with autoshuffle
-        CompressorFactory.create("blosc", "shuffle", -1);
+        // creates a blosc compressor with byteshuffle
+        CompressorFactory.create("blosc", "shuffle", 1);
 
         // null compressor
         // ===============
@@ -182,13 +183,30 @@ public class Tutorial_rtd {
      * Create a group and sub groups and an array in a subgroup
      */
     private static void example_5() throws IOException, JZarrException {
-        ZarrGroup root = ZarrGroup.create();          // creates an in memory group
+        String path = "docs/examples/output/example_5.zarr";
+
+        // persist a group with sub groups and an array
+        ZarrGroup root = ZarrGroup.create(path);
         ZarrGroup foo = root.createSubGroup("foo");
         ZarrGroup bar = foo.createSubGroup("bar");
         ZarrArray array = bar.createArray("baz", new ArrayParams()
                 .shape(1000, 1000).chunks(100, 100).dataType(DataType.i4)
         );
-        createOutput(out -> out.println(array));
+
+        // reopen the root group, nested groups and array
+        final ZarrGroup rootReopened = ZarrGroup.open(path);
+        final Iterator<String> groupKeyIter = rootReopened.getGroupKeys().iterator();
+        final ZarrGroup sub1 = rootReopened.openSubGroup(groupKeyIter.next());
+        final ZarrGroup sub2 = rootReopened.openSubGroup(groupKeyIter.next());
+        final ZarrArray arrayReopened = rootReopened.openArray(rootReopened.getArrayKeys().iterator().next());
+
+        createOutput(printStream -> {
+            // example 5 code snippet 1 begin ..
+            printStream.println(sub1);
+            printStream.println(sub2);
+            printStream.println(arrayReopened);
+            // example 5 code snippet 1 end
+        });
     }
 
     /**
