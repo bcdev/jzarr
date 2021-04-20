@@ -136,30 +136,30 @@ public class ZarrArray {
                 total *= i;
             }
 
-            int attempts = 0;
-
             for (int ignore = 0; ignore < total; ignore++) { // essentially a while(true) for our known maximum.
-                int j;
-                for (j = 0; j < n; j++) {
-                    // This n-dim loops allows to walk through all possible values for all dimensions.
-                    for (boolean test : Arrays.asList(true, false)) {
-                        attempts++;
-                        final String chunkFilename = ZarrUtils.createChunkFilename(ptr, test);
-                        final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
-                        try (final InputStream storageStream = store.getInputStream(chunkFilePath.storeKey)) {
-                            if (storageStream != null) { // TODO: test available() ?
-                                nested = test;
-                                break;
-                            }
+                // This n-dim loops allows to walk through all possible values for all dimensions.
+                for (boolean test : Arrays.asList(true, false)) {
+                    final String chunkFilename = ZarrUtils.createChunkFilename(ptr, test);
+                    final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
+                    try (final InputStream storageStream = store.getInputStream(chunkFilePath.storeKey)) {
+                        if (storageStream != null) { // TODO: test available() ?
+                            nested = test;
+                            break;
                         }
                     }
-
-                    // Increment and/or exit
-                    ptr[j]++;
-                    if (ptr[j] < shape[j]) break;
-                    ptr[j] = 0;
                 }
-                if (j == n) break;
+                if (nested != null) {
+                    break;
+                } else {
+                    for(int j = 0; j < n; j++) {
+                        ptr[j]++;
+                        if(ptr[j] < shape[j]) {
+                            break;
+                        } else {
+                            ptr[j] = 0;
+                        }
+                    }
+                }
             }
 
             if (nested == null) {
