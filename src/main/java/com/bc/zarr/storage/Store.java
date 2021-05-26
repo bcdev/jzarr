@@ -26,6 +26,7 @@
 
 package com.bc.zarr.storage;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,7 +39,7 @@ import java.util.Set;
  * operations are read (get the sequence of bytes associated with a given key), write (set the
  * sequence of bytes associated with a given key) and delete (remove a key/value pair).
  */
-public interface Store {
+public interface Store extends Closeable {
 
     InputStream getInputStream(String key) throws IOException;
 
@@ -49,4 +50,8 @@ public interface Store {
     Set<String> getArrayKeys() throws IOException;
 
     Set<String> getGroupKeys() throws IOException;
+
+    @Override
+    default void close() throws IOException {
+    }
 }
