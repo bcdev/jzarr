@@ -27,47 +27,81 @@
 package com.bc.zarr;
 
 import com.bc.zarr.storage.FileSystemStore;
-import com.google.common.jimfs.Jimfs;
+import com.bc.zarr.storage.Store;
+import com.bc.zarr.storage.ZipStore;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-//import static org.junit.Assert.fail;
 
 public class ZarrArrayTest_saveMultithreading {
 
     private String arrayName;
-    private FileSystemStore store;
+    private Path rootPath;
+    private Path testDataPath;
 
     @Before
-    public void setUp() {
-        final FileSystem fileSystem = Jimfs.newFileSystem();
+    public void setUp() throws IOException {
+        testDataPath = Files.createTempDirectory("zarrTest");
+
+        rootPath = testDataPath.resolve("test");
+
         arrayName = "output";
-        Path rootPath = fileSystem.getPath("test");
-        store = new FileSystemStore(rootPath);
-//        Files.createDirectories(rootPath);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        final List<Path> paths = Files.walk(testDataPath).sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        for (Path path : paths) {
+            Files.delete(path);
+        }
+    }
+
+    @Test
+    public void parallelWriting_toTheSameChunk_withCompression_NULL_With_ZipStore() throws IOException, InvalidRangeException {
+        try (ZipStore store = new ZipStore(rootPath)) {
+            multithreaded_write_read_roundtrip(CompressorFactory.nullCompressor, store);
+        }
+    }
+
+    @Test
+    public void parallelWriting_toTheSameChunk_withCompression_blosc_With_ZipStore() throws IOException, InvalidRangeException {
+        try (ZipStore store = new ZipStore(rootPath)) {
+            multithreaded_write_read_roundtrip(CompressorFactory.create("blosc"), store);
+        }
+    }
+
+    @Test
+    public void parallelWriting_toTheSameChunk_withCompression_zlib_With_ZipStore() throws IOException, InvalidRangeException {
+        try (ZipStore store = new ZipStore(rootPath)) {
+            multithreaded_write_read_roundtrip(CompressorFactory.create("zlib"), store);
+        }
     }
 
     @Test
     public void parallelWriting_toTheSameChunk_withCompression_zlib() throws IOException, InvalidRangeException {
-        multithreaded_write_read_roundtrip(CompressorFactory.create("zlib"));
+        multithreaded_write_read_roundtrip(CompressorFactory.create("zlib"), new FileSystemStore(rootPath));
     }
 
     @Test
     public void parallelWriting_toTheSameChunk_withCompression_blosc() throws IOException, InvalidRangeException {
-        multithreaded_write_read_roundtrip(CompressorFactory.create("blosc"));
+        multithreaded_write_read_roundtrip(CompressorFactory.create("blosc"), new FileSystemStore(rootPath));
     }
 
-    private void multithreaded_write_read_roundtrip(Compressor compressor) throws IOException, InvalidRangeException {
+    private void multithreaded_write_read_roundtrip(Compressor compressor, Store store) throws IOException, InvalidRangeException {
         final ArrayParams parameters = new ArrayParams()
                 .shape(30, 30).chunks(10, 10)
                 .dataType(DataType.i4).fillValue(0).compressor(compressor);

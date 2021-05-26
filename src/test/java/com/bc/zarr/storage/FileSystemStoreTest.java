@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 
 import static com.bc.zarr.TestUtils.*;
 import static com.bc.zarr.ZarrConstants.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 /**
  * Test along https://zarr.readthedocs.io/en/stable/api/storage.html#zarr.storage.DirectoryStore
@@ -104,7 +104,7 @@ public class FileSystemStoreTest {
         final FileSystemStore fileSystemStore = new FileSystemStore("abc/def/ghi", fileSystem);
 
         //verification
-        final Object root = getPrivateFieldObject(fileSystemStore, "root");
+        final Object root = getPrivateFieldObject(fileSystemStore, "internalRoot");
         assertThat(root.getClass().getSimpleName(), is("JimfsPath"));
         assertThat(((Path) root).toAbsolutePath().toString(), is("/some/working/dir/abc/def/ghi"));
     }
@@ -117,7 +117,7 @@ public class FileSystemStoreTest {
         final FileSystemStore fileSystemStore = new FileSystemStore(pathStr, fileSystem);
 
         //verification
-        final Object root = getPrivateFieldObject(fileSystemStore, "root");
+        final Object root = getPrivateFieldObject(fileSystemStore, "internalRoot");
         assertThat(root, is(instanceOf(Path.class)));
         final String expected = Paths.get(pathStr).toAbsolutePath().toString();
         final Path rootNioPath = (Path) root;

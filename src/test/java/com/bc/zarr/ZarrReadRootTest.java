@@ -74,7 +74,7 @@ public class ZarrReadRootTest {
         assertThat(((ZarrPath)path).storeKey, is("rastername"));
         final Object store = TestUtils.getPrivateFieldObject(rootGrp, "store");
         assertThat(store, is(instanceOf(FileSystemStore.class)));
-        final Object root = TestUtils.getPrivateFieldObject(store, "root");
+        final Object root = TestUtils.getPrivateFieldObject(store, "internalRoot");
         assertThat(root, is(instanceOf(Path.class)));
         assertThat(root.toString(), is("lsmf"));
     }
