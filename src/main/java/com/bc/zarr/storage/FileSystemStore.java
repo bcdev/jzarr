@@ -29,6 +29,8 @@ package com.bc.zarr.storage;
 import com.bc.zarr.ZarrConstants;
 import com.bc.zarr.ZarrUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,48 +43,65 @@ import java.util.stream.Collectors;
 
 public class FileSystemStore implements Store {
 
-    private Path root;
+    private final Path internalRoot;
 
     public FileSystemStore(String path, FileSystem fileSystem) {
         if (fileSystem == null) {
-            root = Paths.get(path);
+            internalRoot = Paths.get(path);
         } else {
-            root = fileSystem.getPath(path);
+            internalRoot = fileSystem.getPath(path);
         }
     }
 
     public FileSystemStore(Path rootPath) {
-        root = rootPath;
+        internalRoot = rootPath;
     }
 
     @Override
     public InputStream getInputStream(String key) throws IOException {
-        final Path path = root.resolve(key);
+        final Path path = internalRoot.resolve(key);
         if (Files.isReadable(path)) {
-            return Files.newInputStream(path);
-        } else {
-            return null;
+            byte[] bytes = Files.readAllBytes(path);
+            return new ByteArrayInputStream(bytes);
         }
+        return null;
     }
 
     @Override
-    public OutputStream getOutputStream(String key) throws IOException {
-        final Path filePath = root.resolve(key);
-        final Path dir = filePath.getParent();
-        Files.createDirectories(dir);
-        return Files.newOutputStream(filePath);
+    public OutputStream getOutputStream(String key) {
+        return new ByteArrayOutputStream() {
+            private boolean closed = false;
+
+            @Override
+            public void close() throws IOException {
+                try {
+                    if (!closed) {
+                        final byte[] bytes = this.toByteArray();
+                        final Path filePath = internalRoot.resolve(key);
+                        if (Files.exists(filePath)) {
+                            Files.delete(filePath);
+                        } else {
+                            Files.createDirectories(filePath.getParent());
+                        }
+                        Files.write(filePath, bytes);
+                    }
+                } finally {
+                    closed = true;
+                }
+            }
+        };
     }
 
     @Override
     public void delete(String key) throws IOException {
-        final Path toBeDeleted = root.resolve(key);
+        final Path toBeDeleted = internalRoot.resolve(key);
         if (Files.isDirectory(toBeDeleted)) {
             ZarrUtils.deleteDirectoryTreeRecursively(toBeDeleted);
         }
-        if (Files.exists(toBeDeleted)){
+        if (Files.exists(toBeDeleted)) {
             Files.delete(toBeDeleted);
         }
-        if (Files.exists(toBeDeleted)|| Files.isDirectory(toBeDeleted)) {
+        if (Files.exists(toBeDeleted) || Files.isDirectory(toBeDeleted)) {
             throw new IOException("Unable to initialize " + toBeDeleted.toAbsolutePath().toString());
         }
     }
@@ -98,9 +117,9 @@ public class FileSystemStore implements Store {
     }
 
     private TreeSet<String> getKeysFor(String suffix) throws IOException {
-        return  Files.walk(root)
+        return Files.walk(internalRoot)
                 .filter(path -> path.getFileName().toString().endsWith(suffix))
-                .map(path -> root.relativize(path.getParent()).toString())
+                .map(path -> internalRoot.relativize(path.getParent()).toString())
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 }
