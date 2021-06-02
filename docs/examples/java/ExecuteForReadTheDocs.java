@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 public class ExecuteForReadTheDocs {
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         final Properties properties = new Properties();
-        properties.load(Files.newBufferedReader(Paths.get("maven.properties")));
+        properties.load(Files.newBufferedReader(Paths.get("blosc.properties")));
         System.setProperty("jna.library.path", properties.getProperty("bloscJnaLibraryPath"));
 
         Path workingDir = Paths.get(".");

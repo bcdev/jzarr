@@ -34,3 +34,4 @@ target/
 /docs/examples/java/S3Array_nio_amazon.java
 /docs/examples/java/S3Array_nio_telecom_cloud.java
 /maven.properties
+/blosc.properties
