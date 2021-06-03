@@ -40,7 +40,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -109,19 +108,25 @@ public class ZipStore implements Store {
 
     @Override
     public TreeSet<String> getArrayKeys() throws IOException {
-        return getKeysEndingWith(ZarrConstants.FILENAME_DOT_ZARRAY);
+        return getParentsOf(ZarrConstants.FILENAME_DOT_ZARRAY);
     }
 
     @Override
     public TreeSet<String> getGroupKeys() throws IOException {
-        return getKeysEndingWith(ZarrConstants.FILENAME_DOT_ZGROUP);
+        return getParentsOf(ZarrConstants.FILENAME_DOT_ZGROUP);
+    }
+
+    private TreeSet<String> getParentsOf(String suffix) throws IOException {
+        return getKeysEndingWith(suffix).stream()
+                .map(s -> internalRoot.relativize(internalRoot.resolve(s).getParent()).toString())
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     @Override
     public TreeSet<String> getKeysEndingWith(String suffix) throws IOException {
         return Files.walk(internalRoot)
                 .filter(path1 -> path1.toString().endsWith(suffix))
-                .map(path -> internalRoot.relativize(path.getParent()).toString())
+                .map(path -> internalRoot.relativize(path).toString())
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 

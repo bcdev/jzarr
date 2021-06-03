@@ -30,6 +30,7 @@ import com.bc.zarr.ZarrConstants;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryStore implements Store {
     private final Map<String, byte[]> map = new HashMap<>();
@@ -62,12 +63,24 @@ public class InMemoryStore implements Store {
 
     @Override
     public TreeSet<String> getArrayKeys() {
-        return getKeysEndingWith(ZarrConstants.FILENAME_DOT_ZARRAY);
+        return getParentsOf(ZarrConstants.FILENAME_DOT_ZARRAY);
     }
 
     @Override
     public TreeSet<String> getGroupKeys() {
-        return getKeysEndingWith(ZarrConstants.FILENAME_DOT_ZGROUP);
+        return getParentsOf(ZarrConstants.FILENAME_DOT_ZGROUP);
+    }
+
+    private TreeSet<String> getParentsOf(String suffix) {
+        return getKeysEndingWith(suffix).stream()
+                .map(s -> {
+                    String relKey = s.replace(suffix, "");
+                    while (relKey.endsWith("/")) {
+                        relKey = relKey.substring(0, relKey.length() - 1);
+                    }
+                    return relKey;
+                })
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     @Override
@@ -75,10 +88,8 @@ public class InMemoryStore implements Store {
         final Set<String> keySet = map.keySet();
         final TreeSet<String> arrayKeys = new TreeSet<>();
         for (String key : keySet) {
-            if(key.endsWith(suffix)) {
-                String relKey = key.replace(suffix, "");
-                while (relKey.endsWith("/")) relKey= relKey.substring(0, relKey.length()-1);
-                arrayKeys.add(relKey);
+            if (key.endsWith(suffix)) {
+                arrayKeys.add(key);
             }
         }
         return arrayKeys;
