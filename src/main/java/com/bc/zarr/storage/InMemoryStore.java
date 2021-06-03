@@ -28,10 +28,7 @@ package com.bc.zarr.storage;
 
 import com.bc.zarr.ZarrConstants;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 public class InMemoryStore implements Store {
@@ -65,15 +62,16 @@ public class InMemoryStore implements Store {
 
     @Override
     public TreeSet<String> getArrayKeys() {
-        return getKeysFor(ZarrConstants.FILENAME_DOT_ZARRAY);
+        return getKeysEndingWith(ZarrConstants.FILENAME_DOT_ZARRAY);
     }
 
     @Override
     public TreeSet<String> getGroupKeys() {
-        return getKeysFor(ZarrConstants.FILENAME_DOT_ZGROUP);
+        return getKeysEndingWith(ZarrConstants.FILENAME_DOT_ZGROUP);
     }
 
-    private TreeSet<String> getKeysFor(String suffix) {
+    @Override
+    public TreeSet<String> getKeysEndingWith(String suffix) {
         final Set<String> keySet = map.keySet();
         final TreeSet<String> arrayKeys = new TreeSet<>();
         for (String key : keySet) {

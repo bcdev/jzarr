@@ -51,6 +51,8 @@ public interface Store extends Closeable {
 
     Set<String> getGroupKeys() throws IOException;
 
+    Set<String> getKeysEndingWith(String suffix) throws IOException;
+
     @Override
     default void close() throws IOException {
     }

@@ -38,6 +38,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -108,15 +109,16 @@ public class FileSystemStore implements Store {
 
     @Override
     public TreeSet<String> getArrayKeys() throws IOException {
-        return getKeysFor(ZarrConstants.FILENAME_DOT_ZARRAY);
+        return getKeysEndingWith(ZarrConstants.FILENAME_DOT_ZARRAY);
     }
 
     @Override
     public TreeSet<String> getGroupKeys() throws IOException {
-        return getKeysFor(ZarrConstants.FILENAME_DOT_ZGROUP);
+        return getKeysEndingWith(ZarrConstants.FILENAME_DOT_ZGROUP);
     }
 
-    private TreeSet<String> getKeysFor(String suffix) throws IOException {
+    @Override
+    public TreeSet<String> getKeysEndingWith(String suffix) throws IOException {
         return Files.walk(internalRoot)
                 .filter(path -> path.getFileName().toString().endsWith(suffix))
                 .map(path -> internalRoot.relativize(path.getParent()).toString())
