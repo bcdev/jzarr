@@ -42,6 +42,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ZipStore implements Store {
     private final FileSystem zfs;
@@ -125,9 +126,19 @@ public class ZipStore implements Store {
     @Override
     public TreeSet<String> getKeysEndingWith(String suffix) throws IOException {
         return Files.walk(internalRoot)
-                .filter(path1 -> path1.toString().endsWith(suffix))
+                .filter(path -> path.toString().endsWith(suffix))
                 .map(path -> internalRoot.relativize(path).toString())
                 .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    @Override
+    public Stream<String> getRelativeLeafKeys(String key) throws IOException {
+        final Path walkingRoot = internalRoot.resolve(key);
+        return Files.walk(walkingRoot)
+                .filter(path -> !Files.isDirectory(path))
+                .map(path -> walkingRoot.relativize(path).toString())
+                .map(ZarrUtils::normalizeStoragePath)
+                .filter(s -> s.trim().length() > 0);
     }
 
     @Override

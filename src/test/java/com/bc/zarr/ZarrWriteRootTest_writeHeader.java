@@ -83,7 +83,9 @@ public class ZarrWriteRootTest_writeHeader {
         //verification
         final Path json_file = zarr_product_root.resolve(rastername).resolve(".zarray");
         assertThat(Files.isRegularFile(json_file), is(true));
-        final String expectedJson = ZarrUtils.toJson(new ZarrHeader(shape, chunks, dataType,ByteOrder.BIG_ENDIAN, fillValue, compressor), true);
+        final String expectedJson = ZarrUtils.toJson(new ZarrHeader(shape, chunks, dataType, ByteOrder.BIG_ENDIAN,
+                                                                    fillValue, compressor,
+                                                                    DimensionSeparator.DOT.getSeparatorChar()), true);
         final String fromFile = new String(Files.readAllBytes(json_file));
         assertThat(fromFile, is(equalToIgnoringWhiteSpace(expectedJson)));
 
@@ -122,7 +124,9 @@ public class ZarrWriteRootTest_writeHeader {
         assertThat(Files.isRegularFile(zattrs_file), is(true));
 
         final Compressor nullCompressor = CompressorFactory.nullCompressor;
-        final String expectedJson = ZarrUtils.toJson(new ZarrHeader(shape, chunks, dataType, ByteOrder.BIG_ENDIAN, fillValue, nullCompressor), true);
+        final String expectedJson = ZarrUtils.toJson(new ZarrHeader(shape, chunks, dataType, ByteOrder.BIG_ENDIAN,
+                                                                    fillValue, nullCompressor,
+                                                                    DimensionSeparator.DOT.getSeparatorChar()), true);
         final String fromFile = new String(Files.readAllBytes(zarray_file));
         assertThat(fromFile, is(equalToIgnoringWhiteSpace(expectedJson)));
 

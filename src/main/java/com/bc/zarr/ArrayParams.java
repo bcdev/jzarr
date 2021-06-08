@@ -35,7 +35,7 @@ import java.util.Map;
 /**
  * The class ArrayParams implements the Builder pattern. It is used on java side to imitate the pythonic default
  * value feature for function arguments. So the recognition factor for users who are familiar with the python zarr
- * framework should by high. E.g.: <br/>
+ * framework should be high. E.g.: <br/>
  * <br/>
  * Python example:
  * <pre>
@@ -66,6 +66,7 @@ import java.util.Map;
  *   ByteOrder byteOrder = {@link ByteOrder#BIG_ENDIAN};
  *   Number fillValue = 0;
  *   Compressor compressor = {@link CompressorFactory#createDefaultCompressor()};
+ *   DimensionSeparator sep = {@link DimensionSeparator#DOT};
  * </pre>
  */
 public class ArrayParams {
@@ -76,6 +77,7 @@ public class ArrayParams {
     private ByteOrder byteOrder = ByteOrder.BIG_ENDIAN;
     private Number fillValue = 0;
     private Compressor compressor = CompressorFactory.createDefaultCompressor();
+    private DimensionSeparator separator = DimensionSeparator.DOT;
 
     /**
      * Sets the mandatory {@code shape} and returns a reference to this Builder so that the methods can be chained together.
@@ -167,6 +169,22 @@ public class ArrayParams {
     }
 
     /**
+     * Sets the optional {@code dimension_separator} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * An argument {@code null} will be converted to {@link DimensionSeparator#DOT}.<br/>
+     * If this method is not used, the default separator {@link DimensionSeparator#DOT} remains unchanged.
+     *
+     * @param sep the {@link DimensionSeparator} to set or {@code null}
+     * @return a reference to this Builder
+     */
+    public ArrayParams dimensionSeparator(DimensionSeparator sep) {
+        if (sep == null) {
+            this.separator = DimensionSeparator.DOT;
+        }
+        this.separator = sep;
+        return this;
+    }
+
+    /**
      * Returns {@link Params} built from the parameters previously set.<br/>
      * This method is package local and should  be used by framework itself only.<br/>
      * It is used by {@link ZarrArray#create(ZarrPath, Store, ArrayParams, Map)}
@@ -212,7 +230,7 @@ public class ArrayParams {
             }
         }
 
-        return new Params(shape, chunks, dataType, byteOrder, fillValue, compressor);
+        return new Params(shape, chunks, dataType, byteOrder, fillValue, compressor, separator);
     }
 
     /**
@@ -225,14 +243,16 @@ public class ArrayParams {
         private final ByteOrder byteOrder;
         private final Number fillValue;
         private final Compressor compressor;
+        private final DimensionSeparator separator;
 
-        private Params(int[] shape, int[] chunks, DataType dataType, ByteOrder byteOrder, Number fillValue, Compressor compressor) {
+        private Params(int[] shape, int[] chunks, DataType dataType, ByteOrder byteOrder, Number fillValue, Compressor compressor, DimensionSeparator separator) {
             this.shape = shape;
             this.chunks = chunks;
             this.dataType = dataType;
             this.byteOrder = byteOrder;
             this.fillValue = fillValue;
             this.compressor = compressor;
+            this.separator = separator;
         }
 
         public int[] getShape() {
@@ -263,6 +283,10 @@ public class ArrayParams {
             return compressor;
         }
 
+        public DimensionSeparator getDimensionSeparator() {
+            return separator;
+        }
+
         public ArrayParams toBuilder() {
             ArrayParams builder = new ArrayParams();
             builder.shape = getShape();
@@ -272,6 +296,7 @@ public class ArrayParams {
             builder.byteOrder = getByteOrder();
             builder.fillValue = getFillValue();
             builder.compressor = getCompressor();
+            builder.separator = getDimensionSeparator();
             return builder;
         }
     }

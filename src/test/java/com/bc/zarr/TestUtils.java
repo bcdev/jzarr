@@ -26,11 +26,12 @@
 
 package com.bc.zarr;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -78,5 +79,23 @@ public class TestUtils {
 
     public static String readContent(Path path) throws IOException {
         return Files.lines(path).collect(Collectors.joining());
+    }
+
+    public static boolean deleteLineContaining(String str, InputStream is, OutputStream os) throws IOException {
+        boolean deleted = false;
+        final List<String> lines;
+        try (LineNumberReader lineNumberReader = new LineNumberReader(new InputStreamReader(is))) {
+            lines = lineNumberReader.lines().collect(Collectors.toList());
+        }
+        try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(os))) {
+            for (String line : lines) {
+                if (line.contains(str)) {
+                    deleted = true;
+                    continue;
+                }
+                pw.println(line);
+            }
+        }
+        return deleted;
     }
 }

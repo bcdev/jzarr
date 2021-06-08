@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 /**
  * Store interface according to https://zarr.readthedocs.io/en/stable/spec/v2.html#storage
@@ -52,6 +53,8 @@ public interface Store extends Closeable {
     TreeSet<String> getGroupKeys() throws IOException;
 
     TreeSet<String> getKeysEndingWith(String suffix) throws IOException;
+
+    Stream<String> getRelativeLeafKeys(String key) throws IOException;
 
     @Override
     default void close() throws IOException {

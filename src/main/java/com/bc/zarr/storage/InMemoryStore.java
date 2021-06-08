@@ -27,10 +27,12 @@
 package com.bc.zarr.storage;
 
 import com.bc.zarr.ZarrConstants;
+import com.bc.zarr.ZarrUtils;
 
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class InMemoryStore implements Store {
     private final Map<String, byte[]> map = new HashMap<>();
@@ -93,5 +95,14 @@ public class InMemoryStore implements Store {
             }
         }
         return arrayKeys;
+    }
+
+    @Override
+    public Stream<String> getRelativeLeafKeys(String key) throws IOException {
+        final Set<String> keySet = map.keySet();
+        return keySet.stream()
+                .filter(s -> !s.equals(key) && s.startsWith(key))
+                .map(s -> s.replace(key, ""))
+                .map(ZarrUtils::normalizeStoragePath);
     }
 }

@@ -35,11 +35,19 @@ import com.bc.zarr.ucar.PartialDataCopier;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import static com.bc.zarr.CompressorFactory.nullCompressor;
 import static com.bc.zarr.ZarrConstants.FILENAME_DOT_ZARRAY;
@@ -56,8 +64,9 @@ public class ZarrArray {
     private final Compressor _compressor;
     private final Store _store;
     private final ByteOrder _byteOrder;
+    private final DimensionSeparator _separator;
 
-    private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, DataType dataType, ByteOrder order, Number fillValue, Compressor compressor, Store store) {
+    private ZarrArray(ZarrPath relativePath, int[] shape, int[] chunkShape, DataType dataType, ByteOrder order, Number fillValue, Compressor compressor, DimensionSeparator separator, Store store) {
         this.relativePath = relativePath;
         _shape = shape;
         _chunks = chunkShape;
@@ -72,6 +81,10 @@ public class ZarrArray {
         _chunkReaderWriter = ChunkReaderWriter.create(_compressor, _dataType, order, _chunks, _fillValue, _store);
         _chunkFilenames = new HashMap<>();
         _byteOrder = order;
+        if (separator == null) {
+            throw new IllegalArgumentException("separator must not be null");
+        }
+        _separator = separator;
     }
 
     public static ZarrArray open(String path) throws IOException {
@@ -88,8 +101,8 @@ public class ZarrArray {
 
     public static ZarrArray open(ZarrPath relativePath, Store store) throws IOException {
         final ZarrPath zarrHeaderPath = relativePath.resolve(FILENAME_DOT_ZARRAY);
-        try (final InputStream storageStream = store.getInputStream(zarrHeaderPath.storeKey)){
-            if(storageStream == null) {
+        try (final InputStream storageStream = store.getInputStream(zarrHeaderPath.storeKey)) {
+            if (storageStream == null) {
                 throw new IOException("'" + FILENAME_DOT_ZARRAY + "' expected but is not readable or missing in store.");
             }
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(storageStream))) {
@@ -103,7 +116,18 @@ public class ZarrArray {
                 if (compressor == null) {
                     compressor = nullCompressor;
                 }
-                return new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, store);
+                DimensionSeparator separator = header.getDimensionSeparator();
+                if (separator == null && chunks.length > 1) {
+                    final boolean nestedChunks = findNestedChunks(relativePath, store, chunks);
+                    if (nestedChunks) {
+                        separator = DimensionSeparator.SLASH;
+                    }
+                }
+                if (separator == null) {
+                    separator = DimensionSeparator.DOT;
+                }
+
+                return new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, separator, store);
             }
         }
     }
@@ -155,7 +179,8 @@ public class ZarrArray {
         final Number fillValue = params.getFillValue();
         final Compressor compressor = params.getCompressor();
         final ByteOrder byteOrder = params.getByteOrder();
-        final ZarrArray zarrArray = new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, store);
+        final DimensionSeparator separator = params.getDimensionSeparator();
+        final ZarrArray zarrArray = new ZarrArray(relativePath, shape, chunks, dataType, byteOrder, fillValue, compressor, separator, store);
         zarrArray.writeZArrayHeader();
         zarrArray.writeAttributes(attributes);
         return zarrArray;
@@ -260,8 +285,22 @@ public class ZarrArray {
         }
     }
 
+    private static boolean findNestedChunks(ZarrPath relativePath, Store store, int[] chunks) throws IOException {
+        final String oneOrMoreDigits = "\\d+";
+        final StringBuilder sb = new StringBuilder(oneOrMoreDigits);
+        for (int i = 0; i < chunks.length - 1; i++) {
+            sb.append(DimensionSeparator.SLASH.getSeparatorChar());
+            sb.append(oneOrMoreDigits);
+        }
+        final String regex = sb.toString();
+        final Stream<String> keys = store.getRelativeLeafKeys(relativePath.storeKey);
+        final boolean nestedChunks = keys.anyMatch(s -> s.matches(regex));
+        return nestedChunks;
+    }
+
     private synchronized String getChunkFilename(int[] chunkIndex) {
-        String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex);
+        final String separatorChar = _separator.getSeparatorChar();
+        String chunkFilename = ZarrUtils.createChunkFilename(chunkIndex, separatorChar);
         if (_chunkFilenames.containsKey(chunkFilename)) {
             return _chunkFilenames.get(chunkFilename);
         }
@@ -319,7 +358,7 @@ public class ZarrArray {
     }
 
     private void writeZArrayHeader() throws IOException {
-        final ZarrHeader zarrHeader = new ZarrHeader(_shape, _chunks, _dataType.toString(), _byteOrder, _fillValue, _compressor);
+        final ZarrHeader zarrHeader = new ZarrHeader(_shape, _chunks, _dataType.toString(), _byteOrder, _fillValue, _compressor, _separator.getSeparatorChar());
         final ZarrPath zArray = relativePath.resolve(FILENAME_DOT_ZARRAY);
         try (
                 OutputStream os = _store.getOutputStream(zArray.storeKey);

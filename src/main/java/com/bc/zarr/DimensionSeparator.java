@@ -2,7 +2,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2020. Brockmann Consult GmbH (info@brockmann-consult.de)
+ * Copyright (c) 2021. Brockmann Consult GmbH (info@brockmann-consult.de)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,21 +26,24 @@
 
 package com.bc.zarr;
 
-class ZarrPath {
-    final String storeKey;
+public enum DimensionSeparator {
+    /**
+     * The "." dimension separator to write chunks not nested.
+     */
+    DOT("."),
 
-    ZarrPath(String storeKey) {
-        if ("".equals(storeKey)) {
-            this.storeKey = storeKey;
-            return;
-        }
+    /**
+     * The "/" dimension separator to write nested chunks.
+     */
+    SLASH("/");
 
-        this.storeKey = ZarrUtils.normalizeStoragePath(storeKey);
+    private final String _char;
+
+    private DimensionSeparator(String sep) {
+        _char = sep;
     }
 
-    ZarrPath resolve(String name) {
-        name = ZarrUtils.normalizeStoragePath(name);
-        return new ZarrPath(storeKey + "/" + name);
+    public String getSeparatorChar() {
+        return _char;
     }
-
 }

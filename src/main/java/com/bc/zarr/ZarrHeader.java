@@ -45,6 +45,7 @@ public class ZarrHeader {
 
     private final int[] chunks;
     private final Compressor compressor;
+    private final String dimension_separator;
     private final String dtype;
     private final Number fill_value;
     private final String filters = null;
@@ -52,7 +53,7 @@ public class ZarrHeader {
     private final int[] shape;
     private final int zarr_format = 2;
 
-    public ZarrHeader(int[] shape, int[] chunks, String dtype, ByteOrder byteOrder, Number fill_value, Compressor compressor) {
+    public ZarrHeader(int[] shape, int[] chunks, String dtype, ByteOrder byteOrder, Number fill_value, Compressor compressor, String dimension_separator) {
         this.chunks = chunks;
         if (compressor == null || CompressorFactory.nullCompressor.equals(compressor)) {
             this.compressor = null;
@@ -60,9 +61,16 @@ public class ZarrHeader {
             this.compressor = compressor;
         }
 
-        this.dtype = translateByteOrder(byteOrder) + dtype;
+        final int numBytes = Integer.parseInt(dtype.replaceAll("\\D", ""));
+
+        if (numBytes > 1) {
+            this.dtype = translateByteOrder(byteOrder) + dtype;
+        } else {
+            this.dtype = "|" + dtype;
+        }
         this.fill_value = fill_value;
         this.shape = shape;
+        this.dimension_separator = dimension_separator;
     }
 
     public int[] getChunks() {
@@ -121,6 +129,20 @@ public class ZarrHeader {
         return shape;
     }
 
+    public String getDimension_separator() {
+        return dimension_separator;
+    }
+
+    public DimensionSeparator getDimensionSeparator() {
+        String separator = this.dimension_separator;
+        for (DimensionSeparator sep : DimensionSeparator.values()) {
+            if (sep.getSeparatorChar().equals(separator)) {
+                return sep;
+            }
+        }
+        return null;
+    }
+
     static class ZarrHeaderSerializer extends StdSerializer<ZarrHeader> {
 
         protected ZarrHeaderSerializer() {
@@ -138,6 +160,7 @@ public class ZarrHeader {
             gen.writeObjectField("filters", value.filters);
             gen.writeObjectField("order", value.order);
             gen.writeObjectField("shape", value.getShape());
+            gen.writeStringField("dimension_separator", value.getDimension_separator());
             gen.writeNumberField("zarr_format", value.zarr_format);
             gen.writeEndObject();
         }
@@ -158,9 +181,9 @@ public class ZarrHeader {
             String dtype = ((JsonNode) root.path("dtype")).asText();
             JsonNode fillValueNode = (JsonNode) root.path("fill_value");
             final Number fill;
-            if (fillValueNode.isLong()){
+            if (fillValueNode.isLong()) {
                 fill = fillValueNode.longValue();
-            } else if(fillValueNode.isFloat()) {
+            } else if (fillValueNode.isFloat()) {
                 fill = fillValueNode.floatValue();
             } else {
                 fill = fillValueNode.asDouble();
@@ -173,7 +196,12 @@ public class ZarrHeader {
             } else {
                 compressor = CompressorFactory.create(compBean);
             }
-            return new ZarrHeader(shape, chunks, getRawDataType(dtype).toString(), getByteOrder(dtype), fill, compressor);
+            final JsonNode separatorNode = (JsonNode) root.path("dimension_separator");
+            String dimension_separator = null;
+            if (separatorNode != null) {
+                dimension_separator = separatorNode.asText();
+            }
+            return new ZarrHeader(shape, chunks, getRawDataType(dtype).toString(), getByteOrder(dtype), fill, compressor, dimension_separator);
         }
 
     }

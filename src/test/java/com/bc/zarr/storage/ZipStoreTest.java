@@ -227,7 +227,8 @@ public class ZipStoreTest {
         assertThat(store.getArrayKeys().size()).isEqualTo(1);
         assertThat(store.getArrayKeys()).contains("foo");
 
-        final ZarrHeader header = new ZarrHeader(shape, chunks, DataType.i1.toString(), ByteOrder.LITTLE_ENDIAN, 0, null);
+        final ZarrHeader header = new ZarrHeader(shape, chunks, DataType.i1.toString(), ByteOrder.LITTLE_ENDIAN,
+                                                 0, null, DimensionSeparator.DOT.getSeparatorChar());
         final String expected = strip(ZarrUtils.toJson(header, true));
         final InputStream zarrayIS = store.getInputStream("/foo/.zarray");
         assertThat(zarrayIS).isNotNull();

@@ -98,11 +98,11 @@ public final class ZarrUtils {
         return chunkIndices;
     }
 
-    public static String createChunkFilename(int[] currentIdx) {
+    public static String createChunkFilename(int[] currentIdx, String separatorChar) {
         StringBuilder sb = new StringBuilder();
         for (int aCurrentIdx : currentIdx) {
             sb.append(aCurrentIdx);
-            sb.append(".");
+            sb.append(separatorChar);
         }
         sb.setLength(sb.length() - 1);
         return sb.toString();
@@ -214,5 +214,36 @@ public final class ZarrUtils {
                 return new double[size];
         }
         return null;
+    }
+
+    public static String normalizeStoragePath(String path) {
+
+        //replace backslashes with slashes
+        path = path.replace("\\", "/");
+
+        // collapse any repeated slashes
+        while (path.contains("//")) {
+            path = path.replace("//", "/");
+        }
+
+        // ensure no leading slash
+        if (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+
+        // ensure no trailing slash
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+
+        // don't allow path segments with just '.' or '..'
+        final String[] split = path.split("/");
+        for (String s : split) {
+            s = s.trim();
+            if (".".equals(s) || "..".equals(s)) {
+                throw new IllegalArgumentException("path containing '.' or '..' segment not allowed");
+            }
+        }
+        return path;
     }
 }

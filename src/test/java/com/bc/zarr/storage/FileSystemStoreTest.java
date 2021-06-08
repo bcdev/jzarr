@@ -197,7 +197,8 @@ public class FileSystemStoreTest {
                 .chunks(chunks)
                 .byteOrder(ByteOrder.LITTLE_ENDIAN)
                 .fillValue(0)
-                .compressor(null);
+                .compressor(null)
+                .dimensionSeparator(DimensionSeparator.SLASH);
         final ZarrArray fooArray = rootGrp.createArray("foo", parameters, attributes);
 
         //verification
@@ -206,7 +207,8 @@ public class FileSystemStoreTest {
         assertThat(Files.list(fooPath).count(), is(2L));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZARRAY)), is(true));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZATTRS)), is(true));
-        final ZarrHeader header = new ZarrHeader(shape, chunks, DataType.i1.toString(), ByteOrder.LITTLE_ENDIAN, 0, null);
+        final ZarrHeader header = new ZarrHeader(shape, chunks, DataType.i1.toString(), ByteOrder.LITTLE_ENDIAN,
+                                                 0, null, DimensionSeparator.SLASH.getSeparatorChar());
         final String expected = strip(ZarrUtils.toJson(header, true));
         assertThat(strip(getZarrayContent(fooPath)), is(equalToIgnoringWhiteSpace(expected)));
         assertThat(strip(getZattrsContent(fooPath)), is("{\"data\":[4.0,5.0,6.0,7.0,8.0]}"));

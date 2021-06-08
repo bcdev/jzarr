@@ -50,7 +50,7 @@ public class ZarrUtilsTest {
         final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
         final String dtype = "i4";
         final int[] shape = {10, 15};
-        _zarrHeader = new ZarrHeader(shape, chunks, dtype, ByteOrder.BIG_ENDIAN, 3.6d, compressor);
+        _zarrHeader = new ZarrHeader(shape, chunks, dtype, ByteOrder.BIG_ENDIAN, 3.6d, compressor, DimensionSeparator.DOT.getSeparatorChar());
     }
 
     @Test
@@ -70,7 +70,8 @@ public class ZarrUtilsTest {
                                                _zarrHeader.getRawDataType().toString(),
                                                _zarrHeader.getByteOrder(),
                                                _zarrHeader.getFill_value(),
-                                               CompressorFactory.nullCompressor);
+                                               CompressorFactory.nullCompressor,
+                                               DimensionSeparator.DOT.getSeparatorChar());
         final StringWriter writer = new StringWriter();
 
         ZarrUtils.toJson(zarrHeader, writer);
@@ -152,7 +153,7 @@ public class ZarrUtilsTest {
 
     @Test
     public void computeChunkFilename() {
-        assertEquals("1.2.3.42", ZarrUtils.createChunkFilename(new int[]{1, 2, 3, 42}));
+        assertEquals("1.2.3.42", ZarrUtils.createChunkFilename(new int[]{1, 2, 3, 42}, "."));
     }
 
     private String expectedJson(boolean nullCompressor) {
@@ -179,6 +180,7 @@ public class ZarrUtilsTest {
         pw.println("        10,");
         pw.println("        15");
         pw.println("    ],");
+        pw.println("    \"dimension_separator\": \".\",");
         pw.println("    \"zarr_format\": 2");
         pw.println("}");
 
