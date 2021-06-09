@@ -290,7 +290,7 @@ public class Tutorial_rtd {
      */
     private static void example_9() throws IOException, JZarrException {
         ZarrArray zarray = ZarrArray.create(new ArrayParams()
-                .shape(8888, 7777).chunks(100, 0)
+                .shape(8888, 7777).chunks(0, 100)
         );
         int[] chunks = zarray.getChunks();
         createOutput(out -> {

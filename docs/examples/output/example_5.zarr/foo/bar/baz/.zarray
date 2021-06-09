@@ -12,5 +12,6 @@
   "filters" : null,
   "order" : "C",
   "shape" : [ 1000, 1000 ],
+  "dimension_separator" : ".",
   "zarr_format" : 2
 }
