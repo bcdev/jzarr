@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,7 +55,7 @@ public class ZipStore implements Store {
             zipParams.put("create", "true");
         }
         final URI uri = URI.create("jar:file:" + zipFilePath.toUri().getPath());
-        zfs = FileSystems.newFileSystem(uri, zipParams);
+        zfs = getFileSystem(zipParams, uri);
         internalRoot = zfs.getRootDirectories().iterator().next();
     }
 
@@ -103,7 +104,7 @@ public class ZipStore implements Store {
             Files.delete(toBeDeleted);
         }
         if (Files.exists(toBeDeleted) || Files.isDirectory(toBeDeleted)) {
-            throw new IOException("Unable to initialize " + toBeDeleted.toAbsolutePath().toString());
+            throw new IOException("Unable to initialize " + toBeDeleted.toAbsolutePath());
         }
     }
 
@@ -144,5 +145,14 @@ public class ZipStore implements Store {
     @Override
     public void close() throws IOException {
         zfs.close();
+    }
+
+    // Gets or creates a FileSystem
+    private FileSystem getFileSystem(HashMap<String, String> zipParams, URI uri) throws IOException {
+        try {
+            return FileSystems.newFileSystem(uri, zipParams);
+        } catch (FileSystemAlreadyExistsException e) {
+            return FileSystems.getFileSystem(uri);
+        }
     }
 }
