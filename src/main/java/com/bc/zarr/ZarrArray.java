@@ -293,9 +293,9 @@ public class ZarrArray {
             sb.append(oneOrMoreDigits);
         }
         final String regex = sb.toString();
-        final Stream<String> keys = store.getRelativeLeafKeys(relativePath.storeKey);
-        final boolean nestedChunks = keys.anyMatch(s -> s.matches(regex));
-        return nestedChunks;
+        try (Stream<String> keys = store.getRelativeLeafKeys(relativePath.storeKey)) {
+            return keys.anyMatch(s -> s.matches(regex));
+        }
     }
 
     private synchronized String getChunkFilename(int[] chunkIndex) {
