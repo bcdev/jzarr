@@ -29,8 +29,15 @@ package com.bc.zarr;
 import com.bc.zarr.storage.FileSystemStore;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
@@ -40,10 +47,25 @@ import java.nio.file.Path;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+@RunWith(Parameterized.class)
 public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
+
+    @Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+            {null},
+            {ForkJoinPool.commonPool()},
+        });
+    }
 
     private String arrayName;
     private FileSystemStore store;
+    private final Executor executor;
+
+    public ZarrArrayDataReaderWriterTest_2D_writeAndReadData(Executor executor) {
+        this.executor = executor;
+    }
+
 
     @Before
     public void setUp() throws Exception {
@@ -102,7 +124,11 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final byte[] targetBuffer = new byte[sourceBuffer.length];
 
         //execution
-        array.read(targetBuffer, shape, new int[]{0, 0});
+        if(executor == null) {
+            array.read(targetBuffer, shape, new int[]{0, 0});
+        } else {
+            array.readConcurrently(targetBuffer, shape, new int[]{0, 0}, executor);
+        }
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));
@@ -138,7 +164,11 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final short[] targetBuffer = new short[sourceBuffer.length];
 
         //execution
-        array.read(targetBuffer, shape, new int[]{0, 0});
+        if(executor == null) {
+            array.read(targetBuffer, shape, new int[]{0, 0});
+        } else {
+            array.readConcurrently(targetBuffer, shape, new int[]{0, 0}, executor);
+        }
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));
@@ -173,7 +203,11 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final int[] targetBuffer = new int[sourceBuffer.length];
 
         //execution
-        array.read(targetBuffer, shape, new int[]{0, 0});
+        if(executor == null) {
+            array.read(targetBuffer, shape, new int[]{0, 0});
+        } else {
+            array.readConcurrently(targetBuffer, shape, new int[]{0, 0}, executor);
+        }
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));
@@ -208,7 +242,11 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final float[] targetBuffer = new float[sourceBuffer.length];
 
         //execution
-        array.read(targetBuffer, shape, new int[]{0, 0});
+        if(executor == null) {
+            array.read(targetBuffer, shape, new int[]{0, 0});
+        } else {
+            array.readConcurrently(targetBuffer, shape, new int[]{0, 0}, executor);
+        }
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));
@@ -244,7 +282,11 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final double[] targetBuffer = new double[sourceBuffer.length];
 
         //execution
-        array.read(targetBuffer, shape, new int[]{0, 0});
+        if(executor == null) {
+            array.read(targetBuffer, shape, new int[]{0, 0});
+        } else {
+            array.readConcurrently(targetBuffer, shape, new int[]{0, 0}, executor);
+        }
 
         //verification
         assertThat(targetBuffer, is(equalTo(sourceBuffer)));
