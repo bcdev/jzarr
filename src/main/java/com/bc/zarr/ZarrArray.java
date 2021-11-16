@@ -32,6 +32,13 @@ import com.bc.zarr.storage.InMemoryStore;
 import com.bc.zarr.storage.Store;
 import com.bc.zarr.ucar.NetCDF_Util;
 import com.bc.zarr.ucar.PartialDataCopier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import javax.annotation.Nullable;
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 
@@ -246,8 +253,16 @@ public class ZarrArray {
         return read(getShape());
     }
 
+    public Object readConcurrently(Executor executor) throws IOException, InvalidRangeException {
+        return readConcurrently(getShape(), executor);
+    }
+
     public Object read(int[] shape) throws IOException, InvalidRangeException {
         return read(shape, new int[shape.length]);
+    }
+
+    public Object readConcurrently(int[] shape, Executor executor) throws IOException, InvalidRangeException {
+        return readConcurrently(shape, new int[shape.length], executor);
     }
 
     public Object read(int[] shape, int[] offset) throws IOException, InvalidRangeException {
@@ -256,11 +271,29 @@ public class ZarrArray {
         return data;
     }
 
+    public Object readConcurrently(int[] shape, int[] offset, Executor executor) throws IOException, InvalidRangeException {
+        final Object data = ZarrUtils.createDataBuffer(getDataType(), shape);
+        readConcurrently(data, shape, offset, executor);
+        return data;
+    }
+
     public void read(Object buffer, int[] bufferShape) throws IOException, InvalidRangeException {
         read(buffer, bufferShape, new int[bufferShape.length]);
     }
 
+    public void readConcurrently(Object buffer, int[] bufferShape, Executor executor) throws IOException, InvalidRangeException {
+        readConcurrently(buffer, bufferShape, new int[bufferShape.length], executor);
+    }
+
     public void read(Object buffer, int[] bufferShape, int[] offset) throws IOException, InvalidRangeException {
+        readInternal(buffer, bufferShape, offset, null);
+    }
+
+    public void readConcurrently(final Object buffer, final int[] bufferShape, final int[] offset, Executor executor) throws IOException, InvalidRangeException {
+        readInternal(buffer, bufferShape, offset, Objects.requireNonNull(executor));
+    }
+
+    private void readInternal(final Object buffer, final int[] bufferShape, final int[] offset, @Nullable Executor executor) throws IOException, InvalidRangeException {
         if (!buffer.getClass().isArray()) {
             throw new IOException("Target buffer object is not an array.");
         }
@@ -271,11 +304,70 @@ public class ZarrArray {
         }
         final int[][] chunkIndices = ZarrUtils.computeChunkIndices(_shape, _chunks, bufferShape, offset);
 
+        final List<CompletableFuture<Void>> futures = new ArrayList<>(chunkIndices.length);
         for (int[] chunkIndex : chunkIndices) {
-            final String chunkFilename = getChunkFilename(chunkIndex);
-            final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
-            final int[] fromChunkPos = computeFrom(chunkIndex, offset, true);
-            final Array sourceChunk = _chunkReaderWriter.read(chunkFilePath.storeKey);
+            if (executor == null) {
+                ChunkInfo chunkInfo = readChunk(offset, chunkIndex);
+                copyToBuffer(chunkInfo, buffer, bufferShape);
+            } else {
+                futures.add(CompletableFuture.supplyAsync(() -> {
+                    try {
+                        return readChunk(offset, chunkIndex);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Unable to process chunk", e);
+                    }
+                }, executor).thenAccept((chunkInfo -> {
+                    try {
+                        copyToBuffer(chunkInfo, buffer, bufferShape);
+                    } catch (InvalidRangeException e) {
+                        throw new RuntimeException("Invalid range", e);
+                    }
+                })));
+            }
+        }
+
+        if(!futures.isEmpty()) {
+            try {
+                CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Thread was interrupted while waiting for chunk processing", e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException("An error occurred while processing chunks", e);
+            }
+        }
+    }
+
+    private static class ChunkInfo {
+        private final int[] fromChunkPos;
+        private final Array sourceChunk;
+
+        private ChunkInfo(int[] fromChunkPos, Array sourceChunk) {
+            this.fromChunkPos = fromChunkPos;
+            this.sourceChunk = sourceChunk;
+        }
+
+        public int[] getFromChunkPos() {
+            return fromChunkPos;
+        }
+
+        public Array getSourceChunk() {
+            return sourceChunk;
+        }
+    }
+
+    private ChunkInfo readChunk(final int[] offset, int[] chunkIndex) throws IOException {
+        final String chunkFilename = getChunkFilename(chunkIndex);
+        final ZarrPath chunkFilePath = relativePath.resolve(chunkFilename);
+        final int[] fromChunkPos = computeFrom(chunkIndex, offset, true);
+        final Array sourceChunk = _chunkReaderWriter.read(chunkFilePath.storeKey);
+        return new ChunkInfo(fromChunkPos, sourceChunk);
+    }
+
+    private void copyToBuffer(ChunkInfo chunkInfo, final Object buffer, final int[] bufferShape) throws InvalidRangeException {
+        final int[] fromChunkPos = chunkInfo.getFromChunkPos();
+        final Array sourceChunk = chunkInfo.getSourceChunk();
+        synchronized (buffer) {
             if (partialCopyingIsNotNeeded(bufferShape, fromChunkPos)) {
                 System.arraycopy(sourceChunk.getStorage(), 0, buffer, 0, (int) sourceChunk.getSize());
             } else {
