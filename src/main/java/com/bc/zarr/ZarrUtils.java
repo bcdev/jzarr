@@ -25,6 +25,7 @@
  */
 package com.bc.zarr;
 
+import com.bc.zarr.storage.FileSystemStore;
 import com.bc.zarr.storage.Store;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.PrettyPrinter;
@@ -37,6 +38,7 @@ import ucar.ma2.MAMath;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -245,5 +247,42 @@ public final class ZarrUtils {
             }
         }
         return path;
+    }
+
+    public static void consolidateMetadata(Store store) throws IOException {
+        final LinkedHashMap<String, Object> zdata = new LinkedHashMap<>();
+        final TreeSet<String> keys = new TreeSet<>();
+        keys.addAll(store.getGroupKeys());
+        keys.addAll(store.getArrayKeys());
+
+        for (String key : keys) {
+            if (key == null) continue;
+            key = key.trim();
+            if (!key.equals("")) {
+                key += "/";
+            }
+            final String keyZarray = key + ".zarray";
+            final InputStream zarray = store.getInputStream(keyZarray);
+            if (zarray != null) {
+                zdata.put(keyZarray, fromJson(new InputStreamReader(zarray), HashMap.class));
+            }
+            final String keyZattrs = key + ".zattrs";
+            final InputStream zattrs = store.getInputStream(keyZattrs);
+            if (zattrs != null) {
+                zdata.put(keyZattrs, fromJson(new InputStreamReader(zattrs), HashMap.class));
+            }
+            final String keyZgroup = key + ".zgroup";
+            final InputStream zgroup = store.getInputStream(keyZgroup);
+            if (zgroup != null) {
+                zdata.put(keyZgroup, fromJson(new InputStreamReader(zgroup), HashMap.class));
+            }
+        }
+
+        final LinkedHashMap<String, Object> metadata = new LinkedHashMap<>();
+        metadata.put("metadata", zdata);
+        metadata.put("zarr_consolidated_format", 1);
+        try (final OutputStream metaStream = store.getOutputStream(".zmetadata")) {
+            toJson(metadata, new OutputStreamWriter(metaStream), true);
+        }
     }
 }
