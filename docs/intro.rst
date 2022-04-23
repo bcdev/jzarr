@@ -48,14 +48,14 @@ To use JZarr in your project integrate the following lines into your maven pom.x
  <dependency>
     <groupId>com.bc.zarr</groupId>
     <artifactId>jzarr</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <version>0.3.5</version>
  </dependency>
 
  <repositories>
     <repository>
        <id>bc-nexus-repo</id>
        <name>Brockmann-Consult Public Maven Repository</name>
-       <url>http://nexus.senbox.net/nexus/content/groups/public/</url>
+       <url>https://nexus.senbox.net/nexus/content/groups/public/</url>
     </repository>
  </repositories>
 
