@@ -73,6 +73,16 @@ public class ZipStoreTest {
         }
     }
 
+
+    @Test
+    public void createZipStoreWithSpaceInPath() throws IOException {
+        Path spaceDir = testDataPath.resolve("folder name");
+        Files.createDirectories(spaceDir);
+        Path resolve = spaceDir.resolve("zipped.znap.zip");
+        store = new ZipStore(resolve);
+        assertThat(store).isNotNull();
+    }
+
     @Test
     public void createFileSystemStore_withPathString_withoutFS() throws NoSuchFieldException, IllegalAccessException {
         //execution
