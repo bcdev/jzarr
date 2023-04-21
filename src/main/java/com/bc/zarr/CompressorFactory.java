@@ -298,7 +298,6 @@ public class CompressorFactory {
             } else {
                 this.nthreads = ((Number) nthreadsObj).intValue();
             }
-            System.out.println(nthreads);
         }
 
         @Override
