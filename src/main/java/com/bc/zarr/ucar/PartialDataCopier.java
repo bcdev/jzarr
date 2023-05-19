@@ -39,19 +39,24 @@ import java.util.ArrayList;
 public class PartialDataCopier {
 
     /**
-     * Offset describes the displacement between source and target array.<br/>
-     * <br/>
-     * For example in the case of one dimensional arrays:<br/>
+     * Offset describes the displacement between source and target array.
+     *
+     * For example in the case of one dimensional arrays:
+     *
      * <pre>
      *     source array initialized { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
      *     target array initialized { -1, -1, -1 }
-     * </pre><br/>
-     * An offset of 3 means that the target arrays will be displayed that way:<br/>
+     * </pre>
+     *
+     * An offset of 3 means that the target arrays will be displayed that way:
+     *
      * <pre>
      *     source   { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
      *     target            { 4, 5, 6 }
      * </pre>
-     * An offset of -2 means that the target arrays will be displayed that way:<br/>
+     *
+     * An offset of -2 means that the target arrays will be displayed that way:
+     *
      * <pre>
      *     source           { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
      *     target   { -1, -1, 1 }
@@ -60,6 +65,7 @@ public class PartialDataCopier {
      * @param offset - the displacement between source and target
      * @param source - the source array
      * @param target - the target array
+     * @throws InvalidRangeException TBD
      */
     public static void copy(int[] offset, Array source, Array target) throws InvalidRangeException {
 
