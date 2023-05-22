@@ -6,7 +6,7 @@
 
     <groupId>dev.zarr</groupId>
     <artifactId>jzarr</artifactId>
-    <version>0.3.7</version>
+    <version>0.3.8-SNAPSHOT</version>
 
     <name>JZarr</name>
 
