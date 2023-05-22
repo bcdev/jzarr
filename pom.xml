@@ -237,6 +237,14 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                    <configuration>
+                        <includes>**/*.java</includes>
+                    </configuration>
+             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.6</version>
                 <executions>
@@ -286,6 +294,7 @@
                         <configuration>
                             <argLine>-Djna.library.path=${bloscJnaLibraryPath}</argLine>
                             <systemPropertiesFile>${basedir}/blosc.properties</systemPropertiesFile>
+                            <includes>**/*.java</includes>
                         </configuration>
                     </plugin>
                 </plugins>
