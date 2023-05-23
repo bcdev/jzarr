@@ -67,7 +67,8 @@ public class FileSystemStoreTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             {DimensionSeparator.DOT},
-            {DimensionSeparator.SLASH}
+            {DimensionSeparator.SLASH},
+            {null}
         });
     }
 
@@ -77,7 +78,7 @@ public class FileSystemStoreTest {
 
     @Before
     public void setUp() throws Exception {
-        testDataStr = "testData_" + (separator == DimensionSeparator.SLASH ? "nested" : "flat");
+        testDataStr = String.format("testData_%s", separator);
         rootPathStr = "group.zarr";
 
         final int fileSystemAlternative = 1;
@@ -226,7 +227,7 @@ public class FileSystemStoreTest {
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZARRAY)), is(true));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZATTRS)), is(true));
         final ZarrHeader header = new ZarrHeader(shape, chunks, DataType.i1.toString(), ByteOrder.LITTLE_ENDIAN,
-                                                 0, null, separator.getSeparatorChar());
+                                                 0, null, separator == null ? null : separator.getSeparatorChar());
         final String expected = strip(ZarrUtils.toJson(header, true));
         assertThat(strip(getZarrayContent(fooPath)), is(equalToIgnoringWhiteSpace(expected)));
         assertThat(strip(getZattrsContent(fooPath)), is("{\"data\":[4.0,5.0,6.0,7.0,8.0]}"));
@@ -281,7 +282,12 @@ public class FileSystemStoreTest {
         // Reopen the array to check that nesting v. flatness is detected.
         final ZarrGroup rootGrp2 = ZarrGroup.create(store, null);
         final ZarrArray fooArray2 = rootGrp.openArray("foo");
-        assertEquals(separator, fooArray2.getDimensionSeparator());
+        if (separator == null) {
+            assertEquals(DimensionSeparator.DOT, fooArray2.getDimensionSeparator());
+        }
+        else {
+            assertEquals(separator, fooArray2.getDimensionSeparator());
+        }
     }
 
     @Test
