@@ -208,7 +208,7 @@ public class CompressorFactory {
         }
     }
 
-    static class BloscCompressor extends Compressor {
+    public static class BloscCompressor extends Compressor {
 
         final static int AUTOSHUFFLE = -1;
         final static int NOSHUFFLE = 0;
@@ -228,14 +228,13 @@ public class CompressorFactory {
         public final static int[] supportedShuffle = new int[]{/*AUTOSHUFFLE, */NOSHUFFLE, BYTESHUFFLE, BITSHUFFLE};
         public final static String[] supportedCnames = new String[]{"zstd", "blosclz", defaultCname, "lz4hc", "zlib"/*, "snappy"*/};
 
-        public final static Map<String, Object> defaultProperties = Collections
-                .unmodifiableMap(new HashMap<String, Object>() {{
+        public final static Map<String, Object> defaultProperties = new HashMap<String, Object>() {{
                     put(keyCname, defaultCname);
                     put(keyClevel, defaultCLevel);
                     put(keyShuffle, defaultShuffle);
                     put(keyBlocksize, defaultBlocksize);
                     put(keyNumThreads, defaultNumThreads);
-                }});
+                }};
 
         private final int clevel;
         private final int blocksize;
@@ -290,10 +289,11 @@ public class CompressorFactory {
                 this.blocksize = ((Number) blocksizeObj).intValue();
             }
 
-            final Object nthreadsObj = map.get(keyNumThreads);
+            Object nthreadsObj = map.get(keyNumThreads);
             if (nthreadsObj == null) {
-                this.nthreads = defaultNumThreads;
-            } else if (nthreadsObj instanceof String) {
+                nthreadsObj = defaultProperties.get(keyNumThreads);
+            }
+            if (nthreadsObj instanceof String) {
                 this.nthreads = Integer.parseInt((String) nthreadsObj);
             } else {
                 this.nthreads = ((Number) nthreadsObj).intValue();
