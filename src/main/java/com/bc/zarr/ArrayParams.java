@@ -191,7 +191,9 @@ public class ArrayParams {
         if (sep == null) {
             this.separator = DimensionSeparator.DOT;
         }
-        this.separator = sep;
+        else {
+            this.separator = sep;
+        }
         return this;
     }
 
