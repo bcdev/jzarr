@@ -35,14 +35,14 @@ import java.util.Map;
 /**
  * The class ArrayParams implements the Builder pattern. It is used on java side to imitate the pythonic default
  * value feature for function arguments. So the recognition factor for users who are familiar with the python zarr
- * framework should be high. E.g.: <br/>
- * <br/>
+ * framework should be high. E.g.:
+ *
  * Python example:
  * <pre>
  *    za = zarr.create(
  *        shape=(12, 10000, 5000),
  *        chunks=(12, 200, 200),
- *        dtype='>u4',
+ *        dtype='&gt;u4',
  *        compressor=Zlib(level=1),
  *        fill_value=-1)
  * </pre>
@@ -57,8 +57,8 @@ import java.util.Map;
  *         .fillValue(-1)
  *    );
  * </pre>
- * Shape must be given!<br/>
- * <br/>
+ * Shape must be given!
+ *
  * If not given ... parameter default values are:
  * <pre>
  *   boolean chunked = true;
@@ -91,7 +91,8 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the optional {@code chunks} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * Sets the optional {@code chunks} and returns a reference to this Builder so that the methods can be chained together.
+     *
      * The number of dimensions must be equal to the number of dimensions of the shape.
      *
      * @param chunks the {@code chunks} to set.
@@ -103,9 +104,12 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the optional {@code chunked} and returns a reference to this Builder so that the methods can be chained together.<br/>
-     * If no chunks is given and chunked is true, chunks will be calculated using an heuristic algorithm.<br/>
-     * If chunked is false und no chunks are set, only one chunk with the full array shape will be created.<br/>
+     * Sets the optional {@code chunked} and returns a reference to this Builder so that the methods can be chained together.
+     *
+     * If no chunks is given and chunked is true, chunks will be calculated using an heuristic algorithm.
+     *
+     * If chunked is false und no chunks are set, only one chunk with the full array shape will be created.
+     *
      * Default value: <code>true</code>
      *
      * @param chunked the {@code chunked} to set
@@ -117,7 +121,8 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the optional {@code dataType} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * Sets the optional {@code dataType} and returns a reference to this Builder so that the methods can be chained together.
+     *
      * Default value: {@link DataType#f8}
      *
      * @param dataType the {@code dataType} to set
@@ -129,7 +134,8 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the optional {@code byteOrder} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * Sets the optional {@code byteOrder} and returns a reference to this Builder so that the methods can be chained together.
+     *
      * Default value: {@link ByteOrder#BIG_ENDIAN}
      *
      * @param byteOrder the {@code byteOrder} to set
@@ -141,7 +147,8 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the optional {@code fillValue} and returns a reference to this Builder so that the methods can be chained together.<br/>
+     * Sets the optional {@code fillValue} and returns a reference to this Builder so that the methods can be chained together.
+
      * Default value: {@code 0}
      *
      * @param fillValue the {@code fillValue} to set
@@ -153,8 +160,10 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the optional {@code compressor} and returns a reference to this Builder so that the methods can be chained together.<br/>
-     * An argument {@code null} will be converted to {@link CompressorFactory#nullCompressor}.<br/>
+     * Sets the optional {@code compressor} and returns a reference to this Builder so that the methods can be chained together.
+     *
+     * An argument {@code null} will be converted to {@link CompressorFactory#nullCompressor}.
+     *
      * If this method is not used, the default compressor {@link CompressorFactory#createDefaultCompressor()} remains unchanged.
      *
      * @param compressor the {@link Compressor} to set or {@code null}
@@ -169,8 +178,10 @@ public class ArrayParams {
     }
 
     /**
-     * Sets the optional {@code dimension_separator} and returns a reference to this Builder so that the methods can be chained together.<br/>
-     * An argument {@code null} will be converted to {@link DimensionSeparator#DOT}.<br/>
+     * Sets the optional {@code dimension_separator} and returns a reference to this Builder so that the methods can be chained together.
+     *
+     * An argument {@code null} will be converted to {@link DimensionSeparator#DOT}.
+     *
      * If this method is not used, the default separator {@link DimensionSeparator#DOT} remains unchanged.
      *
      * @param sep the {@link DimensionSeparator} to set or {@code null}
@@ -180,13 +191,17 @@ public class ArrayParams {
         if (sep == null) {
             this.separator = DimensionSeparator.DOT;
         }
-        this.separator = sep;
+        else {
+            this.separator = sep;
+        }
         return this;
     }
 
     /**
-     * Returns {@link Params} built from the parameters previously set.<br/>
-     * This method is package local and should  be used by framework itself only.<br/>
+     * Returns {@link Params} built from the parameters previously set.
+     *
+     * This method is package local and should  be used by framework itself only.
+     *
      * It is used by {@link ZarrArray#create(ZarrPath, Store, ArrayParams, Map)}
      *
      * @return {@link Params}

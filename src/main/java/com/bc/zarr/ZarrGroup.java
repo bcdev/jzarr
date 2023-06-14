@@ -50,9 +50,10 @@ public class ZarrGroup {
     }
 
     /**
-     * @param path
-     * @param attributes
-     * @throws IOException
+     * @param path TBD
+     * @param attributes TBD
+     * @throws IOException TBD
+     * @return ZarrGroup TBD
      */
     public static ZarrGroup create(String path, final Map<String, Object> attributes) throws IOException {
         if (path == null) {

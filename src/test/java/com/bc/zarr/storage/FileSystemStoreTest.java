@@ -32,6 +32,8 @@ import com.google.common.jimfs.Jimfs;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import ucar.ma2.InvalidRangeException;
 
 import java.io.IOException;
@@ -44,10 +46,12 @@ import static com.bc.zarr.TestUtils.*;
 import static com.bc.zarr.ZarrConstants.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Test along https://zarr.readthedocs.io/en/stable/api/storage.html#zarr.storage.DirectoryStore
  */
+@RunWith(Parameterized.class)
 public class FileSystemStoreTest {
 
     private String testDataStr;
@@ -57,9 +61,24 @@ public class FileSystemStoreTest {
     private Path rootPath;
     private Path testDataPath;
 
+    private final DimensionSeparator separator;
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+            {DimensionSeparator.DOT},
+            {DimensionSeparator.SLASH},
+            {null}
+        });
+    }
+
+    public FileSystemStoreTest(DimensionSeparator sep) {
+        this.separator = sep;
+    }
+
     @Before
     public void setUp() throws Exception {
-        testDataStr = "testData";
+        testDataStr = String.format("testData_%s", separator);
         rootPathStr = "group.zarr";
 
         final int fileSystemAlternative = 1;
@@ -198,7 +217,7 @@ public class FileSystemStoreTest {
                 .byteOrder(ByteOrder.LITTLE_ENDIAN)
                 .fillValue(0)
                 .compressor(null)
-                .dimensionSeparator(DimensionSeparator.SLASH);
+                .dimensionSeparator(separator);
         final ZarrArray fooArray = rootGrp.createArray("foo", parameters, attributes);
 
         //verification
@@ -208,7 +227,7 @@ public class FileSystemStoreTest {
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZARRAY)), is(true));
         assertThat(Files.isReadable(fooPath.resolve(FILENAME_DOT_ZATTRS)), is(true));
         final ZarrHeader header = new ZarrHeader(shape, chunks, DataType.i1.toString(), ByteOrder.LITTLE_ENDIAN,
-                                                 0, null, DimensionSeparator.SLASH.getSeparatorChar());
+                                                 0, null, separator == null ? null : separator.getSeparatorChar());
         final String expected = strip(ZarrUtils.toJson(header, true));
         assertThat(strip(getZarrayContent(fooPath)), is(equalToIgnoringWhiteSpace(expected)));
         assertThat(strip(getZattrsContent(fooPath)), is("{\"data\":[4.0,5.0,6.0,7.0,8.0]}"));
@@ -225,7 +244,7 @@ public class FileSystemStoreTest {
 
         final ArrayParams parameters = new ArrayParams()
                 .dataType(DataType.i1).shape(shape).chunks(chunks)
-                .fillValue(0).compressor(null);
+                .fillValue(0).compressor(null).dimensionSeparator(separator);
 
         //execution
         final ZarrGroup rootGrp = ZarrGroup.create(store, null);
@@ -235,10 +254,22 @@ public class FileSystemStoreTest {
         //verification
         final Path fooPath = rootPath.resolve("foo");
         assertThat(Files.isDirectory(fooPath), is(true));
-        assertThat(Files.list(fooPath).filter(
-                path -> !path.getFileName().toString().startsWith(".")
-        ).count(), is(4L));
-        final String[] chunkFileNames = {"0.0", "0.1", "1.0", "1.1"};
+
+        String[] chunkFileNames;
+        if (separator == DimensionSeparator.SLASH) {
+            List<Path> names = Files.list(fooPath).collect(Collectors.toList());
+            assertThat(names.toString(),
+                    Files.list(fooPath).filter(
+                    path -> !path.getFileName().toString().startsWith(".")
+            ).count(), is(2L));
+            chunkFileNames = new String[]{"0/0", "0/1", "1/0", "1/1"};
+        } else {
+            assertThat(Files.list(fooPath).filter(
+                    path -> !path.getFileName().toString().startsWith(".")
+            ).count(), is(4L));
+            chunkFileNames = new String[]{"0.0", "0.1", "1.0", "1.1"};
+        }
+
         final byte[] expectedBytes = new byte[25];
         Arrays.fill(expectedBytes, (byte) 42);
         for (String name : chunkFileNames) {
@@ -246,6 +277,16 @@ public class FileSystemStoreTest {
             assertThat(Files.isReadable(chunkPath), is(true));
             assertThat(Files.size(chunkPath), is(5L * 5));
             assertThat(Files.readAllBytes(chunkPath), is(expectedBytes));
+        }
+
+        // Reopen the array to check that nesting v. flatness is detected.
+        final ZarrGroup rootGrp2 = ZarrGroup.create(store, null);
+        final ZarrArray fooArray2 = rootGrp.openArray("foo");
+        if (separator == null) {
+            assertEquals(DimensionSeparator.DOT, fooArray2.getDimensionSeparator());
+        }
+        else {
+            assertEquals(separator, fooArray2.getDimensionSeparator());
         }
     }
 
