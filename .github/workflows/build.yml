@@ -25,6 +25,7 @@ jobs:
           java-version: '${{ matrix.java-version }}'
           java-package: 'jdk'
           architecture: 'x64'
+          distribution: 'adopt'
 
       - name: Install Blosc native library
         run: sudo apt-get install -y libblosc1
