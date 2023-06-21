@@ -11,12 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Install Blosc native library
-        run: sudo apt-get install -y libblosc1
 
       - name: Set up latest Java 8
         uses: actions/setup-java@v1
@@ -24,6 +21,9 @@ jobs:
           java-version: '8'
           java-package: 'jdk'
           architecture: 'x64'
+
+      - name: Install Blosc native library
+        run: sudo apt-get install -y libblosc1
 
       - name: Run tests
         run: mvn -B test
