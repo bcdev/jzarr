@@ -6,8 +6,10 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+
       - uses: actions/checkout@v3
-      - name: Set up Maven Central Repository
+
+      - name: Set up Java 11
         uses: actions/setup-java@v3
         with:
           java-version: '11'
@@ -15,6 +17,10 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
+
+      - name: Install Blosc native library
+        run: sudo apt-get install -y libblosc1
+
       - id: install-secret-key
         name: Install gpg secret key
         run: |
@@ -22,6 +28,7 @@ jobs:
           cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
           # Verify gpg secret key
           gpg --list-secret-keys --keyid-format LONG
+
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
