@@ -321,10 +321,6 @@ public class CompressorFactory {
             return cname;
         }
 
-        public int getNumThreads() {
-            return nthreads;
-        }
-
         @Override
         public String toString() {
             return "compressor=" + getId()
