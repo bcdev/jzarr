@@ -6,7 +6,7 @@
 
     <groupId>dev.zarr</groupId>
     <artifactId>jzarr</artifactId>
-    <version>0.4.2-SNAPSHOT</version>
+    <version>0.4.2</version>
 
     <name>JZarr</name>
 
@@ -153,17 +153,9 @@
 
     <repositories>
         <repository>
-            <id>snap-repo-public</id>
-            <name>Public Maven Repository for SNAP</name>
-            <url>https://snap-build-server.tilaa.cloud/nexus/repository/snap-maven-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
+            <id>unidata.releases</id>
+            <url>https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases</url>
+            <snapshots><enabled>false</enabled></snapshots>
         </repository>
     </repositories>
 
