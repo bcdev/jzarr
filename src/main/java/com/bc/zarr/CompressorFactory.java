@@ -26,6 +26,7 @@
 
 package com.bc.zarr;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.jna.ptr.NativeLongByReference;
 import org.blosc.BufferSizes;
 import org.blosc.IBloscDll;
@@ -321,6 +322,7 @@ public class CompressorFactory {
             return cname;
         }
 
+        @JsonIgnore
         public int getNumThreads() {
             return nthreads;
         }

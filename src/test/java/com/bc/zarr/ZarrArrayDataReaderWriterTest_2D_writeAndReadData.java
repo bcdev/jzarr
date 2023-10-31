@@ -57,11 +57,11 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
     }
 
     @Test
-    public void getCompressor() throws IOException {
+    public void getNullCompressor() throws IOException {
         final int[] shape = {1, 1};
         final int[] chunkShape = {1, 1};
         final DataType dataType = DataType.i1; // Byte
-        final Compressor compressor = CompressorFactory.nullCompressor;
+        final Compressor compressor = CompressorFactory.create("null");
         final ArrayParams parameters = new ArrayParams()
                 .shape(shape).chunks(chunkShape)
                 .dataType(dataType)
@@ -69,6 +69,36 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
         final ZarrArray array = ZarrArray.create(
                 new ZarrPath(arrayName), store, parameters, null);
         array.getCompressor();
+        assertEquals(compressor, array.getCompressor());
+    }
+
+    @Test
+    public void getBloscCompressor() throws IOException {
+        final int[] shape = {1, 1};
+        final int[] chunkShape = {1, 1};
+        final DataType dataType = DataType.i1; // Byte
+        final Compressor compressor = CompressorFactory.create("blosc");
+        final ArrayParams parameters = new ArrayParams()
+                .shape(shape).chunks(chunkShape)
+                .dataType(dataType)
+                .compressor(compressor);
+        final ZarrArray array = ZarrArray.create(
+                new ZarrPath(arrayName), store, parameters, null);
+        assertEquals(compressor, array.getCompressor());
+    }
+
+    @Test
+    public void getZlibCompressor() throws IOException {
+        final int[] shape = {1, 1};
+        final int[] chunkShape = {1, 1};
+        final DataType dataType = DataType.i1; // Byte
+        final Compressor compressor = CompressorFactory.create("zlib");
+        final ArrayParams parameters = new ArrayParams()
+                .shape(shape).chunks(chunkShape)
+                .dataType(dataType)
+                .compressor(compressor);
+        final ZarrArray array = ZarrArray.create(
+                new ZarrPath(arrayName), store, parameters, null);
         assertEquals(compressor, array.getCompressor());
     }
 
