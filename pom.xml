@@ -184,6 +184,44 @@
                 </configuration>
             </plugin>
             <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>buildnumber-maven-plugin</artifactId>
+              <version>3.2.0</version>
+              <!-- Record SCM revision in manifest. -->
+              <executions>
+                <execution>
+                  <phase>validate</phase>
+                  <goals>
+                    <goal>create</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <configuration>
+                <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
+              </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>3.3.0</version>
+              <configuration>
+                <archive>
+                  <manifest>
+                    <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
+                    <addClasspath>true</addClasspath>
+                    <addDefaultEntries>true</addDefaultEntries>
+                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                  </manifest>
+                  <manifestEntries>
+                    <!-- Add SCM revision from buildnumber plugin, if available. -->
+                    <Implementation-Build>${buildNumber}</Implementation-Build>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.5.0</version>
