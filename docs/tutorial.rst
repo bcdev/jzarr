@@ -4,8 +4,8 @@
 
 Tutorial
 ========
-JZarr provides classes and functions to handle N-dimensional arrays data
-whose data can be divided into chunks and each chunk can be compressed.
+JZarr provides classes and functions to handle N-dimensional array-like
+data which can be divided into chunks and each chunk can be compressed.
 
 General Information
 -------------------
@@ -25,7 +25,7 @@ and an offset is needed. The zarr array offsets are zero-based (:code:`0`).
    All data persisted using this API can be read in with the Python zarr API without limmitations.
 
 If you are already familiar with the Python `zarr package`_ then JZarr
-provide similar functionality, but without NumPy array behavior.
+provides similar functionality, but without NumPy array behavior.
 
 If you need array objects which behave almost like NumPy arrays you can wrap the data
 using ND4J INDArray `from deeplearning4j.org <Nd4j>`_.
@@ -327,8 +327,8 @@ The output shows the data is written with the given shape to the offset position
 
 Partly read and write is also used in examples above. See `Persistent arrays`_
 
-Chunk size an shape
--------------------
+Chunk size and shape
+--------------------
 In general, chunks of at least 1 megabyte (1M) uncompressed size seem to provide good performance,
 at least when using compression too.
 
