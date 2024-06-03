@@ -46,21 +46,10 @@ Maven Dependency
 To use JZarr in your project integrate the following lines into your maven pom.xml::
 
  <dependency>
-    <groupId>com.bc.zarr</groupId>
+    <groupId>dev.zarr</groupId>
     <artifactId>jzarr</artifactId>
-    <version>0.3.5</version>
+    <version>0.4.2</version>
  </dependency>
-
- <repositories>
-    <repository>
-       <id>bc-nexus-repo</id>
-       <name>Brockmann-Consult Public Maven Repository</name>
-       <url>https://nexus.senbox.net/nexus/content/groups/public/</url>
-    </repository>
- </repositories>
-
-It is planned to deploy the JZarr artifacts to the `maven central <https://mvnrepository.com/repos/central>`_
-repository too.
 
 
 .. API Examples
