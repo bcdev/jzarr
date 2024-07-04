@@ -48,7 +48,7 @@ To use JZarr in your project integrate the following lines into your maven pom.x
  <dependency>
     <groupId>dev.zarr</groupId>
     <artifactId>jzarr</artifactId>
-    <version>0.4.2</version>
+    <version>0.4.2</version><!-- Check https://mvnrepository.com/artifact/dev.zarr/jzarr for newer versions -->
  </dependency>
 
 
