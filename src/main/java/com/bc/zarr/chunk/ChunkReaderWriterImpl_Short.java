@@ -29,6 +29,7 @@ import com.bc.zarr.Compressor;
 import com.bc.zarr.storage.Store;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
+import ucar.ma2.IndexIterator;
 
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
@@ -69,18 +70,33 @@ public class ChunkReaderWriterImpl_Short extends ChunkReaderWriter {
         }
     }
 
+    protected boolean isFillOnly(Array array) {
+        if (fill == null) {
+            return false;
+        }
+        final IndexIterator iter = array.getIndexIterator();
+        while (iter.hasNext()) {
+            if (iter.getShortNext() != fill.shortValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public void write(String storeKey, Array array) throws IOException {
-        try (
-                final ImageOutputStream iis = new MemoryCacheImageOutputStream(new ByteArrayOutputStream());
-                final InputStream is = new ZarrInputStreamAdapter(iis);
-                final OutputStream os = store.getOutputStream(storeKey)
-        ) {
-            final short[] shorts = (short[]) array.get1DJavaArray(DataType.SHORT);
-            iis.setByteOrder(order);
-            iis.writeShorts(shorts, 0, shorts.length);
-            iis.seek(0);
-            compressor.compress(is, os);
+        if (!isFillOnly(array)) {
+            try (
+                    final ImageOutputStream iis = new MemoryCacheImageOutputStream(new ByteArrayOutputStream());
+                    final InputStream is = new ZarrInputStreamAdapter(iis);
+                    final OutputStream os = store.getOutputStream(storeKey)
+            ) {
+                final short[] shorts = (short[]) array.get1DJavaArray(DataType.SHORT);
+                iis.setByteOrder(order);
+                iis.writeShorts(shorts, 0, shorts.length);
+                iis.seek(0);
+                compressor.compress(is, os);
+            }
         }
     }
 }

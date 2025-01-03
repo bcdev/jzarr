@@ -29,6 +29,7 @@ import com.bc.zarr.Compressor;
 import com.bc.zarr.storage.Store;
 import ucar.ma2.Array;
 import ucar.ma2.DataType;
+import ucar.ma2.IndexIterator;
 
 import java.io.*;
 
@@ -57,14 +58,29 @@ public class ChunkReaderWriterImpl_Byte extends ChunkReaderWriter {
         }
     }
 
+    protected boolean isFillOnly(Array array) {
+        if (fill == null) {
+            return false;
+        }
+        final IndexIterator iter = array.getIndexIterator();
+        while (iter.hasNext()) {
+            if (iter.getByteNext() != fill.byteValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public void write(String storeKey, Array array) throws IOException {
-        final byte[] bytes = (byte[]) array.get1DJavaArray(DataType.BYTE);
-        try (
-                final ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-                final OutputStream os = store.getOutputStream(storeKey)
-        ) {
-            compressor.compress(is, os);
+        if (! isFillOnly(array)) {
+            final byte[] bytes = (byte[]) array.get1DJavaArray(DataType.BYTE);
+            try (
+                    final ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+                    final OutputStream os = store.getOutputStream(storeKey)
+            ) {
+                compressor.compress(is, os);
+            }
         }
     }
 }
