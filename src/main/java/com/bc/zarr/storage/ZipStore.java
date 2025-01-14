@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystems;
@@ -54,7 +56,7 @@ public class ZipStore implements Store {
         if (!Files.exists(zipFilePath)) {
             zipParams.put("create", "true");
         }
-        final URI uri = URI.create("jar:file:" + zipFilePath.toUri().getPath());
+        final URI uri = URI.create("jar:" + zipFilePath.toUri());
         zfs = getFileSystem(zipParams, uri);
         internalRoot = zfs.getRootDirectories().iterator().next();
     }
