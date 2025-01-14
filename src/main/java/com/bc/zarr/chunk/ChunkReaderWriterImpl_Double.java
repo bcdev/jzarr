@@ -75,9 +75,18 @@ public class ChunkReaderWriterImpl_Double extends ChunkReaderWriter {
             return false;
         }
         final IndexIterator iter = array.getIndexIterator();
-        while (iter.hasNext()) {
-            if (iter.getDoubleNext() != fill.doubleValue()) {
-                return false;
+        final double fillValue = fill.doubleValue();
+        if (Double.isNaN(fillValue)) {
+            while (iter.hasNext()) {
+                if (! Double.isNaN(iter.getDoubleNext())) {
+                    return false;
+                }
+            }
+        } else {
+            while (iter.hasNext()) {
+                if (iter.getDoubleNext() != fillValue) {
+                    return false;
+                }
             }
         }
         return true;

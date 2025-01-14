@@ -317,7 +317,14 @@ public class ZarrArray {
     }
 
     private boolean isZeroOffset(int[] offset) {
-        return Arrays.equals(offset, new int[offset.length]);
+        //return Arrays.equals(offset, new int[offset.length]);
+        // avoid new for a test
+        for (int i : offset) {
+            if (i != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void writeAttributes(Map<String, Object> attributes) throws IOException {

@@ -75,9 +75,18 @@ public class ChunkReaderWriterImpl_Float extends ChunkReaderWriter {
             return false;
         }
         final IndexIterator iter = array.getIndexIterator();
-        while (iter.hasNext()) {
-            if (iter.getFloatNext() != fill.floatValue()) {
-                return false;
+        final float fillValue = fill.floatValue();
+        if (Float.isNaN(fillValue)) {
+            while (iter.hasNext()) {
+                if (! Float.isNaN(iter.getFloatNext())) {
+                    return false;
+                }
+            }
+        } else {
+            while (iter.hasNext()) {
+                if (iter.getFloatNext() != fillValue) {
+                    return false;
+                }
             }
         }
         return true;
