@@ -6,7 +6,7 @@
 
     <groupId>com.bc.zarr</groupId>
     <artifactId>jzarr</artifactId>
-    <version>0.3.6-SNAPSHOT</version>
+    <version>0.3.7-SNAPSHOT</version>
 
     <properties>
         <!-- needed in test scope to show examples -->
@@ -89,6 +89,7 @@
             <version>3.19.0</version>
             <scope>test</scope>
         </dependency>
+<!--
         <dependency>
             <groupId>org.lasersonlab</groupId>
             <artifactId>s3fs</artifactId>
@@ -105,6 +106,7 @@
             </exclusions>
             <scope>test</scope>
         </dependency>
+-->
     </dependencies>
 
     <distributionManagement>

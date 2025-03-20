@@ -55,7 +55,7 @@ public class PartialDataCopierTest_1D {
         final int[] offset = {0};
         PartialDataCopier.copy(offset, source, target);
 
-        assertThat(target.getStorage(), is(equalTo(new int[]{0,1,2})));
+        assertThat(target.getStorage(), is(equalTo(new int[]{0, 1, 2})));
     }
 
 

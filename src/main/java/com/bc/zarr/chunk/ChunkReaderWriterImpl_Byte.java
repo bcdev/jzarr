@@ -73,7 +73,9 @@ public class ChunkReaderWriterImpl_Byte extends ChunkReaderWriter {
 
     @Override
     public void write(String storeKey, Array array) throws IOException {
-        if (! isFillOnly(array)) {
+        if (isFillOnly(array)) {
+            store.delete(storeKey);
+        } else {
             final byte[] bytes = (byte[]) array.get1DJavaArray(DataType.BYTE);
             try (
                     final ByteArrayInputStream is = new ByteArrayInputStream(bytes);

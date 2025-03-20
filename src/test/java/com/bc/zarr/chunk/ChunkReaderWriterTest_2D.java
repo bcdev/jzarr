@@ -67,13 +67,17 @@ public class ChunkReaderWriterTest_2D {
     }
 
     @Test
-    public void createChunkReaderWriter_compresserIsNullValue() throws NoSuchFieldException, IllegalAccessException {
+    public void createChunkReaderWriter_compressorIsNullValue() throws NoSuchFieldException, IllegalAccessException {
         //execution
         final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(null, DataType.i1, ByteOrder.BIG_ENDIAN, new int[]{3, 4}, 5, store);
 
         final Object compressor = TestUtils.getPrivateFieldObject(readerWriter, "compressor");
         assertThat(compressor, is(sameInstance(CompressorFactory.nullCompressor)));
     }
+
+    // ////////////////////////////////
+    // ////// read write Bytes  ///////
+    // ////////////////////////////////
 
     @Test
     public void read_Bytes_NullCompressor_ChunkFileDoesNotExist() throws IOException {
@@ -109,74 +113,6 @@ public class ChunkReaderWriterTest_2D {
     }
 
     @Test
-    public void read_Short_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
-        final int[] shape = {2, 3};
-        final Number fill = 8;
-        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i2, ByteOrder.BIG_ENDIAN, shape, fill, store);
-
-        //execution
-        final Array array = readerWriter.read(chunkStoreKey);
-
-        assertNotNull(array);
-        assertThat(array.getShape(), is(equalTo(shape)));
-        final short[] expectedValues = new short[computeSizeInteger(shape)];
-        Arrays.fill(expectedValues, fill.shortValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.SHORT))));
-    }
-
-    @Test
-    public void read_Integer_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
-        final int[] shape = {2, 3};
-        final Number fill = 8;
-        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i4, ByteOrder.BIG_ENDIAN, shape, fill, store);
-
-        //execution
-        final Array array = readerWriter.read(chunkStoreKey);
-
-        assertNotNull(array);
-        assertThat(array.getShape(), is(equalTo(shape)));
-        final int[] expectedValues = new int[computeSizeInteger(shape)];
-        Arrays.fill(expectedValues, fill.intValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.INT))));
-    }
-
-    @Test
-    public void read_Float_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
-        final int[] shape = {2, 3};
-        final Number fill = 8;
-        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, fill, store);
-
-        //execution
-        final Array array = readerWriter.read(chunkStoreKey);
-
-        assertNotNull(array);
-        assertThat(array.getShape(), is(equalTo(shape)));
-        final float[] expectedValues = new float[computeSizeInteger(shape)];
-        Arrays.fill(expectedValues, fill.floatValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.FLOAT))));
-    }
-
-    @Test
-    public void read_Double_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
-        final int[] shape = {2, 3};
-        final Number fill = 8;
-        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f8, ByteOrder.BIG_ENDIAN, shape, fill, store);
-
-        //execution
-        final Array array = readerWriter.read(chunkStoreKey);
-
-        assertNotNull(array);
-        assertThat(array.getShape(), is(equalTo(shape)));
-        final double[] expectedValues = new double[computeSizeInteger(shape)];
-        Arrays.fill(expectedValues, fill.doubleValue());
-        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.DOUBLE))));
-    }
-
-    @Test
     public void read_Bytes_NullCompressor_ChunkFileExist() throws IOException {
         final Compressor compressor = CompressorFactory.nullCompressor;
         final byte[] bytes = {1, 2, 3, 4, 5, 6};
@@ -194,25 +130,6 @@ public class ChunkReaderWriterTest_2D {
         assertNotNull(array);
         assertThat(array.getShape(), is(equalTo(shape)));
         assertThat(array.get1DJavaArray(ucar.ma2.DataType.BYTE), is(equalTo(bytes)));
-    }
-
-    @Test
-    public void write_Bytes_NullCompressor_ChunkFileExist() throws IOException {
-        final Compressor compressor = CompressorFactory.nullCompressor;
-        final byte[] bytes = {1, 2, 3, 4, 5, 6};
-        final int[] shape = {2, 3};
-
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
-
-        //execution
-        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.BYTE, shape, bytes));
-
-        final InputStream inputStream = Files.newInputStream(jimfsChunkPath);
-        final byte[] buffer = new byte[100];
-        final int size = inputStream.read(buffer);
-        assertThat(size, equalTo(6));
-        final byte[] written = Arrays.copyOf(buffer, size);
-        assertThat(written, is(equalTo(bytes)));
     }
 
     @Test
@@ -288,6 +205,70 @@ public class ChunkReaderWriterTest_2D {
     }
 
     @Test
+    public void write_Bytes_NullCompressor_ChunkFileExist() throws IOException {
+        final Compressor compressor = CompressorFactory.nullCompressor;
+        final byte[] bytes = {1, 2, 3, 4, 5, 6};
+        final int[] shape = {2, 3};
+
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, 3, store);
+
+        //execution
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.BYTE, shape, bytes));
+
+        final InputStream inputStream = Files.newInputStream(jimfsChunkPath);
+        final byte[] buffer = new byte[100];
+        final int size = inputStream.read(buffer);
+        assertThat(size, equalTo(6));
+        final byte[] written = Arrays.copyOf(buffer, size);
+        assertThat(written, is(equalTo(bytes)));
+    }
+
+    @Test
+    public void writeRead_Byte_deleteExistingChunk_ifOnlyFillValuesAreWritten() throws IOException {
+        //preparation
+        final Compressor compressor = CompressorFactory.nullCompressor;
+        final byte fillValue = 3;
+        final byte[] justFillValues = {
+                fillValue, fillValue, fillValue,
+                fillValue, fillValue, fillValue};
+        final int[] shape = {2, 3};
+
+        store.getOutputStream(chunkStoreKey).close(); // Init a chunk file
+        assertThat(Files.exists(jimfsChunkPath), is(true));
+
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i1, ByteOrder.BIG_ENDIAN, shape, fillValue, store);
+
+        // execution write | try to write just fill values --> leads to delete the chunk file
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.BYTE, shape, justFillValues));
+
+        // verification | file MUST NOT exist
+        assertThat(Files.exists(jimfsChunkPath), is(false));
+
+        // The read_???????_ChunkFileDoesNotExist tests ensure that non-existent chunks are read correctly.
+    }
+
+    // /////////////////////////////////
+    // ////// read write Shorts  ///////
+    // /////////////////////////////////
+
+    @Test
+    public void read_Short_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
+        final int[] shape = {2, 3};
+        final Number fill = 8;
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i2, ByteOrder.BIG_ENDIAN, shape, fill, store);
+
+        //execution
+        final Array array = readerWriter.read(chunkStoreKey);
+
+        assertNotNull(array);
+        assertThat(array.getShape(), is(equalTo(shape)));
+        final short[] expectedValues = new short[computeSizeInteger(shape)];
+        Arrays.fill(expectedValues, fill.shortValue());
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.SHORT))));
+    }
+
+    @Test
     public void writeRead_Short_NullCompressor() throws IOException {
         final Compressor compressor = CompressorFactory.nullCompressor;
         final short[] input = {
@@ -334,6 +315,51 @@ public class ChunkReaderWriterTest_2D {
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
         assertThat(shorts, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.SHORT))));
+    }
+
+    @Test
+    public void writeRead_Short_deleteExistingChunk_ifOnlyFillValuesAreWritten() throws IOException {
+        //preparation
+        final Compressor compressor = CompressorFactory.nullCompressor;
+        final short fillValue = 3;
+        final short[] justFillValues = {
+                fillValue, fillValue, fillValue,
+                fillValue, fillValue, fillValue};
+        final int[] shape = {2, 3};
+
+        store.getOutputStream(chunkStoreKey).close(); // Init a chunk file
+        assertThat(Files.exists(jimfsChunkPath), is(true));
+
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i2, ByteOrder.BIG_ENDIAN, shape, fillValue, store);
+
+        // execution write | try to write just fill values --> leads to delete the chunk file
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.SHORT, shape, justFillValues));
+
+        // verification | file MUST NOT exist
+        assertThat(Files.exists(jimfsChunkPath), is(false));
+
+        // The read_???????_ChunkFileDoesNotExist tests ensure that non-existent chunks are read correctly.
+    }
+
+    // /////////////////////////////////
+    // ////// read write Integer ///////
+    // /////////////////////////////////
+
+    @Test
+    public void read_Integer_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
+        final int[] shape = {2, 3};
+        final Number fill = 8;
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i4, ByteOrder.BIG_ENDIAN, shape, fill, store);
+
+        //execution
+        final Array array = readerWriter.read(chunkStoreKey);
+
+        assertNotNull(array);
+        assertThat(array.getShape(), is(equalTo(shape)));
+        final int[] expectedValues = new int[computeSizeInteger(shape)];
+        Arrays.fill(expectedValues, fill.intValue());
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.INT))));
     }
 
     @Test
@@ -386,6 +412,51 @@ public class ChunkReaderWriterTest_2D {
     }
 
     @Test
+    public void writeRead_Integer_deleteExistingChunk_ifOnlyFillValuesAreWritten() throws IOException {
+        //preparation
+        final Compressor compressor = CompressorFactory.nullCompressor;
+        final int fillValue = 3;
+        final int[] justFillValues = {
+                fillValue, fillValue, fillValue,
+                fillValue, fillValue, fillValue};
+        final int[] shape = {2, 3};
+
+        store.getOutputStream(chunkStoreKey).close(); // Init a chunk file
+        assertThat(Files.exists(jimfsChunkPath), is(true));
+
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.i4, ByteOrder.BIG_ENDIAN, shape, fillValue, store);
+
+        // execution write | try to write just fill values --> leads to delete the chunk file
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.INT, shape, justFillValues));
+
+        // verification | file MUST NOT exist
+        assertThat(Files.exists(jimfsChunkPath), is(false));
+
+        // The read_???????_ChunkFileDoesNotExist tests ensure that non-existent chunks are read correctly.
+    }
+
+    // /////////////////////////////////
+    // ////// read write Floats  ///////
+    // /////////////////////////////////
+
+    @Test
+    public void read_Float_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
+        final int[] shape = {2, 3};
+        final Number fill = 8;
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, fill, store);
+
+        //execution
+        final Array array = readerWriter.read(chunkStoreKey);
+
+        assertNotNull(array);
+        assertThat(array.getShape(), is(equalTo(shape)));
+        final float[] expectedValues = new float[computeSizeInteger(shape)];
+        Arrays.fill(expectedValues, fill.floatValue());
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.FLOAT))));
+    }
+
+    @Test
     public void writeRead_Float_NullCompressor() throws IOException {
         final Compressor compressor = CompressorFactory.nullCompressor;
         final float[] input = {
@@ -432,6 +503,75 @@ public class ChunkReaderWriterTest_2D {
         assertThat(read, is(notNullValue()));
         assertThat(read.getShape(), is(equalTo(shape)));
         assertThat(floats, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.FLOAT))));
+    }
+
+    @Test
+    public void writeRead_Float_Fill_ZipCompressor() throws IOException {
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
+        final float[] floats = {3, 3, 3, 3, 3, 3};
+        final int[] shape = {2, 3};
+
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, 3, store);
+        Files.deleteIfExists(jimfsChunkPath);
+
+        //execution write
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.FLOAT, shape, floats));
+
+        //intermediate verification
+        assertThat(Files.exists(jimfsChunkPath), is(equalTo(false)));
+
+        //execution read
+        final Array read = readerWriter.read(chunkStoreKey);
+
+        //verification
+        assertThat(read, is(notNullValue()));
+        assertThat(read.getShape(), is(equalTo(shape)));
+        assertThat(floats, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.FLOAT))));
+    }
+
+    @Test
+    public void writeRead_Float_deleteExistingChunk_ifOnlyFillValuesAreWritten() throws IOException {
+        //preparation
+        final Compressor compressor = CompressorFactory.nullCompressor;
+        final float fillValue = 3;
+        final float[] justFillValues = {
+                fillValue, fillValue, fillValue,
+                fillValue, fillValue, fillValue};
+        final int[] shape = {2, 3};
+
+        store.getOutputStream(chunkStoreKey).close(); // Init a chunk file
+        assertThat(Files.exists(jimfsChunkPath), is(true));
+
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, fillValue, store);
+
+        // execution write | try to write just fill values --> leads to delete the chunk file
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.FLOAT, shape, justFillValues));
+
+        // verification | file MUST NOT exist
+        assertThat(Files.exists(jimfsChunkPath), is(false));
+
+        // The read_???????_ChunkFileDoesNotExist tests ensure that non-existent chunks are read correctly.
+    }
+
+    // //////////////////////////////////
+    // ////// read write Doubles  ///////
+    // //////////////////////////////////
+
+    @Test
+    public void read_Double_ZipCompressor_ChunkFileDoesNotExist() throws IOException {
+        final int[] shape = {2, 3};
+        final Number fill = 8;
+        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f8, ByteOrder.BIG_ENDIAN, shape, fill, store);
+
+        //execution
+        final Array array = readerWriter.read(chunkStoreKey);
+
+        assertNotNull(array);
+        assertThat(array.getShape(), is(equalTo(shape)));
+        final double[] expectedValues = new double[computeSizeInteger(shape)];
+        Arrays.fill(expectedValues, fill.doubleValue());
+        assertThat(expectedValues, is(equalTo(array.get1DJavaArray(ucar.ma2.DataType.DOUBLE))));
     }
 
     @Test
@@ -484,26 +624,27 @@ public class ChunkReaderWriterTest_2D {
     }
 
     @Test
-    public void writeRead_Float_Fill_ZipCompressor() throws IOException {
-        final Compressor compressor = CompressorFactory.create("zlib", "level", 1);
-        final float[] floats = {3, 3, 3, 3, 3, 3};
+    public void writeRead_Double_deleteExistingChunk_ifOnlyFillValuesAreWritten() throws IOException {
+        //preparation
+        final Compressor compressor = CompressorFactory.nullCompressor;
+        final double fillValue = 3;
+        final double[] justFillValues = {
+                fillValue, fillValue, fillValue,
+                fillValue, fillValue, fillValue};
         final int[] shape = {2, 3};
 
-        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f4, ByteOrder.BIG_ENDIAN, shape, 3, store);
-        Files.deleteIfExists(jimfsChunkPath);
+        store.getOutputStream(chunkStoreKey).close(); // Init a chunk file
+        assertThat(Files.exists(jimfsChunkPath), is(true));
 
-        //execution write
-        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.FLOAT, shape, floats));
+        final ChunkReaderWriter readerWriter = ChunkReaderWriter.create(compressor, DataType.f8, ByteOrder.BIG_ENDIAN, shape, fillValue, store);
 
-        //intermediate verification
-        assertThat(Files.exists(jimfsChunkPath), is(equalTo(false)));
+        // execution write | try to write just fill values --> leads to delete the chunk file
+        readerWriter.write(chunkStoreKey, Array.factory(ucar.ma2.DataType.DOUBLE, shape, justFillValues));
 
-        //execution read
-        final Array read = readerWriter.read(chunkStoreKey);
+        // verification | file MUST NOT exist
+        assertThat(Files.exists(jimfsChunkPath), is(false));
 
-        //verification
-        assertThat(read, is(notNullValue()));
-        assertThat(read.getShape(), is(equalTo(shape)));
-        assertThat(floats, is(equalTo(read.get1DJavaArray(ucar.ma2.DataType.FLOAT))));
+        // The read_???????_ChunkFileDoesNotExist tests ensure that non-existent chunks are read correctly.
     }
+
 }

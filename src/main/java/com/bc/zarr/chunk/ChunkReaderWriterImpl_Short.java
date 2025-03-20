@@ -85,7 +85,9 @@ public class ChunkReaderWriterImpl_Short extends ChunkReaderWriter {
 
     @Override
     public void write(String storeKey, Array array) throws IOException {
-        if (!isFillOnly(array)) {
+        if (isFillOnly(array)) {
+            store.delete(storeKey);
+        } else {
             try (
                     final ImageOutputStream iis = new MemoryCacheImageOutputStream(new ByteArrayOutputStream());
                     final InputStream is = new ZarrInputStreamAdapter(iis);
