@@ -70,7 +70,14 @@ public class ZarrHeader {
         }
         this.fill_value = fill_value;
         this.shape = shape;
-        this.dimension_separator = dimension_separator;
+
+        if (dimension_separator != null) {
+            this.dimension_separator = dimension_separator;
+        }
+        else {
+            // consistent with ArrayParams' handling of null separators
+            this.dimension_separator = ".";
+        }
     }
 
     public int[] getChunks() {

@@ -91,11 +91,8 @@ public class ZarrArrayTest_dimensionSeparator {
     @Test
     public void openOldStyleZarrArrayAndDetectDimensionSeparator() throws IOException, NoSuchFieldException, IllegalAccessException {
         final ZarrArray array = ZarrArray.open(arrayPath);
-        final Object separator = TestUtils.getPrivateFieldObject(array, "_separator");
-        assertThat(separator)
-                .isNotNull()
-                .isInstanceOf(DimensionSeparator.class);
-        DimensionSeparator sep = (DimensionSeparator) separator;
+        DimensionSeparator sep = array.getDimensionSeparator();
+        assertThat(sep).isNotNull();
         assertThat(sep.getSeparatorChar()).isEqualTo("/");
     }
 

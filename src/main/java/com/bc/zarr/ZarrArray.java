@@ -210,6 +210,10 @@ public class ZarrArray {
         return _byteOrder;
     }
 
+    public DimensionSeparator getDimensionSeparator() {
+        return _separator;
+    }
+
     public void write(Number value) throws IOException, InvalidRangeException {
         final int[] shape = getShape();
         final int[] offset = new int[shape.length];
