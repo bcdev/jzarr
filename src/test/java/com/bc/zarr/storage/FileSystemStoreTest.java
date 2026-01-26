@@ -54,8 +54,6 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class FileSystemStoreTest {
 
-    private String testDataStr;
-    private String rootPathStr;
     private FileSystem fs;
     private FileSystemStore store;
     private Path rootPath;
@@ -78,8 +76,8 @@ public class FileSystemStoreTest {
 
     @Before
     public void setUp() throws Exception {
-        testDataStr = String.format("testData_%s", separator);
-        rootPathStr = "group.zarr";
+        String testDataStr = String.format("testData_%s", separator);
+        String rootPathStr = "group.zarr";
 
         final int fileSystemAlternative = 1;
         if (fileSystemAlternative == 1) {

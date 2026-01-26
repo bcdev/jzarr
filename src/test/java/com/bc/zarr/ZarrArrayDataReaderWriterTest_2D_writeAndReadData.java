@@ -30,6 +30,7 @@ import com.bc.zarr.storage.FileSystemStore;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Before;
+import org.hamcrest.MatcherAssert.*;
 import org.junit.Test;
 import ucar.ma2.InvalidRangeException;
 
@@ -37,8 +38,9 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
 
@@ -68,7 +70,6 @@ public class ZarrArrayDataReaderWriterTest_2D_writeAndReadData {
                 .compressor(compressor);
         final ZarrArray array = ZarrArray.create(
                 new ZarrPath(arrayName), store, parameters, null);
-        array.getCompressor();
         assertEquals(compressor, array.getCompressor());
     }
 

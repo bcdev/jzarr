@@ -41,7 +41,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
@@ -89,7 +88,7 @@ public class ZarrArrayTest_dimensionSeparator {
     }
 
     @Test
-    public void openOldStyleZarrArrayAndDetectDimensionSeparator() throws IOException, NoSuchFieldException, IllegalAccessException {
+    public void openOldStyleZarrArrayAndDetectDimensionSeparator() throws IOException {
         final ZarrArray array = ZarrArray.open(arrayPath);
         DimensionSeparator sep = array.getDimensionSeparator();
         assertThat(sep).isNotNull();

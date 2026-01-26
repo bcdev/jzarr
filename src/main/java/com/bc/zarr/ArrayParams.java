@@ -36,7 +36,6 @@ import java.util.Map;
  * The class ArrayParams implements the Builder pattern. It is used on java side to imitate the pythonic default
  * value feature for function arguments. So the recognition factor for users who are familiar with the python zarr
  * framework should be high. E.g.:
- *
  * Python example:
  * <pre>
  *    za = zarr.create(
@@ -58,7 +57,6 @@ import java.util.Map;
  *    );
  * </pre>
  * Shape must be given!
- *
  * If not given ... parameter default values are:
  * <pre>
  *   boolean chunked = true;
@@ -92,7 +90,6 @@ public class ArrayParams {
 
     /**
      * Sets the optional {@code chunks} and returns a reference to this Builder so that the methods can be chained together.
-     *
      * The number of dimensions must be equal to the number of dimensions of the shape.
      *
      * @param chunks the {@code chunks} to set.

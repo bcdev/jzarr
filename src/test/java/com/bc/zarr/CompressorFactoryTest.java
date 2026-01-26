@@ -30,11 +30,9 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
+import static org.junit.Assert.*;
 
 public class CompressorFactoryTest {
 
@@ -70,8 +68,8 @@ public class CompressorFactoryTest {
     public void create_with_id_and_key_value_arguments__nullCompressor() {
         final Compressor compressor = CompressorFactory.create("null");
         assertNotNull(compressor);
-        assertEquals(null, compressor.getId());
-        assertEquals(null, compressor.toString());
+        assertNull(compressor.getId());
+        assertNull(compressor.toString());
     }
 
     @Test

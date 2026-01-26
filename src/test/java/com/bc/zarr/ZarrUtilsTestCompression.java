@@ -30,8 +30,6 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -91,7 +89,7 @@ public class ZarrUtilsTestCompression {
         assertNotNull(zarrHeader);
         assertThat(zarrHeader.getChunks(), is(equalTo(_zarrHeader.getChunks())));
         assertThat(zarrHeader.getDtype(), is(equalTo(_zarrHeader.getDtype())));
-        if (compression == "null") {
+        if (compression.equals("null")) {
             assertNull(zarrHeader.getCompressor());
         } else {
             assertNotNull(zarrHeader.getCompressor());
@@ -110,14 +108,14 @@ public class ZarrUtilsTestCompression {
         pw.println("        5,");
         pw.println("        6");
         pw.println("    ],");
-        if (compression == "null") {
+        if (compression.equals("null")) {
             pw.println("    \"compressor\": null,");
-        } else if (compression == "zlib") {
+        } else if (compression.equals("zlib")) {
             pw.println("    \"compressor\": {");
             pw.println("        \"level\": 1,");
             pw.println("        \"id\": \"zlib\"");
             pw.println("    },");
-        } else if (compression == "blosc") {
+        } else if (compression.equals("blosc")) {
             pw.println("    \"compressor\": {");
             pw.println("        \"clevel\": 5,");
             pw.println("        \"blocksize\": 0,");

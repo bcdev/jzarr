@@ -40,7 +40,6 @@ public class PartialDataCopier {
 
     /**
      * Offset describes the displacement between source and target array.
-     *
      * For example in the case of one dimensional arrays:
      *
      * <pre>
