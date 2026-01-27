@@ -31,7 +31,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class CompressorFactoryTest {
