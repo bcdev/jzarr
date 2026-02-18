@@ -6,40 +6,7 @@
 
     <groupId>com.bc.zarr</groupId>
     <artifactId>jzarr</artifactId>
-    <version>0.4.3-SNAPSHOT</version>
-
-    <name>JZarr</name>
-
-    <description>
-        JZarr is a Java library providing an implementation of chunked,
-        compressed, N-dimensional arrays close to the zarr-python package.
-    </description>
-
-    <url>https://github.com/zarr-developers/jzarr</url>
-
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>https://opensource.org/license/mit/</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <url>https://github.com/zarr-developers/jzarr</url>
-        <connection>scm:git:git://github.com/zarr-developers/jzarr.git</connection>
-        <developerConnection>scm:git:git@github.com:zarr-developers/jzarr.git</developerConnection>
-    </scm>
-
-    <developers>
-        <developer>
-            <id>joshmoore</id>
-            <name>Josh Moore</name>
-            <roles>
-                <role>maintainer</role>
-            </roles>
-        </developer>
-    </developers>
+    <version>0.3.8-SNAPSHOT</version>
 
     <properties>
         <!-- needed in test scope to show examples -->
@@ -119,7 +86,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.19.0</version>
+            <version>3.27.7</version>
             <scope>test</scope>
         </dependency>
 <!--
@@ -143,26 +110,25 @@
     </dependencies>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>snap-repo-public</id>
+            <name>Public Maven Repository for BC</name>
+            <url>https://nexus.snap-ci.ovh/repository/snap-maven-releases/</url>
+            <uniqueVersion>false</uniqueVersion>
         </repository>
+        <snapshotRepository>
+            <id>snap-repo-public</id>
+            <name>Public Maven Snapshot Repository for BC</name>
+            <url>https://nexus.snap-ci.ovh/repository/snap-maven-snapshot/</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
     </distributionManagement>
 
     <repositories>
         <repository>
-            <id>unidata.releases</id>
-            <url>https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases</url>
-            <snapshots><enabled>false</enabled></snapshots>
-        </repository>
-        <repository>
             <id>snap-repo-public</id>
             <name>Public Maven Repository for SNAP</name>
-            <url>https://snap-build-server.tilaa.cloud/nexus/repository/snap-maven-public/</url>
+            <url>https://nexus.snap-ci.ovh/repository/snap-maven-public/</url>
             <releases>
                 <enabled>true</enabled>
                 <checksumPolicy>warn</checksumPolicy>
@@ -176,6 +142,24 @@
 
     <build>
         <plugins>
+            <!--            <plugin>-->
+            <!--                <groupId>org.codehaus.mojo</groupId>-->
+            <!--                <artifactId>properties-maven-plugin</artifactId>-->
+            <!--                <version>1.0.0</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>initialize</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>read-project-properties</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <files>-->
+            <!--                                <file>${basedir}/maven.properties</file>-->
+            <!--                            </files>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -196,60 +180,6 @@
                 <configuration>
                     <!-- Source JARs are used in IDEs only, we don't need resources -->
                     <excludeResources>true</excludeResources>
-                </configuration>
-            </plugin>
-            <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>buildnumber-maven-plugin</artifactId>
-              <version>3.2.0</version>
-              <!-- Record SCM revision in manifest. -->
-              <executions>
-                <execution>
-                  <phase>validate</phase>
-                  <goals>
-                    <goal>create</goal>
-                  </goals>
-                </execution>
-              </executions>
-              <configuration>
-                <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-                <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
-              </configuration>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-jar-plugin</artifactId>
-              <version>3.3.0</version>
-              <configuration>
-                <archive>
-                  <manifest>
-                    <addBuildEnvironmentEntries>true</addBuildEnvironmentEntries>
-                    <addClasspath>true</addClasspath>
-                    <addDefaultEntries>true</addDefaultEntries>
-                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                    <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                  </manifest>
-                  <manifestEntries>
-                    <!-- Add SCM revision from buildnumber plugin, if available. -->
-                    <Implementation-Build>${buildNumber}</Implementation-Build>
-                  </manifestEntries>
-                </archive>
-              </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.5.0</version>
-                <executions>
-                    <execution>
-                    <id>attach-javadoc</id>
-                    <goals>
-                        <goal>jar</goal>
-                    </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <source>8</source>
                 </configuration>
             </plugin>
             <plugin>
@@ -280,31 +210,14 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
-                    <configuration>
-                        <includes>**/*.java</includes>
-                    </configuration>
-             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                    <id>sign-artifacts</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>sign</goal>
-                    </goals>
-                    <configuration>
-                        <keyname>9F88D86AD9A0D91E</keyname>
-                    </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-surefire-plugin</artifactId>-->
+            <!--                <version>3.0.0-M5</version>-->
+            <!--                <configuration>-->
+            <!--                    <argLine>-Djna.library.path=${bloscJnaLibraryPath}</argLine>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
         </plugins>
 
     </build>
@@ -339,7 +252,6 @@
                         <configuration>
                             <argLine>-Djna.library.path=${bloscJnaLibraryPath}</argLine>
                             <systemPropertiesFile>${basedir}/blosc.properties</systemPropertiesFile>
-                            <includes>**/*.java</includes>
                         </configuration>
                     </plugin>
                 </plugins>
