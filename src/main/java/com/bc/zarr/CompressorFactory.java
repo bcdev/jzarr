@@ -208,7 +208,7 @@ public class CompressorFactory {
         }
     }
 
-    static class BloscCompressor extends Compressor {
+    public static class BloscCompressor extends Compressor {
 
         final static int AUTOSHUFFLE = -1;
         final static int NOSHUFFLE = 0;
@@ -223,21 +223,24 @@ public class CompressorFactory {
         public final static int defaultShuffle = BYTESHUFFLE;
         public final static String keyBlocksize = "blocksize";
         public final static int defaultBlocksize = 0;
+        public final static String keyNumThreads = "nthreads";
+        public final static int defaultNumThreads = 1;
         public final static int[] supportedShuffle = new int[]{/*AUTOSHUFFLE, */NOSHUFFLE, BYTESHUFFLE, BITSHUFFLE};
         public final static String[] supportedCnames = new String[]{"zstd", "blosclz", defaultCname, "lz4hc", "zlib"/*, "snappy"*/};
 
-        public final static Map<String, Object> defaultProperties = Collections
-                .unmodifiableMap(new HashMap<String, Object>() {{
+        public final static Map<String, Object> defaultProperties = new HashMap<String, Object>() {{
                     put(keyCname, defaultCname);
                     put(keyClevel, defaultCLevel);
                     put(keyShuffle, defaultShuffle);
                     put(keyBlocksize, defaultBlocksize);
-                }});
+                    put(keyNumThreads, defaultNumThreads);
+                }};
 
         private final int clevel;
         private final int blocksize;
         private final int shuffle;
         private final String cname;
+        private final int nthreads;
 
         private BloscCompressor(Map<String, Object> map) {
             final Object cnameObj = map.get(keyCname);
@@ -285,6 +288,16 @@ public class CompressorFactory {
             } else {
                 this.blocksize = ((Number) blocksizeObj).intValue();
             }
+
+            Object nthreadsObj = map.get(keyNumThreads);
+            if (nthreadsObj == null) {
+                nthreadsObj = defaultProperties.get(keyNumThreads);
+            }
+            if (nthreadsObj instanceof String) {
+                this.nthreads = Integer.parseInt((String) nthreadsObj);
+            } else {
+                this.nthreads = ((Number) nthreadsObj).intValue();
+            }
         }
 
         @Override
@@ -308,6 +321,10 @@ public class CompressorFactory {
             return cname;
         }
 
+        public int getNumThreads() {
+            return nthreads;
+        }
+
         @Override
         public String toString() {
             return "compressor=" + getId()
@@ -324,7 +341,7 @@ public class CompressorFactory {
             final int outputSize = inputSize + JBlosc.OVERHEAD;
             final ByteBuffer inputBuffer = ByteBuffer.wrap(inputBytes);
             final ByteBuffer outBuffer = ByteBuffer.allocate(outputSize);
-            final int i = JBlosc.compressCtx(clevel, shuffle, 1, inputBuffer, inputSize, outBuffer, outputSize, cname, blocksize, 1);
+            final int i = JBlosc.compressCtx(clevel, shuffle, 1, inputBuffer, inputSize, outBuffer, outputSize, cname, blocksize, nthreads);
             final BufferSizes bs = cbufferSizes(outBuffer);
             byte[] compressedChunk = Arrays.copyOfRange(outBuffer.array(), 0, (int) bs.getCbytes());
             os.write(compressedChunk);
@@ -341,7 +358,7 @@ public class CompressorFactory {
             byte[] inBytes = Arrays.copyOf(header, compressedSize);
             di.readFully(inBytes, header.length, compressedSize - header.length);
             ByteBuffer outBuffer = ByteBuffer.allocate(uncompressedSize);
-            JBlosc.decompressCtx(ByteBuffer.wrap(inBytes), outBuffer, outBuffer.limit(), 1);
+            JBlosc.decompressCtx(ByteBuffer.wrap(inBytes), outBuffer, outBuffer.limit(), nthreads);
             os.write(outBuffer.array());
         }
 
