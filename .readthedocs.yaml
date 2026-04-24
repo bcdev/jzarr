@@ -13,5 +13,4 @@ sphinx:
 
 python:
   install:
-    - method: pip
-      command: pip install sphinx-rtd-theme
+    - requirements: docs/requirements.txt
