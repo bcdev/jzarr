@@ -10,3 +10,9 @@ build:
 
 sphinx:
   configuration: docs-src/docs/conf.py
+
+python:
+  install:
+    - method: pip
+      packages:
+        - sphinx-rtd-theme
