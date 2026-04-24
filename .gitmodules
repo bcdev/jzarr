@@ -1,0 +1,3 @@
+[submodule "docs-src"]
+	path = docs-src
+	url = https://github.com/zarr-developers/jzarr.git
