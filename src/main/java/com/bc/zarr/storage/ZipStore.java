@@ -106,7 +106,7 @@ public class ZipStore implements Store {
             Files.delete(toBeDeleted);
         }
         if (Files.exists(toBeDeleted) || Files.isDirectory(toBeDeleted)) {
-            throw new IOException("Unable to initialize " + toBeDeleted.toAbsolutePath());
+            throw new IOException("Unable to delete " + toBeDeleted.toAbsolutePath());
         }
     }
 

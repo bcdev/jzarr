@@ -103,7 +103,7 @@ public class FileSystemStore implements Store {
             Files.delete(toBeDeleted);
         }
         if (Files.exists(toBeDeleted) || Files.isDirectory(toBeDeleted)) {
-            throw new IOException("Unable to initialize " + toBeDeleted.toAbsolutePath().toString());
+            throw new IOException("Unable to delete " + toBeDeleted.toAbsolutePath().toString());
         }
     }
 
